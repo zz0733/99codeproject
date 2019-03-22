@@ -2335,10 +2335,14 @@ end
 
 function GameViewLayer:switchDealerImage()
 
-    if self.isUpBanker and not self:isBanker()then
+    if self.isUpBanker and not self:isBanker() then
         self.m_pImageBeZhuang:setVisible(false)
         self.m_pImageCancelZhuang:setVisible(false)
         self.m_pImageCheckZhuangList:setVisible(true)
+    elseif self:isBanker() then
+        self.m_pImageBeZhuang:setVisible(false)
+        self.m_pImageCancelZhuang:setVisible(true)
+        self.m_pImageCheckZhuangList:setVisible(false)
     end
 
 end

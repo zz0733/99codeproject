@@ -2,12 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b7a38a1-2397-498a-ae43-0b11f9ea0970" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserDefault.xml" beforeDir="false" afterPath="$PROJECT_DIR$/UserDefault.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua" beforeDir="false" afterPath="$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/yule/brnngod/src/models/helper.lua" beforeDir="false" afterPath="$PROJECT_DIR$/game/yule/brnngod/src/models/helper.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua" beforeDir="false" afterPath="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua" beforeDir="false" afterPath="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user_gameconfig.plist" beforeDir="false" afterPath="$PROJECT_DIR$/user_gameconfig.plist" afterDir="false" />
     </list>
@@ -22,8 +16,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="226">
-              <caret line="2352" column="53" selection-start-line="2352" selection-start-column="17" selection-end-line="2352" selection-end-column="53" />
+            <state relative-caret-position="365">
+              <caret line="2341" column="31" lean-forward="true" selection-start-line="2341" selection-start-column="31" selection-end-line="2341" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -41,7 +35,7 @@
         <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="211">
-              <caret line="187" column="24" selection-start-line="187" selection-start-column="17" selection-end-line="187" selection-end-column="24" />
+              <caret line="135" column="57" selection-start-line="135" selection-start-column="37" selection-end-line="135" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -50,7 +44,7 @@
         <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="222">
-              <caret line="123" column="48" lean-forward="true" selection-start-line="123" selection-start-column="48" selection-end-line="123" selection-end-column="48" />
+              <caret line="123" column="48" selection-start-line="123" selection-start-column="48" selection-end-line="123" selection-end-column="48" />
             </state>
           </provider>
         </entry>
@@ -75,9 +69,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>bankersTable</find>
-      <find>elseif</find>
-      <find>dealer</find>
       <find>HandredcattleRes</find>
       <find>Lang</find>
       <find>hidePopup</find>
@@ -105,6 +96,9 @@
       <find>getDealNumStr</find>
       <find>isCurDealer</find>
       <find>WaitQueueItem</find>
+      <find>Dealer</find>
+      <find>jijiang</find>
+      <find>itemModelZhuangQItem</find>
     </findStrings>
     <dirStrings>
       <dir>F:\Projects\hhgame-ui\client\game\yule\brnngod\src</dir>
@@ -126,10 +120,10 @@
         <option value="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/TrendLayer.lua" />
         <option value="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/handClasses/HandredcattleRes.lua" />
         <option value="$PROJECT_DIR$/client/src/external/MultiPlatform.lua" />
-        <option value="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua" />
         <option value="$PROJECT_DIR$/game/yule/brnngod/src/models/helper.lua" />
         <option value="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua" />
         <option value="$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua" />
+        <option value="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua" />
       </list>
     </option>
   </component>
@@ -237,7 +231,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553248967283" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553249630824" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
@@ -372,9 +366,9 @@
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
-          <url>file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua</url>
-          <line>180</line>
-          <option name="timeStamp" value="41" />
+          <url>file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua</url>
+          <line>1154</line>
+          <option name="timeStamp" value="43" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -700,24 +694,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="2352" column="53" selection-start-line="2352" selection-start-column="17" selection-end-line="2352" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="222">
-          <caret line="123" column="48" lean-forward="true" selection-start-line="123" selection-start-column="48" selection-end-line="123" selection-end-column="48" />
+          <caret line="123" column="48" selection-start-line="123" selection-start-column="48" selection-end-line="123" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="365">
+          <caret line="2341" column="31" lean-forward="true" selection-start-line="2341" selection-start-column="31" selection-end-line="2341" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="211">
-          <caret line="187" column="24" selection-start-line="187" selection-start-column="17" selection-end-line="187" selection-end-column="24" />
+          <caret line="135" column="57" selection-start-line="135" selection-start-column="37" selection-end-line="135" selection-end-column="57" />
         </state>
       </provider>
     </entry>
