@@ -1,0 +1,1 @@
+.\run\debug\win32\GloryProject.exe -workdir F:\Projects\hhgame-ui\client

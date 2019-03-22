@@ -1,0 +1,20 @@
+
+lizhi.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/guang
+  rotate: false
+  xy: 2, 115
+  size: 142, 139
+  orig: 142, 139
+  offset: 0, 0
+  index: -1
+images/lizi
+  rotate: false
+  xy: 2, 2
+  size: 112, 111
+  orig: 112, 115
+  offset: 0, 4
+  index: -1

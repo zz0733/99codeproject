@@ -1,0 +1,34 @@
+
+longhudazhan4_kaiju.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+longhudazhan4_guangshu
+  rotate: false
+  xy: 2, 2
+  size: 500, 62
+  orig: 500, 62
+  offset: 0, 0
+  index: -1
+longhudazhan4_kaishi
+  rotate: false
+  xy: 2, 66
+  size: 653, 135
+  orig: 653, 135
+  offset: 0, 0
+  index: -1
+longhudazhan4_tingzhi
+  rotate: false
+  xy: 1140, 214
+  size: 641, 125
+  orig: 641, 125
+  offset: 0, 0
+  index: -1
+longhudazhan4_zidi
+  rotate: false
+  xy: 2, 203
+  size: 1136, 136
+  orig: 1136, 136
+  offset: 0, 0
+  index: -1

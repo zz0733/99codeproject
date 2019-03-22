@@ -1,0 +1,97 @@
+
+shuihuzhuan4_liankuai.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+shuihuzhuan4_liankuai_01
+  rotate: false
+  xy: 2, 326
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_02
+  rotate: false
+  xy: 2, 218
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_03
+  rotate: false
+  xy: 134, 326
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_04
+  rotate: false
+  xy: 2, 110
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_05
+  rotate: false
+  xy: 134, 218
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_06
+  rotate: false
+  xy: 266, 326
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_07
+  rotate: false
+  xy: 2, 2
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_08
+  rotate: false
+  xy: 134, 110
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_09
+  rotate: false
+  xy: 266, 218
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_10
+  rotate: true
+  xy: 398, 302
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_11
+  rotate: false
+  xy: 134, 2
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_12
+  rotate: false
+  xy: 266, 110
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_liankuai_13
+  rotate: true
+  xy: 398, 170
+  size: 130, 106
+  orig: 130, 106
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,111 @@
+
+jiuxianlawang4_beijing.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+jiuxianlawang4_bts
+  rotate: false
+  xy: 2, 83
+  size: 450, 31
+  orig: 450, 31
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_deng
+  rotate: false
+  xy: 454, 21
+  size: 106, 104
+  orig: 120, 120
+  offset: 8, 8
+  index: -1
+jiuxianlawang4_fangzi
+  rotate: false
+  xy: 242, 219
+  size: 306, 271
+  orig: 306, 271
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_feiji
+  rotate: false
+  xy: 843, 329
+  size: 33, 21
+  orig: 33, 21
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_gu
+  rotate: false
+  xy: 931, 366
+  size: 86, 124
+  orig: 86, 124
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_hongxin
+  rotate: false
+  xy: 562, 2
+  size: 84, 81
+  orig: 84, 81
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_jita
+  rotate: true
+  xy: 576, 85
+  size: 195, 268
+  orig: 195, 268
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_mai
+  rotate: true
+  xy: 242, 127
+  size: 90, 332
+  orig: 90, 332
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_tuowei
+  rotate: false
+  xy: 2, 48
+  size: 234, 33
+  orig: 241, 35
+  offset: 7, 0
+  index: -1
+jiuxianlawang4_xiongmao
+  rotate: false
+  xy: 843, 352
+  size: 86, 138
+  orig: 86, 138
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_yinfu1
+  rotate: false
+  xy: 2, 9
+  size: 14, 37
+  orig: 14, 37
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_yinfu2
+  rotate: false
+  xy: 550, 244
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_yinfu3
+  rotate: false
+  xy: 238, 49
+  size: 19, 32
+  orig: 19, 32
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_yinxiang1
+  rotate: true
+  xy: 550, 282
+  size: 208, 291
+  orig: 234, 291
+  offset: 0, 0
+  index: -1
+jiuxianlawang4_yinxiang2
+  rotate: false
+  xy: 2, 116
+  size: 238, 374
+  orig: 238, 374
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,69 @@
+
+heihong.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+001
+  rotate: false
+  xy: 279, 60
+  size: 61, 66
+  orig: 61, 66
+  offset: 0, 0
+  index: -1
+002
+  rotate: false
+  xy: 342, 60
+  size: 61, 66
+  orig: 61, 66
+  offset: 0, 0
+  index: -1
+003
+  rotate: false
+  xy: 184, 49
+  size: 93, 77
+  orig: 93, 77
+  offset: 0, 0
+  index: -1
+004
+  rotate: false
+  xy: 2, 20
+  size: 127, 44
+  orig: 127, 44
+  offset: 0, 0
+  index: -1
+005
+  rotate: false
+  xy: 451, 97
+  size: 37, 29
+  orig: 37, 29
+  offset: 0, 0
+  index: -1
+006
+  rotate: false
+  xy: 131, 2
+  size: 101, 45
+  orig: 101, 45
+  offset: 0, 0
+  index: -1
+007
+  rotate: true
+  xy: 234, 3
+  size: 44, 36
+  orig: 44, 36
+  offset: 0, 0
+  index: -1
+008
+  rotate: false
+  xy: 405, 90
+  size: 44, 36
+  orig: 44, 36
+  offset: 0, 0
+  index: -1
+009
+  rotate: true
+  xy: 2, 66
+  size: 60, 180
+  orig: 60, 180
+  offset: 0, 0
+  index: -1

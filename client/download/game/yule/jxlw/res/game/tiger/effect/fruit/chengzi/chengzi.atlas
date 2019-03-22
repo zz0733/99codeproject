@@ -1,0 +1,20 @@
+
+chengzi.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+chengzi
+  rotate: false
+  xy: 161, 31
+  size: 127, 131
+  orig: 127, 131
+  offset: 0, 0
+  index: -1
+guang
+  rotate: false
+  xy: 2, 2
+  size: 157, 160
+  orig: 157, 160
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,20 @@
+
+longhudazhan4_denglong.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+longhudazhan4_denglong
+  rotate: true
+  xy: 2, 84
+  size: 40, 168
+  orig: 40, 168
+  offset: 0, 0
+  index: -1
+longhudazhan4_denglong_glow
+  rotate: true
+  xy: 2, 2
+  size: 80, 104
+  orig: 80, 104
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>gui-icon-head-01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,124},{115,115}}</string>
+				<key>offset</key>
+				<string>{-5,-4}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{124,0},{124,120}}</string>
+				<key>offset</key>
+				<string>{0,-2}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-03.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{124,124}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-04.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{248,0},{118,122}}</string>
+				<key>offset</key>
+				<string>{3,-1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-05.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{124,120},{114,124}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-06.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{366,120},{88,120}}</string>
+				<key>offset</key>
+				<string>{0,-2}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-07.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{366,0},{104,120}}</string>
+				<key>offset</key>
+				<string>{3,-2}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-08.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{470,0},{91,121}}</string>
+				<key>offset</key>
+				<string>{5,-1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-09.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,239},{113,117}}</string>
+				<key>offset</key>
+				<string>{1,-3}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+			<key>gui-icon-head-10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{238,122},{82,117}}</string>
+				<key>offset</key>
+				<string>{0,-3}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{124,124}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>im_face.png</string>
+			<key>realTextureFileName</key>
+			<string>im_face.png</string>
+			<key>size</key>
+			<string>{561,356}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>561</integer>
+			<key>height</key>
+			<integer>356</integer>
+		</dict>
+	</dict>
+</plist>

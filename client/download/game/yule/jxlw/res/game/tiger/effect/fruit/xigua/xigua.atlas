@@ -1,0 +1,27 @@
+
+xigua.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/GUANG
+  rotate: false
+  xy: 2, 2
+  size: 134, 114
+  orig: 134, 114
+  offset: 0, 0
+  index: -1
+images/qiekai
+  rotate: false
+  xy: 232, 56
+  size: 68, 60
+  orig: 68, 60
+  offset: 0, 0
+  index: -1
+images/xigua
+  rotate: false
+  xy: 138, 31
+  size: 92, 85
+  orig: 92, 85
+  offset: 0, 0
+  index: -1

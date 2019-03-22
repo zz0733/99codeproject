@@ -1,0 +1,40 @@
+{
+	"ServerIp": "59.56.111.242",
+	"ServerDNS": "sip.jjegame-download.net",
+	"ServerDNS_Backup": "sip.jjegame-download.com",
+	"SwitchDNS": "gs.jjegame-download.com",
+	"ServerPort": "8301,8302,8303,8304,8305,8306,8307,8308,8309,8310",
+	"HostUrl": "https://203.107.1.1/175595/resolve?host=sip.jjegame-download.net",
+	"HostUrl_Backup": "https://203.107.1.1/175595/resolve?host=sip.jjegame-download.com",
+	"HostNewIPUrl": "http://%s:61280/get_new_login_ip",
+	"ServerStatusUrl": "http://{random}.dl.jjedownload-2.com/other/ServerStatus/index.html",
+	"ForceUpdateUrl": "http://{random}.api.jjegame.net/mobiledown/index",
+	"InstalltrackUrl": "http://stat.jjedownload-3.com/gametrack",
+	"ChatClientUrl": "https://v88.live800.com/live800/chatClient/chatbox.jsp?companyID=862861&configID=7189&jid=2883600090&s=1",
+	"CreateOrderUrl": "http://pay.jjegame.com:40081/pay/CreateOrderGateway",
+	"CreateOrderUrl_IPV6": "http://dl-ipv6.522game.com/jjegame/website/pay/pay/CreateOrderGateway",
+	"SpreaderQRCodeUrl": "http://{random}.api.jjegame.net/mobiledown/SpreaderQRCode",
+	"HotUpdateUrl_Main": "http://dl.jjedownload-2.com/JJ/mobile/",
+	"HotUpdateUrl_Bkup": "http://dl.jjedownload-3.com/JJ/mobile/",
+	"HotUpdateUrl_Hall": "hall_main/",
+	"HotUpdateUrl_Game": "game/",
+	"OfficialWebsite": "www.jjmei.biz",
+	"PlatformID": "1",
+	"ResChannel": "1",
+	"ClipChannel": "jj_channel",
+	"AppStoreProducts": "99.gold6,99.gold12,99.gold50,99.gold188,99.gold488",
+	"HotUpdateUrl_open": "1",
+	"OpenErrorLog": "0",
+	"HotUpdateUrls": [
+		"http://{random}.dl.jjedownload-2.com/JJ/mobile/",
+		"http://{random}.dl.jjedownload-3.com/JJ/mobile/"
+	],
+	"ConfigUpdateUrls": [
+		"http://111.230.249.84:40081/JJ/mobile/",
+		"http://103.198.73.94:40081/JJ/mobile/"
+	],
+	"BuglyAppID": [
+		"54358efa80",
+		"35ccd3c664"
+	]
+}

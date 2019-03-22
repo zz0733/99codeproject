@@ -1,0 +1,22 @@
+info face="Arial" size=32 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=32 base=26 scaleW=256 scaleH=128 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="brnn_shuzi2_0.png"
+chars count=18
+char id=42   x=54    y=0     width=19    height=25    xoffset=0     yoffset=0     xadvance=19    page=0  chnl=15
+char id=43   x=28    y=26    width=14    height=12    xoffset=1     yoffset=10    xadvance=16    page=0  chnl=15
+char id=44   x=43    y=26    width=4     height=6     xoffset=2     yoffset=24    xadvance=8     page=0  chnl=15
+char id=45   x=74    y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=46   x=244   y=0     width=6     height=25    xoffset=0     yoffset=0     xadvance=6     page=0  chnl=15
+char id=47   x=17    y=26    width=10    height=20    xoffset=-1    yoffset=6     xadvance=8     page=0  chnl=15
+char id=48   x=91    y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=49   x=108   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=50   x=125   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=51   x=142   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=52   x=159   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=53   x=176   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=54   x=193   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=55   x=210   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=56   x=227   y=0     width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=57   x=0     y=26    width=16    height=25    xoffset=0     yoffset=0     xadvance=16    page=0  chnl=15
+char id=58   x=0     y=0     width=26    height=25    xoffset=0     yoffset=0     xadvance=26    page=0  chnl=15
+char id=59   x=27    y=0     width=26    height=25    xoffset=0     yoffset=0     xadvance=26    page=0  chnl=15

@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/21 11:22:54",
+        "logdata": "[string \".\\cocos/framework/extends/NodeEx.lua\"]:44: attempt to index local 'parent' (a nil value)\nstack traceback:\n\t[string \".\\game/yule/brnngod/src/models/helper.lua\"]:446: in function 'createStencilAvatar'\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:669: in function 'onEventEnterGame'\n\t[string \".\\game/yule/brnngod/src/views/GameLayer.lua\"]:601: in function 'onEventGameMessage'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:150: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:103: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:102>"
+    }
+]

@@ -1,0 +1,16 @@
+info face="Arial-Black" size=42 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2
+common lineHeight=57 base=42 scaleW=448 scaleH=57 pages=1 packed=0
+page id=0 file="ddz_sz3.png"
+chars count=12
+char id=57 x=0 y=0 width=39 height=57 xoffset=0 yoffset=0 xadvance=39 page=0 chnl=0
+char id=53 x=44 y=0 width=42 height=57 xoffset=0 yoffset=0 xadvance=42 page=0 chnl=0
+char id=52 x=91 y=0 width=41 height=57 xoffset=0 yoffset=0 xadvance=41 page=0 chnl=0
+char id=55 x=137 y=0 width=40 height=57 xoffset=0 yoffset=0 xadvance=40 page=0 chnl=0
+char id=54 x=182 y=0 width=39 height=57 xoffset=0 yoffset=0 xadvance=39 page=0 chnl=0
+char id=49 x=226 y=0 width=25 height=57 xoffset=0 yoffset=0 xadvance=25 page=0 chnl=0
+char id=48 x=256 y=0 width=42 height=57 xoffset=0 yoffset=0 xadvance=42 page=0 chnl=0
+char id=51 x=303 y=0 width=40 height=57 xoffset=0 yoffset=0 xadvance=40 page=0 chnl=0
+char id=50 x=348 y=0 width=41 height=57 xoffset=0 yoffset=0 xadvance=41 page=0 chnl=0
+char id=46 x=394 y=0 width=18 height=57 xoffset=0 yoffset=0 xadvance=18 page=0 chnl=0
+char id=56 x=417 y=0 width=40 height=57 xoffset=0 yoffset=0 xadvance=40 page=0 chnl=0
+char id=43 x=462 y=0 width=41 height=57 xoffset=0 yoffset=0 xadvance=41 page=0 chnl=0

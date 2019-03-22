@@ -1,0 +1,27 @@
+
+niuniu_ready_sound.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+icebg
+  rotate: false
+  xy: 291, 69
+  size: 289, 281
+  orig: 289, 281
+  offset: 0, 0
+  index: -1
+light
+  rotate: false
+  xy: 2, 66
+  size: 287, 284
+  orig: 287, 284
+  offset: 0, 0
+  index: -1
+shockring
+  rotate: true
+  xy: 2, 2
+  size: 62, 250
+  orig: 62, 250
+  offset: 0, 0
+  index: -1

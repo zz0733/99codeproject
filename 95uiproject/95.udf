@@ -1,0 +1,49 @@
+<UserData Version="3.10.0.0">
+  <Properties>
+    <Item Key="CocosRecentOperation">
+      <Value ctype="CocosRecentOperation">
+        <LastPublishType Value="Resource" />
+        <IsLastPublish Value="True" />
+        <LastRunType Value="Windows" />
+      </Value>
+    </Item>
+    <Item Key="TabsParamsKey">
+      <Value ctype="TabsInfo">
+        <OpenedDocuments>
+          <FilePathData Path="Fishing/CannonIntro.csd" />
+          <FilePathData Path="Fishing/FishingSetting.csd" />
+          <FilePathData Path="Fishing/FishingScene.csd" />
+          <FilePathData Path="login/LoginView.csd" />
+          <FilePathData Path="login/ReSetPasswordView.csd" />
+          <FilePathData Path="login/WelcomeRegisterView.csd" />
+          <FilePathData Path="login/UpdateScene.csd" />
+          <FilePathData Path="login/RegisterView.csd" />
+          <FilePathData Path="Lotteryticket/LotteryticketHelp.csd" />
+          <FilePathData Path="Lotteryticket/LottyerTicketView.csd" />
+          <FilePathData Path="Lotteryticket/NumView.csd" />
+          <FilePathData Path="RBWar/Node_RBWarAllPlayer.csd" />
+          <FilePathData Path="RBWar/RBWarHelpViewNew.csd" />
+          <FilePathData Path="RBWar/RBWarPageList.csd" />
+          <FilePathData Path="RBWar/RBWarPageRewardResult.csd" />
+          <FilePathData Path="RBWar/RBWarPageTendency.csd" />
+          <FilePathData Path="RBWar/RBWarScene.csd" />
+          <FilePathData Path="RBWar/RBWarSetting.csd" />
+          <FilePathData Path="RBWar/RBWarTrend.csd" />
+          <FilePathData Path="RBWar/vs.csd" />
+          <FilePathData Path="RBWar/win_light2.csd" />
+          <FilePathData Path="CandyParty/candyparty_title.csd" />
+          <FilePathData Path="CandyParty/CandyPartyDialog.csd" />
+          <FilePathData Path="CandyParty/CandyPartyHelp.csd" />
+          <FilePathData Path="common/loadinganime.csd" />
+          <FilePathData Path="common/Marquee.csd" />
+          <FilePathData Path="common/Waiting.csd" />
+          <FilePathData Path="common/ReconnectLoadingView.csd" />
+          <FilePathData Path="common/gameCheckLoadingView.csd" />
+          <FilePathData Path="common/CommonResultView.csd" />
+          <FilePathData Path="common/CommonBigWinnerView.csd" />
+        </OpenedDocuments>
+        <ActiveDocument Path="common/CommonBigWinnerView.csd" />
+      </Value>
+    </Item>
+  </Properties>
+</UserData>

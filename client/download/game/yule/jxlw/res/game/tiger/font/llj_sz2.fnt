@@ -1,0 +1,19 @@
+info face="Arial-Black" size=34 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2
+common lineHeight=49 base=34 scaleW=430 scaleH=49 pages=1 packed=0
+page id=0 file="llj_sz2.png"
+chars count=15
+char id=43 x=0 y=0 width=30 height=49 xoffset=0 yoffset=0 xadvance=30 page=0 chnl=0
+char id=45 x=35 y=0 width=19 height=49 xoffset=0 yoffset=0 xadvance=19 page=0 chnl=0
+char id=46 x=59 y=0 width=14 height=49 xoffset=0 yoffset=0 xadvance=14 page=0 chnl=0
+char id=54 x=78 y=0 width=31 height=49 xoffset=0 yoffset=0 xadvance=31 page=0 chnl=0
+char id=61 x=114 y=0 width=30 height=49 xoffset=0 yoffset=0 xadvance=30 page=0 chnl=0
+char id=56 x=149 y=0 width=31 height=49 xoffset=0 yoffset=0 xadvance=31 page=0 chnl=0
+char id=57 x=185 y=0 width=31 height=49 xoffset=0 yoffset=0 xadvance=31 page=0 chnl=0
+char id=52 x=221 y=0 width=33 height=49 xoffset=0 yoffset=0 xadvance=33 page=0 chnl=0
+char id=53 x=259 y=0 width=28 height=49 xoffset=0 yoffset=0 xadvance=28 page=0 chnl=0
+char id=120 x=292 y=0 width=34 height=49 xoffset=0 yoffset=0 xadvance=34 page=0 chnl=0
+char id=55 x=331 y=0 width=31 height=49 xoffset=0 yoffset=0 xadvance=31 page=0 chnl=0
+char id=48 x=367 y=0 width=32 height=49 xoffset=0 yoffset=0 xadvance=32 page=0 chnl=0
+char id=49 x=404 y=0 width=29 height=49 xoffset=0 yoffset=0 xadvance=29 page=0 chnl=0
+char id=50 x=438 y=0 width=29 height=49 xoffset=0 yoffset=0 xadvance=29 page=0 chnl=0
+char id=51 x=472 y=0 width=28 height=49 xoffset=0 yoffset=0 xadvance=28 page=0 chnl=0

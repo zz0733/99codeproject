@@ -1,0 +1,102 @@
+--NiuLang.lua
+--牛虎语言包
+--Create by tanglei@2017-7-6
+
+local cfg = {
+    
+    OK = "确定",
+    CONFIRM = "确定",
+    CANCEL = "取消",
+    WAN = "万",
+    DEF_MSG_TITLE = "温馨提示",
+
+    WINLOSE_STAT_INFO = "？？？？",
+    BETTING_CANNOT_QUIT = "您已经进行了下注，请在本轮完成后再退出吧！",
+    QUIT_ERROR = "退出错误:%d",
+    QUIT_ERROR_4 = "您已经进行了下注，请在本轮完成后再退出吧！",
+    MIN_BET_CARRY = "金币要%s以上才能下注哟~",
+    NOT_OPEN = "敬请期待",
+    ERR_CODE_1 = "系统错误",
+    ERR_CODE_2 = "金币不足",
+    ERR_CODE_3 = "当前投注额已超过庄家赔付数，不能再下注了！",
+    ERR_CODE_4 = "退出游戏错误",
+    ERR_CODE_5 = "庄家不能下注",
+    ERR_CODE_10 = "操作过快",
+    ERR_CODE_12 = "已经在桌在内",
+    ERR_CODE_13 = "已经在座位上",
+    ERR_CODE_14 = "桌子已经满了",
+    ERR_CODE_15 = "桌子已经没有空座位",
+    ERR_CODE_16 = "已经站起来了",
+    ERR_CODE_17 = "玩家不在座位上",
+    ERR_CODE_18 = "此位置不能落子",
+    ERR_CODE_19 = "当前筹码不足，请先充值",
+    ERR_CODE_20 = "无效的桌号",
+    ERR_CODE_21 = "无效的场次类型",
+    ERR_CODE_22 = "无效的游戏类型",
+    ERR_CODE_23 = "当前无可用的房间",
+    ERR_CODE_38 = "已经不能下注",
+    ERR_CODE_39 = "无效的游戏id",
+    ERR_CODE_42 = "下注必须本局结束才能离开！",
+    ERR_CODE_66 = "已经在庄上！",
+    ERR_CODE_67 = "不足上庄条件!",
+    ERR_CODE_68 = "已经不在庄上！",
+    ERR_CODE_69 = "已经申请过上庄",
+    ERR_CODE_70 = "已经在贵宾席",
+    ERR_CODE_71 = "已经不在贵宾席上！",
+    ERR_CODE_72 = "贵宾座需要筹码200W才可入座",
+    ERR_CODE_73 = "此位置有人！",
+    ERR_CODE_74 = "庄家不能下注！",
+    ERR_CODE_75 = "请下庄再离开！",
+    ERR_CODE_76 = "已达单人最大下注量啦，请休息下吧！",
+    ERR_CODE_77 = "当前投注额已超过庄家赔付数，不能再下注了！",
+    ERR_CODE_78 = "上庄不能就坐贵宾席",    
+
+
+    ENTER_ERROR = "进入失败 %d",
+    ENTER_ERROR_45 = "进入失败 错误码45",
+
+    WAIT_QUEUE_POS = "您在第%d位置",
+    NOT_BET_TIME = "当前不是下注时间，请在下注时间进行下注！",
+    DEALER_ADD_Q_SUCCEED = "申请成功，请稍作等待，马上就轮到您坐庄啦！",
+    DEALER_CANCEL_QUES = "老板，你确定要申请下庄吗？",
+    DEALER_Q_EXIT = "您已成功退出上庄队列",
+    DEALER_EXIT = "取消成功，您将在本轮结束后放弃坐庄。",
+    DEALER_QUIT_GAME = "坐庄时无法退出，请先下庄！",
+    DEALER_MONEY_NOT_ENOUGH = "金币达到10万才可以上庄",
+    MIN_BET_TIP = "筹码低于50无法进行下注",
+
+    ZHUANG_BUY_NEEDMONEY = "上庄需要%s,",
+    ZHUANG_BUY = "您的上庄资金不足，去补充一点吧！",
+    SMALL_GAME_BUY = "真遗憾，您的下注金额不足%s，不如充点小钱继续战斗吧！",
+    NOMONEY_CANNT_SIT = "您的金币低于1万，不能再坐在贵宾专座上了哦",
+    DEALER_CANNT_SIT = "您正在坐庄，不能同时坐在贵宾专座！",
+    SEAT_PRICE_TIP = "贵宾专座需要金币达到1万才能坐下哦！",
+    SIT_SUCCEED = "您已上座！",
+    KICK_MSG = "长时间未操作，请休息一下！",
+    NO_LOTTERY_POS = "暂时无人",
+    SELF_LOTT_INFO = "恭喜您中得%d金币",
+    DEF_ROBO_NAME = "系统庄家",    
+    WAIT_TXT = "辛苦啦，休息一下吧 （%d）",
+    DOWNLIMIT = "你的金币不足%d是否充值？",
+
+    LOT_CARDTYPE_NAME_1 = "四炸",
+    LOT_CARDTYPE_NAME_2 = "五花牛",
+    LOT_CARDTYPE_NAME_3 = "五小牛",
+    
+    MONEY_NOT_ENOUGH = "当前筹码不足，请先充值",
+
+    MONEY_COIN_YI = "亿",
+    MONEY_COIN_WAN = "万",
+
+    UPPER_CHIPIN_LIMIT = "您的投注额已超过限额！",
+    CAN_CHIPIN_FORMAT = "可下注：%s",
+    RECHARGE_TIP = "老板，您的金币不足%d，无法进行下注，\n请您充值噢~",
+    RECHARGE_TIP2 = "老板，您的金币不足%d，无法进行下注，\n请您充值噢~",
+    RECHARGE = "充值",
+
+    REBET_UPLIMIT = "已达单人最大下注量，余额不足以赔付，\n是否充值？",
+    REBET_NO_MONEY = "您的余额不足以重复上一把投注了！",
+    TINGFU_UPDATE = "即将停服进行更新，请暂停进行游戏！",
+}
+
+return cfg

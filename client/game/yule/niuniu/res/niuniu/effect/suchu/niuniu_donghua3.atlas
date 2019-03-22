@@ -1,0 +1,181 @@
+
+niuniu_donghua3.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: false
+  xy: 318, 151
+  size: 111, 102
+  orig: 111, 102
+  offset: 0, 0
+  index: -1
+body0001
+  rotate: false
+  xy: 318, 89
+  size: 89, 60
+  orig: 89, 60
+  offset: 0, 0
+  index: -1
+erduo001
+  rotate: false
+  xy: 149, 49
+  size: 31, 32
+  orig: 31, 32
+  offset: 0, 0
+  index: -1
+erduo002
+  rotate: false
+  xy: 2, 2
+  size: 41, 28
+  orig: 41, 28
+  offset: 0, 0
+  index: -1
+fa
+  rotate: false
+  xy: 617, 199
+  size: 86, 54
+  orig: 86, 54
+  offset: 0, 0
+  index: -1
+fa0001
+  rotate: false
+  xy: 431, 160
+  size: 95, 93
+  orig: 95, 93
+  offset: 0, 0
+  index: -1
+jiao00001
+  rotate: true
+  xy: 783, 206
+  size: 47, 76
+  orig: 47, 76
+  offset: 0, 0
+  index: -1
+jiao0002
+  rotate: false
+  xy: 617, 139
+  size: 66, 58
+  orig: 66, 58
+  offset: 0, 0
+  index: -1
+jiao001
+  rotate: false
+  xy: 409, 85
+  size: 61, 64
+  orig: 61, 64
+  offset: 0, 0
+  index: -1
+jiao002
+  rotate: false
+  xy: 528, 180
+  size: 87, 73
+  orig: 87, 73
+  offset: 0, 0
+  index: -1
+jiao1
+  rotate: true
+  xy: 528, 118
+  size: 60, 67
+  orig: 60, 67
+  offset: 0, 0
+  index: -1
+jiao2
+  rotate: false
+  xy: 685, 137
+  size: 39, 60
+  orig: 39, 60
+  offset: 0, 0
+  index: -1
+shou0003
+  rotate: false
+  xy: 472, 93
+  size: 50, 65
+  orig: 50, 65
+  offset: 0, 0
+  index: -1
+shou001
+  rotate: false
+  xy: 861, 185
+  size: 71, 68
+  orig: 71, 68
+  offset: 0, 0
+  index: -1
+shou002
+  rotate: true
+  xy: 934, 188
+  size: 65, 71
+  orig: 65, 71
+  offset: 0, 0
+  index: -1
+shou1
+  rotate: true
+  xy: 726, 142
+  size: 57, 44
+  orig: 57, 44
+  offset: 0, 0
+  index: -1
+shou2
+  rotate: false
+  xy: 524, 75
+  size: 63, 41
+  orig: 63, 41
+  offset: 0, 0
+  index: -1
+tou
+  rotate: false
+  xy: 2, 83
+  size: 166, 170
+  orig: 166, 170
+  offset: 0, 0
+  index: -1
+tou0001
+  rotate: false
+  xy: 170, 86
+  size: 146, 167
+  orig: 146, 167
+  offset: 0, 0
+  index: -1
+yanzhu
+  rotate: true
+  xy: 1007, 240
+  size: 13, 15
+  orig: 13, 15
+  offset: 0, 0
+  index: -1
+yanzhu001
+  rotate: false
+  xy: 597, 162
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
+  index: -1
+yanzhu002
+  rotate: false
+  xy: 45, 11
+  size: 14, 19
+  orig: 14, 19
+  offset: 0, 0
+  index: -1
+yanzhu_1
+  rotate: false
+  xy: 597, 146
+  size: 13, 14
+  orig: 13, 14
+  offset: 0, 0
+  index: -1
+yingzi
+  rotate: false
+  xy: 2, 32
+  size: 145, 49
+  orig: 145, 49
+  offset: 0, 0
+  index: -1
+zuojiao
+  rotate: true
+  xy: 705, 201
+  size: 52, 76
+  orig: 52, 76
+  offset: 0, 0
+  index: -1

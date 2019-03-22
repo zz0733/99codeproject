@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/21 16:53:56",
+        "logdata": "[string \".\\game/yule/tbnngod/src/views/GameRoomLayer.lua\"]:309: attempt to index local 'icoinsp' (a nil value)\nstack traceback:\n\t[string \".\\game/yule/tbnngod/src/views/GameRoomLayer.lua\"]:248: in function 'createScrollRoomList'\n\t[string \".\\game/yule/tbnngod/src/views/GameRoomLayer.lua\"]:533: in function 'handRoomList'\n\t[string \".\\game/yule/tbnngod/src/views/GameRoomLayer.lua\"]:540: in function 'onLogonCallBack'\n\t[string \".\\game/yule/tbnngod/src/views/GameRoomLayer.lua\"]:75: in function 'callback'\n\t[string \".\\client/src/plaza/models/LogonFrame.lua\"]:148: in function 'dispatchMsg'\n\t[string \".\\client/src/plaza/models/LogonFrame.lua\"]:140: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:77: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:76>"
+    }
+]

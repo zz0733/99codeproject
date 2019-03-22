@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>bc1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{241,0},{125,50}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{125,50}</string>
+			</dict>
+			<key>bc2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{366,0},{125,50}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{125,50}</string>
+			</dict>
+			<key>kko.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{935,24},{25,23}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{25,23}</string>
+			</dict>
+			<key>qx1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{491,0},{125,50}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{125,50}</string>
+			</dict>
+			<key>qx2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{616,0},{125,50}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{125,50}</string>
+			</dict>
+			<key>tkbj.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{241,171}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{241,171}</string>
+			</dict>
+			<key>tz1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{741,0},{97,38}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{97,38}</string>
+			</dict>
+			<key>tz2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{838,0},{97,38}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{97,38}</string>
+			</dict>
+			<key>xhan1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{935,0},{38,24}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{38,24}</string>
+			</dict>
+			<key>xhan2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{973,0},{38,24}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{38,24}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>gui-agentpop.png</string>
+			<key>realTextureFileName</key>
+			<string>gui-agentpop.png</string>
+			<key>size</key>
+			<string>{1024,256}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1024</integer>
+			<key>height</key>
+			<integer>256</integer>
+		</dict>
+	</dict>
+</plist>

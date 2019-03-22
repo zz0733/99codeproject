@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>cm/1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,483},{111,120}}</string>
+				<key>offset</key>
+				<string>{-3,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+			<key>cm/10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,363},{112,120}}</string>
+				<key>offset</key>
+				<string>{-2,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+			<key>cm/100.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,121},{112,121}}</string>
+				<key>offset</key>
+				<string>{-2,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+			<key>cm/20.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,603},{111,120}}</string>
+				<key>offset</key>
+				<string>{-3,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+			<key>cm/200.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,723},{111,120}}</string>
+				<key>offset</key>
+				<string>{-3,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+			<key>cm/5.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,843},{111,120}}</string>
+				<key>offset</key>
+				<string>{-3,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+			<key>cm/50.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,242},{112,121}}</string>
+				<key>offset</key>
+				<string>{-2,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+			<key>cm/500.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{116,121}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,121}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>game-jetton.png</string>
+			<key>realTextureFileName</key>
+			<string>game-jetton.png</string>
+			<key>size</key>
+			<string>{116,963}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>116</integer>
+			<key>height</key>
+			<integer>963</integer>
+		</dict>
+	</dict>
+</plist>

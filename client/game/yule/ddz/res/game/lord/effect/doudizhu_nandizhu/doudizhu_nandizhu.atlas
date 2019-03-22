@@ -1,0 +1,111 @@
+
+doudizhu_nandizhu.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+doudizhu4_chibang1
+  rotate: false
+  xy: 196, 91
+  size: 23, 17
+  orig: 23, 17
+  offset: 0, 0
+  index: -1
+doudizhu4_chibang2
+  rotate: true
+  xy: 78, 26
+  size: 22, 18
+  orig: 22, 18
+  offset: 0, 0
+  index: -1
+doudizhu4_guang
+  rotate: false
+  xy: 196, 110
+  size: 95, 87
+  orig: 95, 87
+  offset: 0, 0
+  index: -1
+doudizhu4_longzi_1
+  rotate: false
+  xy: 300, 367
+  size: 102, 136
+  orig: 102, 136
+  offset: 0, 0
+  index: -1
+doudizhu4_longzi_2
+  rotate: false
+  xy: 2, 80
+  size: 98, 111
+  orig: 98, 111
+  offset: 0, 0
+  index: -1
+doudizhu4_nanhuzi1
+  rotate: true
+  xy: 78, 50
+  size: 28, 20
+  orig: 28, 20
+  offset: 0, 0
+  index: -1
+doudizhu4_nanhuzi2
+  rotate: true
+  xy: 479, 373
+  size: 25, 19
+  orig: 25, 19
+  offset: 0, 0
+  index: -1
+doudizhu4_nanshenti
+  rotate: false
+  xy: 2, 348
+  size: 146, 155
+  orig: 146, 155
+  offset: 0, 0
+  index: -1
+doudizhu4_nanshou
+  rotate: false
+  xy: 2, 2
+  size: 74, 76
+  orig: 74, 76
+  offset: 0, 0
+  index: -1
+doudizhu4_nanshoubi
+  rotate: false
+  xy: 404, 400
+  size: 94, 103
+  orig: 94, 103
+  offset: 0, 0
+  index: -1
+doudizhu4_nantou
+  rotate: false
+  xy: 150, 352
+  size: 148, 151
+  orig: 148, 151
+  offset: 0, 0
+  index: -1
+doudizhu4_nantoudaiji
+  rotate: false
+  xy: 2, 193
+  size: 146, 153
+  orig: 146, 153
+  offset: 0, 0
+  index: -1
+doudizhu4_nantouku
+  rotate: false
+  xy: 150, 199
+  size: 147, 151
+  orig: 147, 151
+  offset: 0, 0
+  index: -1
+doudizhu4_nanzuoshou
+  rotate: true
+  xy: 102, 90
+  size: 101, 92
+  orig: 101, 92
+  offset: 0, 0
+  index: -1
+doudizhu4_niao1
+  rotate: true
+  xy: 404, 355
+  size: 43, 73
+  orig: 43, 73
+  offset: 0, 0
+  index: -1

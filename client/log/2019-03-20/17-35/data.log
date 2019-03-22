@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/20 17:35:45",
+        "logdata": "ASSERT FAILED ON LUA EXECUTE: Invalid spriteFrameName :gui-icon-head-01.png\nstack traceback:\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:2207: in function 'replaceUserHeadSprite'\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:2169: in function 'updateTableUserInfo'\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:641: in function 'onEventEnterGame'\n\t[string \".\\game/yule/brnngod/src/views/GameLayer.lua\"]:601: in function 'onEventGameMessage'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:150: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:103: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:102>"
+    }
+]

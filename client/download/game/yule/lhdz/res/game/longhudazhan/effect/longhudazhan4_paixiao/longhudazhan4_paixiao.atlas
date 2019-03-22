@@ -1,0 +1,174 @@
+
+longhudazhan4_paixiao.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+longhudazhan4_glow_01
+  rotate: false
+  xy: 36, 178
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_02
+  rotate: false
+  xy: 98, 178
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_03
+  rotate: false
+  xy: 160, 178
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_04
+  rotate: false
+  xy: 222, 178
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_05
+  rotate: false
+  xy: 284, 178
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_06
+  rotate: false
+  xy: 346, 178
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_07
+  rotate: false
+  xy: 408, 178
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_08
+  rotate: true
+  xy: 36, 116
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_09
+  rotate: true
+  xy: 113, 116
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_10
+  rotate: true
+  xy: 190, 116
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_11
+  rotate: true
+  xy: 267, 116
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_12
+  rotate: true
+  xy: 344, 116
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_glow_13
+  rotate: false
+  xy: 421, 101
+  size: 60, 75
+  orig: 60, 75
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_01
+  rotate: false
+  xy: 2, 54
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_02
+  rotate: false
+  xy: 54, 54
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_03
+  rotate: true
+  xy: 2, 2
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_04
+  rotate: false
+  xy: 106, 54
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_05
+  rotate: true
+  xy: 64, 2
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_06
+  rotate: false
+  xy: 158, 54
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_07
+  rotate: true
+  xy: 126, 2
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_08
+  rotate: false
+  xy: 210, 54
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_09
+  rotate: true
+  xy: 188, 2
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huo_10
+  rotate: false
+  xy: 262, 54
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+longhudazhan4_huoxing
+  rotate: false
+  xy: 2, 125
+  size: 32, 128
+  orig: 32, 128
+  offset: 0, 0
+  index: -1

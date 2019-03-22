@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>game/longhudazhan/plist/MessageBox/gui-messagebox-button-confirm.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{666,2},{194,85}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{194,85}</string>
+			</dict>
+			<key>game/longhudazhan/plist/MessageBox/gui-messagebox-close.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{864,2},{87,87}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{87,87}</string>
+			</dict>
+			<key>game/longhudazhan/plist/MessageBox/gui-messagebox-tip.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,87},{361,104}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{361,104}</string>
+			</dict>
+			<key>game/longhudazhan/plist/MessageBox/gui-messagebox-button-confirm-pressed.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{367,87},{194,85}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{194,85}</string>
+			</dict>
+			<key>game/longhudazhan/plist/MessageBox/message-quit.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,2},{660,81}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{660,81}</string>
+			</dict>
+			<key>game/longhudazhan/plist/MessageBox/message-recharge.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{367,176},{523,40}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{523,40}</string>
+			</dict>
+			<key>game/longhudazhan/plist/MessageBox/message-countdown.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{565,93},{368,42}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{368,42}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>MessageBoxPlist.png</string>
+			<key>realTextureFileName</key>
+			<string>MessageBoxPlist.png</string>
+			<key>size</key>
+			<string>{1024,256}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1024</integer>
+			<key>height</key>
+			<integer>256</integer>
+		</dict>
+	</dict>
+</plist>

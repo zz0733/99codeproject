@@ -1,0 +1,17 @@
+info face="Arial-Black" size=32 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2
+common lineHeight=39 base=32 scaleW=303 scaleH=39 pages=1 packed=0
+page id=0 file="draw.png"
+chars count=14
+char id=24179 x=3 y=0 width=29 height=34 xoffset=0 yoffset=0 xadvance=29 page=0 chnl=0
+char id=58 x=33 y=0 width=7 height=34 xoffset=0 yoffset=0 xadvance=7 page=0 chnl=0
+char id=48 x=41 y=0 width=17 height=34 xoffset=0 yoffset=0 xadvance=17 page=0 chnl=0
+char id=49 x=61 y=0 width=11 height=34 xoffset=0 yoffset=0 xadvance=11 page=0 chnl=0
+char id=50 x=77 y=0 width=16 height=34 xoffset=0 yoffset=0 xadvance=16 page=0 chnl=0
+char id=51 x=95 y=0 width=15 height=34 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=0
+char id=52 x=111 y=0 width=19 height=34 xoffset=0 yoffset=0 xadvance=19 page=0 chnl=0
+char id=53 x=132 y=0 width=14 height=34 xoffset=0 yoffset=0 xadvance=14 page=0 chnl=0
+char id=54 x=148 y=0 width=17 height=34 xoffset=0 yoffset=0 xadvance=17 page=0 chnl=0 
+char id=55 x=166 y=0 width=17 height=34 xoffset=0 yoffset=0 xadvance=17 page=0 chnl=0
+char id=56 x=184 y=0 width=16 height=34 xoffset=0 yoffset=0 xadvance=16 page=0 chnl=0
+char id=57 x=202 y=0 width=16 height=34 xoffset=0 yoffset=0 xadvance=16 page=0 chnl=0
+ 

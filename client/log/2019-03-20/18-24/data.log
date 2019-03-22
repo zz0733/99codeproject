@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/20 18:24:03",
+        "logdata": "[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:2232: attempt to index a nil value\nstack traceback:\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:725: in function 'onEventBet'\n\t[string \".\\game/yule/brnngod/src/views/GameLayer.lua\"]:604: in function 'onEventGameMessage'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:150: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:103: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:102>"
+    }
+]

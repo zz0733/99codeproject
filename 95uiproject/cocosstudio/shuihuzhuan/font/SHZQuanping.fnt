@@ -1,0 +1,16 @@
+info face="" size=59 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=58 base=47 scaleW=410 scaleH=240 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="SHZQuanping_0.png"
+chars count=12
+char id=48   x=0     y=119   width=115   height=56    xoffset=0     yoffset=0     xadvance=115   page=0  chnl=15
+char id=49   x=229   y=116   width=111   height=56    xoffset=0     yoffset=0     xadvance=111   page=0  chnl=15
+char id=50   x=342   y=0     width=61    height=54    xoffset=0     yoffset=0     xadvance=61    page=0  chnl=15
+char id=51   x=345   y=55    width=50    height=44    xoffset=0     yoffset=6     xadvance=50    page=0  chnl=15
+char id=52   x=0     y=60    width=174   height=58    xoffset=0     yoffset=0     xadvance=174   page=0  chnl=15
+char id=53   x=116   y=119   width=112   height=56    xoffset=0     yoffset=0     xadvance=112   page=0  chnl=15
+char id=54   x=0     y=176   width=111   height=56    xoffset=0     yoffset=0     xadvance=111   page=0  chnl=15
+char id=55   x=112   y=0     width=229   height=58    xoffset=0     yoffset=0     xadvance=229   page=0  chnl=15
+char id=56   x=175   y=59    width=169   height=56    xoffset=0     yoffset=0     xadvance=169   page=0  chnl=15
+char id=57   x=112   y=176   width=117   height=54    xoffset=0     yoffset=0     xadvance=117   page=0  chnl=15
+char id=65   x=0     y=0     width=111   height=59    xoffset=0     yoffset=-2     xadvance=111   page=0  chnl=15
+char id=66   x=230   y=173   width=114   height=54    xoffset=0     yoffset=0     xadvance=114   page=0  chnl=15

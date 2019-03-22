@@ -1,0 +1,13 @@
+
+jinbixuanwo.png
+size: 32,32
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+coin
+  rotate: false
+  xy: 2, 2
+  size: 27, 26
+  orig: 27, 26
+  offset: 0, 0
+  index: -1

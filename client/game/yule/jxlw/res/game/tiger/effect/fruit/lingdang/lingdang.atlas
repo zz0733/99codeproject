@@ -1,0 +1,41 @@
+
+lingdang.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+guang
+  rotate: false
+  xy: 2, 78
+  size: 153, 170
+  orig: 153, 170
+  offset: 0, 0
+  index: -1
+lingdang1
+  rotate: false
+  xy: 2, 2
+  size: 108, 74
+  orig: 108, 74
+  offset: 0, 0
+  index: -1
+lingdang2
+  rotate: false
+  xy: 373, 166
+  size: 56, 82
+  orig: 56, 82
+  offset: 0, 0
+  index: -1
+lingdang3
+  rotate: false
+  xy: 157, 113
+  size: 125, 135
+  orig: 125, 135
+  offset: 0, 0
+  index: -1
+xingxin_a
+  rotate: false
+  xy: 284, 161
+  size: 87, 87
+  orig: 87, 87
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/20 16:50:17",
+        "logdata": "ASSERT FAILED ON LUA EXECUTE: Invalid spriteFrameName: cm/10000.png\nstack traceback:\n\t[string \".\\game/yule/bjl/src/views/layer/GameViewLayer.lua\"]:2657: in function 'getSpriteOfJetton'\n\t[string \".\\game/yule/bjl/src/views/layer/GameViewLayer.lua\"]:1366: in function 'flyJetton'\n\t[string \".\\game/yule/bjl/src/views/layer/GameViewLayer.lua\"]:1354: in function 'playBetChipAni'\n\t[string \".\\game/yule/bjl/src/views/layer/GameViewLayer.lua\"]:1004: in function 'otherBetMoney'\n\t[string \".\\game/yule/bjl/src/views/GameLayer.lua\"]:578: in function 'onEventGameMessage'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:150: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:103: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:102>"
+    }
+]

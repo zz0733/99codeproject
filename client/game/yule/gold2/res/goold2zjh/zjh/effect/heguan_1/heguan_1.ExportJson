@@ -1,0 +1,668 @@
+{
+  "content_scale": 1.0,
+  "armature_data": [
+    {
+      "strVersion": "1.5.0.1",
+      "version": 1.501,
+      "name": "heguan_1",
+      "bone_data": [
+        {
+          "name": "heguan_yanjing",
+          "parent": "",
+          "dI": -1000,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 9,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": 0.0,
+          "kY": 0.0,
+          "arrow_x": 0.0,
+          "arrow_y": 0.0,
+          "effectbyskeleton": false,
+          "display_data": [
+            {
+              "name": "heguan_yanjing.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "heguan_shenti",
+          "parent": "",
+          "dI": 0,
+          "x": -1.2698417901992798,
+          "y": -67.534912109375,
+          "z": 2,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": -1.61131465,
+          "kY": 1.61131465,
+          "arrow_x": 123.43463134765625,
+          "arrow_y": 1.1909100066986866E-05,
+          "effectbyskeleton": true,
+          "display_data": [
+            {
+              "name": "heguan_shenti.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 69.18103,
+                  "y": -2.07387662,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 1.61131489,
+                  "kY": -1.61131191
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "heguantou",
+          "parent": "heguan_shenti",
+          "dI": 0,
+          "x": 123.43464660644531,
+          "y": 2.86102294921875E-06,
+          "z": 7,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": -0.0248904228,
+          "kY": 0.0248904228,
+          "arrow_x": 127.49485015869141,
+          "arrow_y": 6.0056074289605021E-05,
+          "effectbyskeleton": true,
+          "display_data": [
+            {
+              "name": "heguantou.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 8.838303,
+                  "y": -0.8493483,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 1.63620508,
+                  "kY": -1.636205
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "heguan_left_shoubi",
+          "parent": "heguan_shenti",
+          "dI": 0,
+          "x": 111.59001159667969,
+          "y": 64.421554565429688,
+          "z": 5,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": 3.607238,
+          "kY": -3.607238,
+          "arrow_x": 122.57774353027344,
+          "arrow_y": -2.9843584343325347E-05,
+          "effectbyskeleton": true,
+          "display_data": [
+            {
+              "name": "heguan_left_shoubi.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 59.9868851,
+                  "y": -3.1232605,
+                  "cX": 1.00000012,
+                  "cY": 1.00000012,
+                  "kX": 4.28726244,
+                  "kY": 1.99592412
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "heguan_lift_qian shoubi",
+          "parent": "heguan_left_shoubi",
+          "dI": 0,
+          "x": 122.80706787109375,
+          "y": -0.50614166259765625,
+          "z": 6,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": -2.1003046,
+          "kY": 2.1003046,
+          "arrow_x": 117.30509185791016,
+          "arrow_y": -1.6531674191355705E-05,
+          "effectbyskeleton": true,
+          "display_data": [
+            {
+              "name": "heguan_lift_qian shoubi.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 56.45558,
+                  "y": 5.71545029,
+                  "cX": 1.00000012,
+                  "cY": 1.00000012,
+                  "kX": 0.10438025,
+                  "kY": -0.104381308
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "heguan_right_shoubi",
+          "parent": "heguan_shenti",
+          "dI": 0,
+          "x": 109.94721984863281,
+          "y": -58.390468597412109,
+          "z": 4,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": 2.672954,
+          "kY": -2.672954,
+          "arrow_x": 131.06990051269531,
+          "arrow_y": -2.9714981792494655E-05,
+          "effectbyskeleton": true,
+          "display_data": [
+            {
+              "name": "heguan_right_shoubi.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 69.5545654,
+                  "y": 3.93377686,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": -1.06163847,
+                  "kY": 1.06163871
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "heguan_right_qian shoubi",
+          "parent": "heguan_right_shoubi",
+          "dI": 0,
+          "x": 131.06988525390625,
+          "y": -2.288818359375E-05,
+          "z": 8,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": -3.998232,
+          "kY": 3.998232,
+          "arrow_x": 114.62232208251953,
+          "arrow_y": -4.3394684325903654E-06,
+          "effectbyskeleton": true,
+          "display_data": [
+            {
+              "name": "heguan_right_qian shoubi.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 59.07592,
+                  "y": -4.261017,
+                  "cX": 1.00000012,
+                  "cY": 1.00000012,
+                  "kX": 2.93659234,
+                  "kY": -2.93659234
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animation_data": [
+    {
+      "name": "heguan_1",
+      "mov_data": [
+        {
+          "name": "Animation1",
+          "dr": 151,
+          "lp": true,
+          "to": 0,
+          "drTW": 0,
+          "twE": 0,
+          "sc": 1.0,
+          "mov_bone_data": [
+            {
+              "name": "heguan_yanjing",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": -1000,
+                  "x": -9.28571605682373,
+                  "y": 117.85713195800781,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 44,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 770,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": -8.0,
+                  "y": 119.01097869873047,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 45,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": -1000,
+                  "x": -7.7472548484802246,
+                  "y": 119.01097869873047,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 54,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 770,
+                  "bd_dst": 771
+                }
+              ]
+            },
+            {
+              "name": "heguan_right_qian shoubi",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 1.86264515E-09,
+                  "fi": 75,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 150,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            },
+            {
+              "name": "heguantou",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": -0.008726646,
+                  "kY": 0.008726646,
+                  "fi": 75,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 150,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            },
+            {
+              "name": "heguan_lift_qian shoubi",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0174532924,
+                  "kY": -0.0174532924,
+                  "fi": 75,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 150,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            },
+            {
+              "name": "heguan_left_shoubi",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": -0.0174532924,
+                  "kY": 0.0174532924,
+                  "fi": 75,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 150,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            },
+            {
+              "name": "heguan_right_shoubi",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0174532924,
+                  "kY": -0.0174532924,
+                  "fi": 75,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 150,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            },
+            {
+              "name": "heguan_shenti",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.01,
+                  "cY": 1.01,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 75,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 150,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "texture_data": [
+    {
+      "name": "heguan_shenti",
+      "width": 154.0,
+      "height": 139.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "heguantou",
+      "width": 174.0,
+      "height": 244.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "heguan_right_shoubi",
+      "width": 76.0,
+      "height": 130.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "heguan_right_qian shoubi",
+      "width": 135.0,
+      "height": 52.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "heguan_left_shoubi",
+      "width": 74.0,
+      "height": 127.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "heguan_lift_qian shoubi",
+      "width": 136.0,
+      "height": 47.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "heguan_yanjing",
+      "width": 62.0,
+      "height": 43.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    }
+  ],
+  "config_file_path": [
+    "heguan_10.plist"
+  ],
+  "config_png_path": [
+    "heguan_10.png"
+  ]
+}

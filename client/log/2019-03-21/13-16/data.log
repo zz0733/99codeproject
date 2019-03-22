@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/21 13:16:09",
+        "logdata": "[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:83: attempt to index field 'super' (a nil value)\nstack traceback:\n\t[string \".\\client/src/external/ExternalFun.lua\"]:360: in function <[string \".\\client/src/external/ExternalFun.lua\"]:355>\n\t[C]: in function 'addChild'\n\t[string \".\\client/src/plaza/views/layer/plaza/ClientSceneLayer.lua\"]:200: in function 'onChangeShowMode'\n\t[string \".\\client/src/plaza/views/ClientScene.lua\"]:352: in function 'onChangeShowMode'\n\t[string \".\\client/src/plaza/views/ClientScene.lua\"]:175: in function 'onEnterTable'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:204: in function 'onSocketAccountEvent'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:156: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:103: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:102>"
+    }
+]

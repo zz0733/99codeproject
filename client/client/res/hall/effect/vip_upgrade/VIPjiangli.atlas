@@ -1,0 +1,237 @@
+
+VIPjiangli.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+V1/V1kuang
+  rotate: false
+  xy: 670, 703
+  size: 144, 140
+  orig: 144, 140
+  offset: 0, 0
+  index: -1
+V1/V1pao
+  rotate: true
+  xy: 588, 389
+  size: 158, 104
+  orig: 158, 104
+  offset: 0, 0
+  index: -1
+V1/icon_VIP0
+  rotate: false
+  xy: 840, 412
+  size: 116, 126
+  orig: 116, 126
+  offset: 0, 0
+  index: -1
+V1/icon_VIP1
+  rotate: false
+  xy: 816, 682
+  size: 166, 126
+  orig: 166, 126
+  offset: 0, 0
+  index: -1
+V1/vip1
+  rotate: true
+  xy: 859, 117
+  size: 142, 48
+  orig: 142, 48
+  offset: 0, 0
+  index: -1
+V2/V2kuang
+  rotate: true
+  xy: 583, 243
+  size: 144, 140
+  orig: 144, 140
+  offset: 0, 0
+  index: -1
+V2/V2pao
+  rotate: false
+  xy: 725, 261
+  size: 128, 135
+  orig: 128, 135
+  offset: 0, 0
+  index: -1
+V2/icon_VIP2
+  rotate: true
+  xy: 269, 98
+  size: 166, 153
+  orig: 166, 153
+  offset: 0, 0
+  index: -1
+V2/vip2
+  rotate: true
+  xy: 909, 121
+  size: 143, 48
+  orig: 143, 48
+  offset: 0, 0
+  index: -1
+V3/V3kuang
+  rotate: false
+  xy: 583, 101
+  size: 144, 140
+  orig: 144, 140
+  offset: 0, 0
+  index: -1
+V3/V3pao
+  rotate: false
+  xy: 407, 268
+  size: 174, 134
+  orig: 174, 134
+  offset: 0, 0
+  index: -1
+V3/icon_VIP3
+  rotate: false
+  xy: 424, 123
+  size: 157, 143
+  orig: 157, 143
+  offset: 0, 0
+  index: -1
+V3/vip3
+  rotate: true
+  xy: 947, 268
+  size: 142, 48
+  orig: 142, 48
+  offset: 0, 0
+  index: -1
+V4/V4kuang
+  rotate: true
+  xy: 635, 550
+  size: 144, 140
+  orig: 144, 140
+  offset: 0, 0
+  index: -1
+V4/V4pao
+  rotate: false
+  xy: 368, 549
+  size: 265, 145
+  orig: 265, 145
+  offset: 0, 0
+  index: -1
+V4/icon_VIP4
+  rotate: false
+  xy: 407, 404
+  size: 179, 143
+  orig: 179, 143
+  offset: 0, 0
+  index: -1
+V4/vip4
+  rotate: true
+  xy: 897, 266
+  size: 144, 48
+  orig: 144, 48
+  offset: 0, 0
+  index: -1
+V5/V5kuang
+  rotate: false
+  xy: 777, 540
+  size: 144, 140
+  orig: 144, 140
+  offset: 0, 0
+  index: -1
+V5/V5pao
+  rotate: false
+  xy: 2, 95
+  size: 265, 125
+  orig: 265, 125
+  offset: 0, 0
+  index: -1
+V5/icon_VIP5
+  rotate: true
+  xy: 816, 810
+  size: 207, 151
+  orig: 207, 151
+  offset: 0, 0
+  index: -1
+V5/vip5
+  rotate: false
+  xy: 570, 51
+  size: 143, 48
+  orig: 143, 48
+  offset: 0, 0
+  index: -1
+V6/V6kuang
+  rotate: false
+  xy: 694, 398
+  size: 144, 140
+  orig: 144, 140
+  offset: 0, 0
+  index: -1
+V6/V6pao
+  rotate: false
+  xy: 368, 696
+  size: 300, 147
+  orig: 300, 147
+  offset: 0, 0
+  index: -1
+V6/icon_VIP6
+  rotate: true
+  xy: 260, 266
+  size: 212, 145
+  orig: 212, 145
+  offset: 0, 0
+  index: -1
+V6/vip6
+  rotate: false
+  xy: 424, 73
+  size: 144, 48
+  orig: 144, 48
+  offset: 0, 0
+  index: -1
+guayigua4_zj_quan
+  rotate: false
+  xy: 729, 131
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+guayigua_guang
+  rotate: false
+  xy: 2, 222
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+guayigua_guangci
+  rotate: false
+  xy: 2, 480
+  size: 364, 363
+  orig: 364, 363
+  offset: 0, 0
+  index: -1
+landi01
+  rotate: false
+  xy: 2, 845
+  size: 812, 172
+  orig: 812, 172
+  offset: 0, 0
+  index: -1
+wenzi1
+  rotate: false
+  xy: 2, 48
+  size: 330, 45
+  orig: 330, 45
+  offset: 0, 0
+  index: -1
+wenzi2
+  rotate: false
+  xy: 2, 2
+  size: 332, 44
+  orig: 332, 44
+  offset: 0, 0
+  index: -1
+wenzi3
+  rotate: true
+  xy: 855, 261
+  size: 149, 40
+  orig: 149, 40
+  offset: 0, 0
+  index: -1
+wenzi4
+  rotate: true
+  xy: 969, 832
+  size: 185, 40
+  orig: 185, 40
+  offset: 0, 0
+  index: -1

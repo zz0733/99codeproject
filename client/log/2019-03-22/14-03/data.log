@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/22 14:03:54",
+        "logdata": "[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:2338: attempt to index field 'm_pImageCancelZhuang' (a nil value)\nstack traceback:\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:848: in function 'onEventUpDealer'\n\t[string \".\\game/yule/brnngod/src/views/GameLayer.lua\"]:640: in function 'onEventGameMessage'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:150: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:103: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:102>"
+    }
+]

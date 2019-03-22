@@ -1,0 +1,48 @@
+
+niuniu_ready_frost.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+glow-waningmoon
+  rotate: true
+  xy: 2, 20
+  size: 238, 303
+  orig: 238, 303
+  offset: 0, 0
+  index: -1
+windcutter01
+  rotate: true
+  xy: 755, 319
+  size: 187, 237
+  orig: 187, 237
+  offset: 0, 0
+  index: -1
+windcutter02
+  rotate: true
+  xy: 464, 284
+  size: 222, 289
+  orig: 222, 289
+  offset: 0, 0
+  index: -1
+windcutter03
+  rotate: false
+  xy: 2, 260
+  size: 460, 246
+  orig: 460, 246
+  offset: 0, 0
+  index: -1
+windline01
+  rotate: false
+  xy: 2, 2
+  size: 304, 16
+  orig: 304, 16
+  offset: 0, 0
+  index: -1
+windline02
+  rotate: false
+  xy: 464, 268
+  size: 281, 14
+  orig: 281, 14
+  offset: 0, 0
+  index: -1

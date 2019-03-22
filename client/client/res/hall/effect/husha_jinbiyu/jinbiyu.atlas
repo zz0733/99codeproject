@@ -1,0 +1,62 @@
+
+jinbiyu.png
+size: 512,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+jinbi-01
+  rotate: false
+  xy: 2, 2
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+jinbi-02
+  rotate: false
+  xy: 64, 2
+  size: 55, 60
+  orig: 55, 60
+  offset: 0, 0
+  index: -1
+jinbi-03
+  rotate: false
+  xy: 174, 2
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+jinbi-04
+  rotate: false
+  xy: 294, 2
+  size: 28, 60
+  orig: 28, 60
+  offset: 0, 0
+  index: -1
+jinbi-05
+  rotate: false
+  xy: 324, 2
+  size: 10, 60
+  orig: 10, 60
+  offset: 0, 0
+  index: -1
+jinbi-06
+  rotate: false
+  xy: 262, 2
+  size: 30, 60
+  orig: 30, 60
+  offset: 0, 0
+  index: -1
+jinbi-07
+  rotate: false
+  xy: 222, 2
+  size: 38, 60
+  orig: 38, 60
+  offset: 0, 0
+  index: -1
+jinbi-08
+  rotate: false
+  xy: 121, 2
+  size: 51, 60
+  orig: 51, 60
+  offset: 0, 0
+  index: -1

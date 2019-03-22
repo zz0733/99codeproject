@@ -1,0 +1,27 @@
+
+zhuanshi.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+guang
+  rotate: false
+  xy: 2, 2
+  size: 212, 187
+  orig: 212, 187
+  offset: 0, 0
+  index: -1
+xingxin_a
+  rotate: false
+  xy: 367, 102
+  size: 87, 87
+  orig: 87, 87
+  offset: 0, 0
+  index: -1
+zhuanshi_2
+  rotate: false
+  xy: 216, 56
+  size: 149, 133
+  orig: 150, 133
+  offset: 0, 0
+  index: -1

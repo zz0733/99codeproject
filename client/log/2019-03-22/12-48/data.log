@@ -1,0 +1,6 @@
+[
+    {
+        "logtime": "2019/03/22 12:48:06",
+        "logdata": "[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:1157: attempt to call method 'setEnabled' (a nil value)\nstack traceback:\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:1157: in function 'refreshJettonState'\n\t[string \".\\game/yule/brnngod/src/views/layer/GameViewLayer.lua\"]:794: in function 'onEventWaitPlayerBet'\n\t[string \".\\game/yule/brnngod/src/views/GameLayer.lua\"]:619: in function 'onEventGameMessage'\n\t[string \".\\client/src/plaza/models/GameFrameEngine.lua\"]:150: in function 'onSocketEvent'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:149: in function 'onSocketCallBack'\n\t[string \".\\client/src/plaza/models/BaseFrame.lua\"]:103: in function <[string \".\\client/src/plaza/models/BaseFrame.lua\"]:102>"
+    }
+]

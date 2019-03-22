@@ -1,0 +1,97 @@
+
+errenniuniu_beijing.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+errenniuniu4_glow
+  rotate: false
+  xy: 391, 208
+  size: 90, 81
+  orig: 90, 81
+  offset: 0, 0
+  index: -1
+errenniuniu4_jiuping
+  rotate: false
+  xy: 815, 327
+  size: 167, 183
+  orig: 167, 183
+  offset: 0, 0
+  index: -1
+errenniuniu4_lazhu
+  rotate: false
+  xy: 297, 196
+  size: 92, 93
+  orig: 92, 93
+  offset: 0, 0
+  index: -1
+errenniuniu4_mao
+  rotate: false
+  xy: 483, 246
+  size: 54, 43
+  orig: 54, 43
+  offset: 0, 0
+  index: -1
+errenniuniu4_neishi
+  rotate: false
+  xy: 2, 291
+  size: 811, 219
+  orig: 811, 219
+  offset: 0, 0
+  index: -1
+errenniuniu4_nihongdeng
+  rotate: false
+  xy: 78, 39
+  size: 90, 83
+  orig: 90, 83
+  offset: 0, 0
+  index: -1
+errenniuniu4_nihongdeng2
+  rotate: false
+  xy: 2, 124
+  size: 293, 165
+  orig: 293, 165
+  offset: 0, 0
+  index: -1
+errenniuniu4_pijiu
+  rotate: false
+  xy: 297, 126
+  size: 67, 68
+  orig: 67, 68
+  offset: 0, 0
+  index: -1
+errenniuniu4_pijiubei
+  rotate: false
+  xy: 2, 8
+  size: 74, 114
+  orig: 74, 114
+  offset: 0, 0
+  index: -1
+errenniuniu4_weiba
+  rotate: false
+  xy: 815, 295
+  size: 50, 30
+  orig: 50, 30
+  offset: 0, 0
+  index: -1
+errenniuniu4_yinying
+  rotate: false
+  xy: 170, 59
+  size: 108, 63
+  orig: 108, 63
+  offset: 0, 0
+  index: -1
+errenniuniu4_zhuguang
+  rotate: false
+  xy: 78, 2
+  size: 18, 35
+  orig: 18, 35
+  offset: 0, 0
+  index: -1
+errenniuniu4_zzz
+  rotate: false
+  xy: 984, 500
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1

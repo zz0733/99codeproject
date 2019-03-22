@@ -1,0 +1,139 @@
+
+xiaochounv.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+deng00
+  rotate: false
+  xy: 1301, 464
+  size: 161, 159
+  orig: 161, 159
+  offset: 0, 0
+  index: -1
+deng01
+  rotate: true
+  xy: 317, 2
+  size: 50, 47
+  orig: 50, 47
+  offset: 0, 0
+  index: -1
+liuhaiyou
+  rotate: false
+  xy: 1591, 655
+  size: 97, 200
+  orig: 97, 200
+  offset: 0, 0
+  index: -1
+liuhaizuo
+  rotate: false
+  xy: 778, 119
+  size: 122, 151
+  orig: 122, 151
+  offset: 0, 0
+  index: -1
+maozi
+  rotate: false
+  xy: 902, 191
+  size: 126, 79
+  orig: 126, 79
+  offset: 0, 0
+  index: -1
+shenti
+  rotate: false
+  xy: 2, 454
+  size: 766, 568
+  orig: 766, 568
+  offset: 0, 0
+  index: -1
+tou
+  rotate: false
+  xy: 1112, 469
+  size: 187, 154
+  orig: 187, 154
+  offset: 0, 0
+  index: -1
+toushi
+  rotate: false
+  xy: 1690, 813
+  size: 48, 42
+  orig: 48, 42
+  offset: 0, 0
+  index: -1
+xian
+  rotate: false
+  xy: 770, 857
+  size: 968, 165
+  orig: 968, 165
+  offset: 0, 0
+  index: -1
+youshoubi00
+  rotate: true
+  xy: 1041, 349
+  size: 136, 55
+  orig: 136, 55
+  offset: 0, 0
+  index: -1
+youshoubi01
+  rotate: true
+  xy: 1464, 465
+  size: 158, 120
+  orig: 158, 120
+  offset: 0, 0
+  index: -1
+youtoufa00
+  rotate: false
+  xy: 770, 487
+  size: 340, 368
+  orig: 340, 368
+  offset: 0, 0
+  index: -1
+youtoufa01
+  rotate: false
+  xy: 2, 42
+  size: 313, 410
+  orig: 313, 410
+  offset: 0, 0
+  index: -1
+youtoufa02
+  rotate: false
+  xy: 1740, 760
+  size: 306, 262
+  orig: 306, 262
+  offset: 0, 0
+  index: -1
+zuoshou
+  rotate: true
+  xy: 799, 272
+  size: 213, 240
+  orig: 213, 240
+  offset: 0, 0
+  index: -1
+zuotoufa00
+  rotate: true
+  xy: 1112, 625
+  size: 230, 477
+  orig: 230, 477
+  offset: 0, 0
+  index: -1
+zuotoufa01
+  rotate: true
+  xy: 317, 275
+  size: 177, 480
+  orig: 177, 480
+  offset: 0, 0
+  index: -1
+zuotoufa02
+  rotate: false
+  xy: 668, 91
+  size: 108, 182
+  orig: 108, 182
+  offset: 0, 0
+  index: -1
+zuotui
+  rotate: true
+  xy: 317, 54
+  size: 219, 349
+  orig: 219, 349
+  offset: 0, 0
+  index: -1

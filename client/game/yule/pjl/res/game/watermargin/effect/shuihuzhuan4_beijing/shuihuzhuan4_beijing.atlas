@@ -1,0 +1,41 @@
+
+shuihuzhuan4_beijing.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+shuihuzhuan4_muban
+  rotate: false
+  xy: 2, 370
+  size: 811, 113
+  orig: 811, 113
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_qizhi
+  rotate: false
+  xy: 295, 115
+  size: 136, 253
+  orig: 136, 253
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_ying
+  rotate: false
+  xy: 433, 252
+  size: 129, 116
+  orig: 129, 116
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_zhuzi1
+  rotate: false
+  xy: 2, 2
+  size: 179, 366
+  orig: 179, 366
+  offset: 0, 0
+  index: -1
+shuihuzhuan4_zhuzi2
+  rotate: false
+  xy: 183, 9
+  size: 110, 359
+  orig: 110, 359
+  offset: 0, 0
+  index: -1

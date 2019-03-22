@@ -1,0 +1,20 @@
+
+xiangjiao.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+guang1
+  rotate: false
+  xy: 2, 2
+  size: 138, 124
+  orig: 138, 124
+  offset: 0, 0
+  index: -1
+xiangjiao
+  rotate: false
+  xy: 142, 32
+  size: 108, 94
+  orig: 108, 94
+  offset: 0, 0
+  index: -1
