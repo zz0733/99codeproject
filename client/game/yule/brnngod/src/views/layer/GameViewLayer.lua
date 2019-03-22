@@ -693,11 +693,11 @@ function GameViewLayer:onEventEnterGame(bufferdate)
             self.m_pLbUsrGold:setString(player_[6])
             self.myIntoMoney = player_[6]
             --设置自己头像
-            loadHeadMiddleImg(self.m_pSelfHead, player_[3], math.random(1,10))
+            loadHeadMiddleSprite(self.m_pSelfHead, player_[3], math.random(1,10))
             createStencilAvatar(self.m_pSelfHead)
         end
         if player_[1] == self.bankerUid then   --庄家信息
-            loadHeadMiddleImg(self.m_pLbZhuangHead, player_[3], math.random(1,10))
+            loadHeadMiddleSprite(self.m_pLbZhuangHead, player_[3], math.random(1,10))
             createStencilAvatar(self.m_pLbZhuangHead)
             self.m_pNodeTopInfo:getChildByName("TXT_zhuang_name"):setString(player_[2])
             self.m_pLbZhuangGold:setString(player_[6])
@@ -1158,6 +1158,7 @@ function GameViewLayer:onDealerClicked()
     else--显示申请列表
         local layer = appdf.req(module_pre .. ".views.layer.DealerQueueView")
         local dealerQueueView = layer:create(self)
+        dealerQueueView:addTo(self)
         dealerQueueView:showPopup()
     end
 
@@ -2342,6 +2343,29 @@ function GameViewLayer:switchDealerImage()
 
 end
 
+function GameViewLayer:getDealerQueue()
+
+    return self.bankersTable
+end
+
+function GameViewLayer:isSelfInDealerQueue()
+    for i, v in pairs(self.bankersTable) do
+        if v ==  GlobalUserItem.tabAccountInfo.userid then
+            return true
+        end
+    end
+
+    return false
+end
+
+--判断是否为当前庄家
+function GameViewLayer:isCurDealer(uid)
+    if uid == self.bankerUid and uid ~= nil then
+        return true
+    end
+
+    return false
+end
 ------
 
 return GameViewLayer

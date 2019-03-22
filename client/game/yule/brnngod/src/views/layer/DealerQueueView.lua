@@ -46,7 +46,8 @@ function DealerQueueView:ctor( pNodeGameView)
     ------local carry = cc.loaded_packages.NiuTigerLogic:getModel():getMinZhuangCarry()
     ------CommonHelper:loadNumber(self.minZhuangCarry, carry, false)
 
-    self:updateBtns()    
+    self:recvNnGetApplyUpBankerRes()
+    --self:updateBtns()
 end
 
 -- 返回按键响应
@@ -74,7 +75,7 @@ end
 function DealerQueueView:onClickQPanelBeZhuang()
     -- 金币不足
     --self.m_pNodeGameView
-    local model = cc.loaded_packages.NiuTigerLogic:getModel()
+    local model = self.m_pNodeGameView
     if not model:canBeDealer() then
         -- dispatchEvent('event_NiuMessage', Lang.DEALER_MONEY_NOT_ENOUGH)
         local showDialog = require('app.fw.common.DialogBox').show
@@ -113,8 +114,8 @@ end
 
 -- 刷新按钮状态
 function DealerQueueView:updateBtns()
-    local model = cc.loaded_packages.NiuTigerLogic:getModel()
-    local isSelfDealer = model:isSelfDealer()
+    local model = self.m_pNodeGameView
+    local isSelfDealer = model:isBanker()
     local isSelfInDealerQueue = model:isSelfInDealerQueue()
     print('@@#', isSelfDealer, isSelfInDealerQueue)
 
@@ -125,18 +126,18 @@ end
 
 -- 事件：收到列表数据
 function DealerQueueView:reloadDealerList()
-    local model = cc.loaded_packages.NiuTigerLogic:getModel()
+    local model = self.m_pNodeGameView
     local list = model:getDealerQueue()
 
     self.zhuangQList:removeAllItems()  
     self.selfPosTip:setVisible(false)
     for i, player in pairs(list) do
         local itemObj = WaitQueueItem:new()
-        itemObj:init(i, player, self.itemModelZhuangQItem)
+        itemObj:init(i, player, self.itemModelZhuangQItem,self.m_pNodeGameView)
         self.zhuangQList:pushBackCustomItem(itemObj.node)
     
         -- 自己在多少位
-        local isSelf = player.rid == cc.loaded_packages.CommonModel:getRoleID()
+        local isSelf = player.rid == GlobalUserItem.tabAccountInfo.userid
         if not self.selfPosTip:isVisible() and isSelf then
             self.selfPosTip:setVisible(true)
             self.selfPosNum:setString(i)
@@ -147,25 +148,37 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
-function WaitQueueItem:ctor(...)
+function WaitQueueItem:ctor()
 
 end
 
-function WaitQueueItem:init(index, player, itemModel)
+function WaitQueueItem:init(index, player, itemModel,pNodeGameView)
+
+    self.m_pNodeGameView = pNodeGameView
+    player.rolename = player[2]
+    player.sex = player[4] or 0         --暂时没有性别
+    player.coin = player[5] or 0        --玩家金币
+
+    --剩余局数
+    if player.left_banker_num == nil then
+        player.left_banker_num = 0
+    end
+
     self.node = itemModel:clone()
-    UIHelper.parseCSDNode(self, self.node)
+    --UIHelper.parseCSDNode(self, self.node)
+    Define:getNodeList(self, self.node)
 
     --CommonHelper:loadHeadMiddleImg(self.avatar, player.sex or 0, player.logo or 1) -- 头像
 
     -- 头像
     self.avatar:setScale(0.6)
-    self.avatar = CommonHelper:createStencilAvatar(self.avatar, 'common/tx/tx_mask.png', 'common/tx/tx_2.png', cc.size(2, 2))
-    CommonHelper:loadHeadMiddleImg(self.avatar, player.sex or 0, player.logo or 1) -- 头像
-    CommonHelper:setVIPIcon(self.node, player.vip or 0)
+    self.avatar = createStencilAvatar(self.avatar, 'common/tx/tx_mask.png', 'common/tx/tx_2.png', cc.size(2, 2))
+    loadHeadMiddleImg(self.avatar, player.sex or 0, player.logo or 1) -- 头像
+    setVIPIcon(self.node, player.vip or 0)
     -- self.avatar:getParent():setAlphaThreshold((player.vip or 0) > 0 and 0 or 0.6) -- 切换剪裁区域
 
     --CommonHelper:setVIPIcon(self.avatar, player.vip or 0)
-    CommonHelper:loadName(self.name, player.rolename, 6) -- 名字
+    Define:loadName(self.name, player.rolename, 6) -- 名字
     if index == 1 then
         dump(player,"WaitQueueItem:init")
         if player.left_banker_num > 0 then
@@ -174,8 +187,8 @@ function WaitQueueItem:init(index, player, itemModel)
         elseif player.left_banker_num == 0 then
             self.jijiang:setVisible(true)
         end
-        local userInfo = cc.loaded_packages.NiuTigerLogic:getModel():getCurDealerInfo()
-        if player.rid == userInfo.rid then
+
+        if self.m_pNodeGameView:isCurDealer(player.rid) == true then
             -- 庄图标
             self.dealerSign:setVisible(true)
         else
@@ -205,7 +218,8 @@ function WaitQueueItem:init(index, player, itemModel)
 
     -- 钱钱
     self.coinIcon:setVisible(not isSelf)
-    self.coin:setString(CommonHelper.getDealNumStr(player.coin or 0, false))
+    -----self.coin:setString(CommonHelper.getDealNumStr(player.coin or 0, false))
+    self.coin:setString(player.coin or 0)
 end
 
 return DealerQueueView

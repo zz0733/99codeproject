@@ -133,7 +133,7 @@ end
 function Define:loadName(txtName, strName, num)
 
     if string.len(strName) > num then
-        strName = string.sub(0, num)..'...'
+        strName = string.sub(strName,0, num)..'...'
     end
 
     txtName:setString(strName)

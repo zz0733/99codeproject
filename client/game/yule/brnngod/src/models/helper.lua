@@ -411,7 +411,7 @@ function createSpark(imagePath)
     return clip
 end
 
-function loadHeadMiddleImg(sprite, sex, index)
+function loadHeadMiddleSprite(sprite, sex, index)
 
     if sprite == nil then
         return
@@ -424,6 +424,7 @@ function loadHeadMiddleImg(sprite, sex, index)
     else
         str = string.format("head_mwoman_%02d.png", faceid)
     end
+
     local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame(str)
     if nil ~= frame then
         ------self.m_spRender = cc.Sprite:createWithSpriteFrame(frame)
@@ -431,6 +432,32 @@ function loadHeadMiddleImg(sprite, sex, index)
         sprite:setScale(0.7)
         ------self:setContentSize(self.m_spRender:getContentSize())
     end
+
+
+
+    ------self.m_fScale = self.m_headSize / SYS_HEADSIZE
+    ------self:setScale(self.m_fScale)
+end
+
+function loadHeadMiddleImg(image, sex, index)
+
+    if image == nil then
+        return
+    end
+
+    local faceid = index%11 == 0 and 1 or index%11
+    local str = ""
+    if sex == 0 then
+        str = string.format("head_mman_%02d.png", faceid)
+    else
+        str = string.format("head_mwoman_%02d.png", faceid)
+    end
+
+
+    image:loadTexture(str)
+    image:setScale(0.7)
+
+
     ------self.m_fScale = self.m_headSize / SYS_HEADSIZE
     ------self:setScale(self.m_fScale)
 end
@@ -438,7 +465,7 @@ end
 function createStencilAvatar(spritAvatar)
 
     if spritAvatar == nil then
-        return
+        return nil
     end
 
     local size = spritAvatar:getContentSize()
@@ -455,4 +482,12 @@ function createStencilAvatar(spritAvatar)
         mark:setScale(size.width/mark:getContentSize().width)
         mark:setAnchorPoint(cc.p(0,0))
     end
+
+    return spritAvatar
 end
+
+function setVIPIcon()
+    print('设置vip标志')
+end
+
+
