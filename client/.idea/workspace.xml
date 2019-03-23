@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b7a38a1-2397-498a-ae43-0b11f9ea0970" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua" beforeDir="false" afterPath="$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserDefault.xml" beforeDir="false" afterPath="$PROJECT_DIR$/UserDefault.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user_gameconfig.plist" beforeDir="false" afterPath="$PROJECT_DIR$/user_gameconfig.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../run.bat" beforeDir="false" afterPath="$PROJECT_DIR$/../run.bat" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="365">
-              <caret line="2341" column="31" lean-forward="true" selection-start-line="2341" selection-start-column="31" selection-end-line="2341" selection-end-column="31" />
+              <caret line="2341" column="31" selection-start-line="2341" selection-start-column="31" selection-end-line="2341" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -31,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="211">
-              <caret line="135" column="57" selection-start-line="135" selection-start-column="37" selection-end-line="135" selection-end-column="57" />
+            <state relative-caret-position="564">
+              <caret line="133" column="28" selection-start-line="133" selection-start-column="28" selection-end-line="133" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -43,7 +45,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
+            <state>
               <caret line="123" column="48" selection-start-line="123" selection-start-column="48" selection-end-line="123" selection-end-column="48" />
             </state>
           </provider>
@@ -52,7 +54,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/helper.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
+            <state>
               <caret line="425" column="7" selection-start-line="425" selection-start-column="7" selection-end-line="425" selection-end-column="7" />
             </state>
           </provider>
@@ -69,7 +71,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>HandredcattleRes</find>
       <find>Lang</find>
       <find>hidePopup</find>
       <find>hideP</find>
@@ -97,8 +98,9 @@
       <find>isCurDealer</find>
       <find>WaitQueueItem</find>
       <find>Dealer</find>
-      <find>jijiang</find>
       <find>itemModelZhuangQItem</find>
+      <find>即将换庄</find>
+      <find>jijiang</find>
     </findStrings>
     <dirStrings>
       <dir>F:\Projects\hhgame-ui\client\game\yule\brnngod\src</dir>
@@ -233,6 +235,7 @@
   <component name="PropertiesComponent">
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553249630824" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -254,7 +257,7 @@
   </component>
   <component name="RunManager">
     <configuration name="main.lua" type="lua.app" factoryName="Lua Application" temporary="true">
-      <option name="program" value="F:\Projects\hhgame-ui\run\debug\win32\GloryProject.exe" />
+      <option name="program" value="F:\Projects\GitProjects\99codeproject\run\debug\win32\GloryProject.exe" />
       <option name="file" value="$PROJECT_DIR$/base/src/main.lua" />
       <option name="workingDir" value="$PROJECT_DIR$" />
       <option name="debuggerType" value="1" />
@@ -283,10 +286,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1034" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1015" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25799572" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26066098" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -295,8 +298,8 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.4977827" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.20421754" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39844617" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.20317821" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3984109" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -372,15 +375,6 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="lua.app">
-        <watch expression="self.m_pControlButtonJetton[i]" language="Lua" />
-        <watch expression="string.len(strName)" language="Lua" />
-        <watch expression="string.sub(0, num)" language="Lua" />
-        <watch expression="string.sub(strName,0, 18)" language="Lua" />
-        <watch expression="#strName" language="Lua" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="watch">
@@ -461,13 +455,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$APPLICATION_PLUGINS_DIR$/EmmyLua/lib/EmmyLua-1.2.8-IDEA182.jar!/std/Lua53/string.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="114" column="16" selection-start-line="114" selection-start-column="16" selection-end-line="114" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$APPLICATION_PLUGINS_DIR$/EmmyLua/lib/EmmyLua-1.2.8-IDEA182.jar!/std/Lua53/string.lua" />
     <entry file="file://$PROJECT_DIR$/game/yule/jxlw/src/views/layer/GameViewLayer.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
@@ -489,13 +477,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$APPLICATION_PLUGINS_DIR$/EmmyLua/lib/EmmyLua-1.2.8-IDEA182.jar!/std/Lua53/math.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="163" lean-forward="true" selection-start-line="163" selection-end-line="163" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$APPLICATION_PLUGINS_DIR$/EmmyLua/lib/EmmyLua-1.2.8-IDEA182.jar!/std/Lua53/math.lua" />
     <entry file="file://$PROJECT_DIR$/game/yule/lhdz/src/views/layer/GameViewLayer.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="26350">
@@ -680,6 +662,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="123" column="48" selection-start-line="123" selection-start-column="48" selection-end-line="123" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/helper.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="425" column="7" selection-start-line="425" selection-start-column="7" selection-end-line="425" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="564">
+          <caret line="133" column="28" selection-start-line="133" selection-start-column="28" selection-end-line="133" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/GameLayer.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -687,33 +690,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/helper.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="425" column="7" selection-start-line="425" selection-start-column="7" selection-end-line="425" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/models/Define.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="123" column="48" selection-start-line="123" selection-start-column="48" selection-end-line="123" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/GameViewLayer.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="365">
-          <caret line="2341" column="31" lean-forward="true" selection-start-line="2341" selection-start-column="31" selection-end-line="2341" selection-end-column="31" />
+          <caret line="2341" column="31" selection-start-line="2341" selection-start-column="31" selection-end-line="2341" selection-end-column="31" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game/yule/brnngod/src/views/layer/DealerQueueView.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="135" column="57" selection-start-line="135" selection-start-column="37" selection-end-line="135" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>
