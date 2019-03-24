@@ -255,7 +255,6 @@ function GameViewLayer:initCCB()
         ----
 --    self.m_pSenderCardsNode     = self.m_pathUI:getChildByName("Panel_node_sendCard")
     self.m_pRootNodeMenu        = self.m_pathUI:getChildByName("Panel_node_menu")       --菜单层
-    self.m_pNodeClock           = self.m_pNodeTopClock:getChildByName("IMG_clock")      --倒计时副点
     self.m_pNodeTip             = self.m_pathUI:getChildByName("Panel_node_tip")        --飘出来的字（换庄，输赢金币等），轮滑女飘逸轨迹
     self.m_pNodeClipMenu        = self.m_pathUI:getChildByName("Panel_node_clip")       --关闭菜单层
     self.m_pNodeDlg             = self.m_pathUI:getChildByName("Panel_dialog") 
@@ -275,8 +274,8 @@ function GameViewLayer:initCCB()
         self.m_pLbMyBettingGold[i]  = self.m_pNodeMiddle:getChildByName( string.format("node_bet_%d",i)):getChildByName("TXT_my_bet_num")   --我在该区域的下注钱数
         self.m_pLbBettingGold[i]    = self.m_pNodeMiddle:getChildByName( string.format("node_bet_%d",i)):getChildByName("TXT_bet_num")      --该区域下注钱数
     end
-    self.m_pLbCountTime         = self.m_pNodeClock:getChildByName("TXT_count_time")        --倒计时
-    self.m_pSpStatus            = self.m_pNodeClock:getChildByName("Image_status")          --现在房间状态（倒计时）
+    self.m_pLbCountTime         = self.m_pNodeTopClock:getChildByName("TXT_count_time")        --倒计时
+    self.m_pSpStatus            = self.m_pNodeTopClock:getChildByName("Image_status")          --现在房间状态（倒计时）
     self.m_pLbTotalBetting      = self.m_pNodeMiddle:getChildByName("node_info"):getChildByName("TXT_total_betting")    --已下注的总钱数
     self.m_pLbRemaingBetting    = self.m_pNodeMiddle:getChildByName("node_info"):getChildByName("TXT_remain_betting")   --剩余可下注总钱数
     ------------Sprite-------------
@@ -462,12 +461,12 @@ function GameViewLayer:updateClockNode()
     if self.deskState == GameViewLayer.STATE_WAIT_GAME then         -- = 0      --等待开始
     
     elseif self.deskState == GameViewLayer.STATE_PLAYERBETS then    -- = 1      --闲家下注
-        self.m_pSpStatus:loadTexture("niuniu_status_xiazhu.png", ccui.TextureResType.plistType)
+        self.m_pSpStatus:loadTexture("game/handredcattle/image/brnn_zt_2.png", ccui.TextureResType.localType)
         if self.time_djs <= 3 then
             self:showDaojishi(self.time_djs)
         end
     elseif self.deskState == GameViewLayer.STATE_DESKOVER then      -- = 2        --结束阶段
-        self.m_pSpStatus:loadTexture("niuniu_status_kaijiang.png", ccui.TextureResType.plistType)
+        self.m_pSpStatus:loadTexture("game/handredcattle/image/brnn_zt_4.png", ccui.TextureResType.localType)
         if self.time_djs == 3 then
             self:disCardAnimAll()
         end
