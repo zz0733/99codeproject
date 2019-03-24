@@ -459,7 +459,7 @@ function GameViewLayer:updateClockNode()
         self.time_djs = 0
     end
     if self.deskState == GameViewLayer.STATE_WAIT_GAME then         -- = 0      --等待开始
-    
+        self.m_pSpStatus:loadTexture("game/handredcattle/image/brnn_zt_1.png", ccui.TextureResType.localType)
     elseif self.deskState == GameViewLayer.STATE_PLAYERBETS then    -- = 1      --闲家下注
         self.m_pSpStatus:loadTexture("game/handredcattle/image/brnn_zt_2.png", ccui.TextureResType.localType)
         if self.time_djs <= 3 then
@@ -1540,12 +1540,20 @@ function GameViewLayer:showFanPaiAniByIndex(idx)
                         function()
                             self.Pokers[openCardOrder[idx]][j]:setCardData(self.pokerData[openCardOrder[idx]][1][j])
                         end)
+
+        ---调整扑克位置
+        local cbAdjustCardPos = cc.CallFunc:create(
+                function()
+                    self:adjustCardPos(openCardOrder[idx])
+                end)
+
         local aroundhalf = cc.OrbitCamera:create(PokerConst.PokerAniHalfTime,1,0,0,90,0,0)
         local aroundtail = cc.OrbitCamera:create(PokerConst.PokerAniRemainTime,1,0,270,90,0,0)
         if 5 == j then
             seq = cc.Sequence:create(
                     aroundhalf,
                     cbshow,
+                    cbAdjustCardPos, --调整位置
                     aroundtail,
                     cbend)
         else
@@ -2368,6 +2376,22 @@ function GameViewLayer:isCurDealer(uid)
     end
 
     return false
+end
+
+--根据牌值调整牌位置
+function GameViewLayer:adjustCardPos(idx)
+
+    local nDealerValue = self.pokerData[idx][2]--[target][2]
+    if nDealerValue ~= 0 then
+        self.Pokers[idx][1]:setPositionY(self.Pokers[idx][1]:getPositionY() + 20)
+        self.Pokers[idx][2]:setPositionY(self.Pokers[idx][2]:getPositionY() + 20)
+        self.Pokers[idx][3]:setPositionY(self.Pokers[idx][3]:getPositionY() + 20)
+
+        self.Pokers[idx][4]:setPositionX(self.Pokers[idx][4]:getPositionX() + 10)
+        self.Pokers[idx][5]:setPositionX(self.Pokers[idx][5]:getPositionX() + 10)
+    else
+
+    end
 end
 ------
 

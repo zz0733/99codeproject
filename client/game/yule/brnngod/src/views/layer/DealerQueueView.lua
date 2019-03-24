@@ -156,6 +156,7 @@ function WaitQueueItem:init(index, player, itemModel,pNodeGameView)
 
     self.m_pNodeGameView = pNodeGameView
     player.rolename = player[2]
+    player.rid = player[1]
     player.sex = player[4] or 0         --暂时没有性别
     player.coin = player[5] or 0        --玩家金币
 
@@ -191,9 +192,12 @@ function WaitQueueItem:init(index, player, itemModel,pNodeGameView)
         if self.m_pNodeGameView:isCurDealer(player.rid) == true then
             -- 庄图标
             self.dealerSign:setVisible(true)
+            self.dengdai:setVisible(false)
+            self.jijiang:setVisible(false)
         else
             self.dealerSign:setVisible(false)
-            self.dengdai:setVisible(true)
+            ------self.dengdai:setVisible(true)
+            self.jijiang:setVisible(true)
             self.zhuang:setVisible(false)
         end
     else
