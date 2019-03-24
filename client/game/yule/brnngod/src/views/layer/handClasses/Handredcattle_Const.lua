@@ -29,7 +29,7 @@ Handredcattle_Const.winArmPos = {
 Handredcattle_Const.winArmTag = 50
 
 Handredcattle_Const.resultPos = {
-    [1]= cc.p(698.5-40,673-70),
+    [1]= cc.p(6598.5,603),
     [2]= cc.p(295.5,187),
     [3]= cc.p(540,187),
     [4]= cc.p(785.5,187),
