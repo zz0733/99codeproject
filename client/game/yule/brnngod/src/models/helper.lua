@@ -447,40 +447,40 @@ function loadHeadMiddleImg(image, sex, index)
 
     local faceid = index%11 == 0 and 1 or index%11
     local str = ""
-    if sex == 0 then
+    if sex ~= 0 then
         str = string.format("head_mman_%02d.png", faceid)
     else
         str = string.format("head_mwoman_%02d.png", faceid)
     end
 
-
-    image:loadTexture(str)
-    image:setScale(0.7)
-
-
+    image:loadTexture(str, 1) ---1为读取plist
+    -----image:setScale(0.7)
     ------self.m_fScale = self.m_headSize / SYS_HEADSIZE
     ------self:setScale(self.m_fScale)
 end
 
-function createStencilAvatar(spritAvatar)
+function createStencilAvatar(spritAvatar )
 
     if spritAvatar == nil then
         return nil
     end
 
+    spritAvatar:removeChildByTag(101)
+    spritAvatar:removeChildByTag(102)
+
     local size = spritAvatar:getContentSize()
     local tx = cc.Sprite:create('game/handredcattle/image/tx_2.png')
     if tx ~= nil then
-        tx:addTo(spritAvatar,-1)
-        tx:setScale(size.width/tx:getContentSize().width)
-        tx:setAnchorPoint(cc.p(0,0))
+        tx:addTo(spritAvatar,-1, 101)
+        tx:setScale((size.width/tx:getContentSize().width)+0.05)
+        tx:setPosition(size.width/2,size.height/2)
     end
 
     local mark = cc.Sprite:create('game/handredcattle/image/tx_mask.png')
     if mark ~= nil then
-        mark:addTo(spritAvatar,-2)
-        mark:setScale(size.width/mark:getContentSize().width)
-        mark:setAnchorPoint(cc.p(0,0))
+        mark:addTo(spritAvatar,-2, 102)
+        mark:setScale((size.width/mark:getContentSize().width)+0.1)
+        mark:setPosition(size.width/2,size.height/2)
     end
 
     return spritAvatar

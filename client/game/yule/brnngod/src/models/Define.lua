@@ -75,8 +75,10 @@ function Define:getNodeList(container,node)
                 local name = parente:getName()
                 local index = string.find(name,'_')
                 if index ~= nil then
-                    strIndex = string.sub(name,index+1,-1)
+                    local strIndex = string.sub(name,index+1,-1)
                     node_list1[strIndex] = parente
+                else
+                    node_list1[name] = v
                 end
 
             else
@@ -85,8 +87,11 @@ function Define:getNodeList(container,node)
                     local name = parente:getName()
                     local index = string.find(name,'_')
                     if index ~= nil then
-                        strIndex = string.sub(name,index+1,-1)
+                        local strIndex = string.sub(name,index+1,-1)
                         node_list1[strIndex] = parente
+                        seach_child(parente:getChildren()[i])
+                    else
+                        node_list1[name] = parente
                         seach_child(parente:getChildren()[i])
                     end
 
@@ -98,8 +103,10 @@ function Define:getNodeList(container,node)
             local name = v:getName()
             local index = string.find(name,'_')
             if index ~= nil then
-                strIndex = string.sub(name,index+1,-1)
+                local strIndex = string.sub(name,index+1,-1)
                 node_list1[strIndex] = v
+            else
+                node_list1[name] = v
             end
 
         else

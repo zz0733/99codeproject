@@ -4,7 +4,7 @@
 --Desc 
 --此文件由[BabeLua]插件自动生成
 
-local HandredcattleRes = 
+local HandredcattleRes =
 {
     g_strBackground         = "LoginScene/LoginBg.png",
     --csb
@@ -16,7 +16,10 @@ local HandredcattleRes =
     ["CSB_GAME_USERINFO"]       = "game/handredcattle/HandredcattleOtherInfoLayer.csb",
     ["CSB_GAME_USERINFO_NODE"]  = "game/handredcattle/HandredcattleOtherInfoItem.csb",
     ["CSB_GAME_TREND_VIEW"]     = 'game/handredcattle/HandredcattleTrend.csb',
-    ["CSB_GAME_DEALER_QUEUE"]     = 'game/handredcattle/HandredcattleQueue.csb',
+    ["CSB_GAME_DEALER_QUEUE"]   = 'game/handredcattle/HandredcattleQueue.csb',
+    ["CSB_GAME_PLAYER_LIST"]    = 'game/handredcattle/HandredcattlePlayerList.csb',
+
+
     --sprite
     ["IMG_LIANZHUANG"]      = {
       [1] = "gui-wz-%d.png",

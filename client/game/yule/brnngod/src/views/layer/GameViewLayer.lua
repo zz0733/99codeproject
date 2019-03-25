@@ -160,6 +160,11 @@ function GameViewLayer:initVar()
     self.m_nCardsIndex              = 0
     self.m_nPlayersIndex            = 0
     self.m_vecSpriteSelf            = {}
+    self.m_vecSpriteTableUser       = {}
+    for i = 1, cmd.TABEL_USER_COUNT do
+        self.m_vecSpriteTableUser[i] = {}
+    end
+
     self.m_pLbMyBettingGold         = {}
     self.m_pLbBettingGold           = {}
     self.m_pControlButtonJetton     = {}
@@ -234,6 +239,8 @@ function GameViewLayer:initVar()
     self.cardTypeAni = {}
     self.pokerData = {}
     self.num0 = 0
+
+    self.m_seats = {}
 end
 --ui对象引用初始化
 function GameViewLayer:initCCB()
@@ -670,6 +677,7 @@ function GameViewLayer:onEventEnterGame(bufferdate)
         table.insert(self.bankersTable,player_)
     end
 
+    self.m_seats = bufferdate.seats
     ------更新桌面玩家
     self:updateTableUserInfo()
 
@@ -694,18 +702,19 @@ function GameViewLayer:onEventEnterGame(bufferdate)
             self.m_pLbUsrGold:setString(player_[6])
             self.myIntoMoney = player_[6]
             --设置自己头像
-            loadHeadMiddleSprite(self.m_pSelfHead, player_[3], math.random(1,10))
+            loadHeadMiddleSprite(self.m_pSelfHead,player_[3], player_[5])
             createStencilAvatar(self.m_pSelfHead)
         end
         if player_[1] == self.bankerUid then   --庄家信息
-            loadHeadMiddleSprite(self.m_pLbZhuangHead, player_[3], math.random(1,10))
+            loadHeadMiddleSprite(self.m_pLbZhuangHead,player_[3], player_[5])
             createStencilAvatar(self.m_pLbZhuangHead)
             self.m_pNodeTopInfo:getChildByName("TXT_zhuang_name"):setString(player_[2])
             self.m_pLbZhuangGold:setString(player_[6])
 
         end
     end
-    local playerNum = #self.playerInfoTable
+    local count = #self.playerInfoTable
+    local playerNum = count > 6 and count - 6 or 0
     self.m_pLbOtherNum:setString('('..playerNum..')')     --其他玩家人数
     local bankerNum = #self.bankersTable
     self.m_pLbAskNum:setString(bankerNum)       --申请上庄玩家人数
@@ -751,23 +760,25 @@ function GameViewLayer:onEventBet(bufferdate)
 --    self:chipAnimation(bufferdate[1],bufferdate[4])
     self.allRemainngBet = 200000000--bufferdate[5] --剩余可下注钱数
     local isMyFly_ = false
+    local bInTable, tableIndex = self:isInTable(bufferdate[3])
     --判断是不是自己
     if bufferdate[3] == GlobalUserItem.tabAccountInfo.userid then
         chipBegin_x = 60
         chipBegin_y = 40
         isMyFly_ = true
+    --桌上玩家
+    elseif bInTable then
+        chipBegin_x, chipBegin_y= self.m_pNodeTablePlayer[tableIndex]:getPosition()
+
+        --播放桌上玩家动画
+        self:playTableUserChipAni(tableIndex)
     else
-        chipBegin_x = 55+1164
-        chipBegin_y = 500-454
 
         chipBegin_x = self.m_othersPos.x
         chipBegin_y = self.m_othersPos.y
     end
 
-    --播放桌上玩家动画
-    self:playTableUserChipAni(math.random(1, cmd.TABEL_USER_COUNT))
-
-    self:createFlyChipSprite(bufferdate[4],cc.p(chipBegin_x,chipBegin_y),cc.p(chipEnd_x,chipEnd_y),bufferdate[1],isMyFly_)
+    self:createFlyChipSprite(bufferdate[4],cc.p(chipBegin_x,chipBegin_y),cc.p(chipEnd_x,chipEnd_y),bufferdate[1],isMyFly_, tableIndex)
     self:refreshJettonState()
 
     --更新桌面玩家分数
@@ -865,6 +876,7 @@ function GameViewLayer:onEventUpDealer(bufferdate)
     if self.isWaitBanker then        
         local player_ = self.bankersTable[1]
         self.bankerUid = player_[1]
+        self:setBankerHeadByUid()
         self.m_pNodeTopInfo:getChildByName("TXT_zhuang_name"):setString(player_[2])
         self.m_pLbZhuangGold:setString(player_[6])
         self.banker_time = 0
@@ -880,6 +892,7 @@ function GameViewLayer:onEventUpdateDealers(bufferdate)
 
     local player_ = self.bankersTable[1]
     self.bankerUid = player_[1]
+    self:setBankerHeadByUid()
     self.m_pNodeTopInfo:getChildByName("TXT_zhuang_name"):setString(player_[2])
     for key, player_ in ipairs(self.playerInfoTable) do
         if player_[1] == self.bankerUid then
@@ -1025,8 +1038,14 @@ end
 function GameViewLayer:onOtherInfoClicked()
     ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_BUTTON)
     --玩家列表
-    local infoLayer = HandredcattleOtherInfoLayer.create(self.playerInfoTable)
-    self.m_pNodeDlg:addChild(infoLayer,4)
+    --local infoLayer = HandredcattleOtherInfoLayer.create(self.playerInfoTable)
+    --self.m_pNodeDlg:addChild(infoLayer,4)
+
+    local layernew = appdf.req(module_pre..'.views.layer.PlayerListView')
+    local layerInfo = layernew:create(self.playerInfoTable)
+    layerInfo:addTo(self.m_pNodeDlg)
+    layerInfo:showPopup()
+
 end
 
 --走势按钮回调
@@ -1311,7 +1330,7 @@ function GameViewLayer:isBanker()
     return false
 end
 --@@@@@@@@@@@@@@@@@@ 动画
-function GameViewLayer:createFlyChipSprite(money_,flyBegin_pos,flyEnd_pos,quyu_,isMyFly)
+function GameViewLayer:createFlyChipSprite(money_,flyBegin_pos,flyEnd_pos,quyu_,isMyFly, tableIndex)
     local pSpr = nil
     local jettonIndex = 0
     
@@ -1379,8 +1398,14 @@ function GameViewLayer:createFlyChipSprite(money_,flyBegin_pos,flyEnd_pos,quyu_,
         local chipInfo = {}
         chipInfo.wChipIndex = quyu_     --区域
         chipInfo.wJettonIndex = jettonIndex     --级别
-        chipInfo.pChipSpr = pSpr    
+        chipInfo.pChipSpr = pSpr
         table.insert(self.m_vecSpriteSelf,chipInfo)
+    elseif tableIndex then
+        local chipInfo = {}
+        chipInfo.wChipIndex = quyu_     --区域
+        chipInfo.wJettonIndex = jettonIndex     --级别
+        chipInfo.pChipSpr = pSpr
+        table.insert(self.m_vecSpriteTableUser[tableIndex],chipInfo)
     else
         local chipInfo = {}
         chipInfo.wChipIndex = quyu_
@@ -1684,12 +1709,19 @@ function GameViewLayer:flychipex()
     local bankerlostvec = {} -- 庄家赔付筹码
     local selfwinvec = {} -- 我获取的筹码
     local otherwinvec = {} -- 其他人获取的筹码
+    local tablewinvec = {} -- 桌上玩家的筹码
     local selfvec = {} -- 我的所有区域筹码
     local othervec = {} -- 其他人的所有区域筹码
+    local tablevec = {} --桌上人所有区域筹码
     local bankerwin = false
     local bankerlose = false
     local otherwin = false
     local selfwin = false
+
+    for i = 1, cmd.TABEL_USER_COUNT do
+        tablevec[i] = {}
+        tablewinvec[i] = {}
+    end
 
     for i = 1, 4 do
         bankerwinvec[i] = {}
@@ -1699,6 +1731,11 @@ function GameViewLayer:flychipex()
         local isTem = tem[i]>0
         selfvec[i] = {bankwin = not isTem, vec = {}}-------------------------------需要修改
         othervec[i] = {bankwin = not isTem, vec = {}}
+
+        for j = 1, cmd.TABEL_USER_COUNT do
+            tablevec[j][i] = {bankwin = not isTem, vec = {}}
+            tablewinvec[j][i] = {}
+        end
     end
 
     for k, v in pairs(self.m_vecSpriteSelf) do
@@ -1709,10 +1746,23 @@ function GameViewLayer:flychipex()
         table.insert(othervec[v.wChipIndex+1].vec, v)
     end
 
+    for i = 1, cmd.TABEL_USER_COUNT  do
+        for k, v in pairs(self.m_vecSpriteTableUser[i]) do
+            table.insert(tablevec[i][v.wChipIndex+1].vec, v)
+        end
+    end
+
     -- 遍历获胜的区域 必须用pairs方式 保证所有筹码遍历到
     local selfPos = self.m_selfPos
     local bankerPos = self.m_bankPos
     local otherPos = self.m_othersPos
+    local tableuserPos = {}
+
+    for i = 1, cmd.TABEL_USER_COUNT do
+        tableuserPos[i] = {}
+        tableuserPos[i].x, tableuserPos[i].y = self.m_pNodeTablePlayer[i]:getPosition()
+    end
+
     for i = 1, 4 do
         for k, v in pairs(selfvec[i].vec) do
             if v then
@@ -1741,6 +1791,23 @@ function GameViewLayer:flychipex()
                 end
             end
         end
+
+        for j = 1, cmd.TABEL_USER_COUNT do
+            for k, v in pairs(tablevec[j][i].vec) do
+                if v then
+                    v.pChipSpr:setTag(v.wJettonIndex)
+                    if selfvec[i].bankwin then
+                        table.insert(bankerwinvec[i], {sp = v.pChipSpr, endpos = bankerPos})
+                        bankerwin = true
+                    else
+                        self.num0 = self.num0 +1
+                        v.pChipSpr:setName("___"..self.num0)
+                        table.insert(tablewinvec[j][i], {sp = v.pChipSpr, endpos = tableuserPos[j]})
+                        otherwin = true
+                    end
+                end
+            end
+        end
     end
 
     -- 处理庄家需要赔付的筹码 庄家赔付的筹码是多个区域的 需要分区域处理
@@ -1749,6 +1816,7 @@ function GameViewLayer:flychipex()
     -- 赔付筹码是否需要随机分配结束pos飞行？
     local countself = 0
     local countother = 0
+    local countTableUser = {}
     local rewardCount = 0
     local rewardCountMax = 30 -- 最多一个区域赔付30个筹码
     local offset = 7
@@ -1767,8 +1835,10 @@ function GameViewLayer:flychipex()
                 bankerlose = true
                 -- 加入自己的获胜队列
                 table.insert( selfwinvec[i], { sp = newsp, endpos = selfPos })
+
             end
         end
+
         countother = #otherwinvec[i]
         countother = countother > 8 and countother/2 or countother
         for j = 1, countother do
@@ -1788,6 +1858,27 @@ function GameViewLayer:flychipex()
                 --table.insert( bankerlostvec[i], { sp = newsp, endpos = cc.p(oldsp:getPosition()) })
                 table.insert( otherwinvec[i], { sp = newsp, endpos = otherPos })
             end
+        end
+
+        for j = 1, cmd.TABEL_USER_COUNT do
+            countTableUser[j] = #tablewinvec[j][i]
+            countTableUser[j] = countTableUser[j] > 8 and countTableUser[j]/2 or countTableUser[j]
+
+            for k = 1,countTableUser[j] do
+                local oldsp = tablewinvec[j][i][k].sp
+                if oldsp then
+                    local newsp = self:clonePayoutChip(oldsp:getTag())
+                    newsp:setPosition(bankerPos)
+
+                    print(oldsp:getName())
+
+                    table.insert( bankerlostvec[i], { sp = newsp, endpos = cc.p(oldsp:getPosition()) })
+                    bankerlose = true
+                    table.insert( tablewinvec[j][i], { sp = newsp, endpos = tableuserPos[j] })
+                end
+
+            end
+
         end
     end
 
@@ -1856,6 +1947,30 @@ function GameViewLayer:flychipex()
         hideAfterOver = true
     }
 
+    local newVec = {}
+    for i = 1, cmd.TABEL_USER_COUNT do
+        for j = 1, CHIP_ITEM_COUNT do
+            table.insert(newVec, tablewinvec[i][j])
+        end
+    end
+
+    local jobitem5 = {
+        flytime       = CHIP_FLY_TIME + 0.1,
+        flytimedelay  = true,                                        -- 飞行时间延长随机时间(0.05~0.15)
+        flysteptime   = 0.01,
+        nextjobtime   = CHIP_JOBSPACETIME,
+        --chips         = tablewinvec,
+        chips = newVec,
+        preCB         = function()
+            if selfwin then
+                ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_GETGOLD)
+            end
+        end,
+        preCBExec     = false,
+        --overCB        = function() print("自己获胜筹码飞行完毕") end,
+        hideAfterOver = true
+    }
+
     self.m_flyJobVec.nIdx = 1 -- 任务处理索引
     self.m_flyJobVec.flyIdx = 1 -- 飞行队列索引
     self.m_flyJobVec.jobVec = {} -- 任务对象
@@ -1868,7 +1983,7 @@ function GameViewLayer:flychipex()
 
     table.insert(self.m_flyJobVec.jobVec, { jobitem1 }) -- 1 飞行庄家获取筹码
     table.insert(self.m_flyJobVec.jobVec, { jobitem2 }) -- 2 飞行庄家赔付筹码
-    table.insert(self.m_flyJobVec.jobVec, { jobitem3, jobitem4 }) -- 3 其他人筹码和自己筹码一起飞行
+    table.insert(self.m_flyJobVec.jobVec, { jobitem3, jobitem4, jobitem5 }) -- 3 其他人筹码和自己筹码一起飞行
 
     self:doFlyJob()
 end
@@ -1900,11 +2015,16 @@ function GameViewLayer:doFlyJob()
                     job[i].preCB()
                     job[i].preCBExec = true
                 end
+                if #job[i].chips == cmd.TABEL_USER_COUNT then
+                    print('1111')
+                end
                 for j = 1, #job[i].chips do
                     local segnum = mf(#job[i].chips[j] / CHIP_FLY_SPLIT) -- 计算需要分成几段
                     for m = 0, segnum do
                         local tgg = job[i].chips[j][m*CHIP_FLY_SPLIT + self.m_flyJobVec.flyIdx]
                         if tgg then
+                            print('sptg')
+                            dump(tgg)
                             table.insert(flyvec, { sptg = tgg, idx = i })
                         end                    
                     end
@@ -1932,19 +2052,27 @@ function GameViewLayer:doFlyJob()
         local tg = flyvec[i]
         if tg and tg.sptg then
             local ts = job[tg.idx].flytimedelay and job[tg.idx].flytime + math.random(5,15) / 100 or job[tg.idx].flytime
-            local mt = cc.MoveTo:create(ts, tg.sptg.endpos)
-            if i == #flyvec then -- 最后一个筹码飞行完成后执行下一次的飞行回调
-                self.m_flyJobVec.flyIdx = self.m_flyJobVec.flyIdx + 1
-                self:doSomethingLater(function ()
-                    self:doFlyJob()
-                end , job[tg.idx].flysteptime)
+
+            print('费筹码')
+            dump(tg)
+            if tg.sptg.endpos or true  then
+
+                local mt = cc.MoveTo:create(ts, tg.sptg.endpos)
+                if i == #flyvec then -- 最后一个筹码飞行完成后执行下一次的飞行回调
+                    self.m_flyJobVec.flyIdx = self.m_flyJobVec.flyIdx + 1
+                    self:doSomethingLater(function ()
+                        self:doFlyJob()
+                    end , job[tg.idx].flysteptime)
+                end
+
+                if job[tg.idx].hideAfterOver then
+                    tg.sptg.sp:runAction(cc.Sequence:create(cc.Show:create(), mt, cc.Hide:create()))
+                else
+                    tg.sptg.sp:runAction(cc.Sequence:create(cc.Show:create(), mt))
+                end
+
             end
 
-            if job[tg.idx].hideAfterOver then
-                tg.sptg.sp:runAction(cc.Sequence:create(cc.Show:create(), mt, cc.Hide:create()))
-            else
-                tg.sptg.sp:runAction(cc.Sequence:create(cc.Show:create(), mt))
-            end
         end
     end
 end
@@ -2122,6 +2250,11 @@ function GameViewLayer:disCardAnimAll()
     self.m_pNodeChipSpr:removeAllChildren()
     self.m_vecSpriteOther = {}
     self.m_vecSpriteSelf = {}
+    self.m_vecSpriteTableUser = {}
+
+    for i = 1, cmd.TABEL_USER_COUNT do
+        self.m_vecSpriteTableUser[i] = {}
+    end
 
 end
 
@@ -2236,7 +2369,7 @@ end
 -- 更新上桌玩家信息
 function GameViewLayer:updateTableUserInfo()
     for i=1, cmd.TABEL_USER_COUNT do
-        local pTableUser = self.playerInfoTable[i]
+        local pTableUser =  self:getUserInfoByUid((self.m_seats[i] or {})[1])
         if (not pTableUser) or (pTableUser[1] == cmd.INVALID_CHAIR) then
             self.m_pSpNoPlayer[i]:setVisible(true)
             self.m_pNodeShowPlayer[i]:setVisible(false)
@@ -2252,7 +2385,7 @@ function GameViewLayer:updateTableUserInfo()
                 if movementType == ccs.MovementEventType.complete then
                     if movementID == Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN.NAME then
                         local faceid = armatureBack:getTag()
-                        self:replaceUserHeadSprite(armatureBack, Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN, faceid)
+                        self:replaceUserHeadSprite(armatureBack, Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN,pTableUser[5], pTableUser[3])
                         armatureBack:getAnimation():play(Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.END.NAME)
                     elseif movementID == Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.END.NAME then
                         self.m_pSpNoPlayer[i]:setVisible(false)
@@ -2272,14 +2405,14 @@ function GameViewLayer:updateTableUserInfo()
                     self.m_changeUserAniVec[i]:getAnimation():play(Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN.NAME)
                     self.m_changeUserAniVec[i]:getAnimation():setMovementEventCallFunc(func)
                 else
-                    self:replaceUserHeadSprite(self.m_changeUserAniVec[i], Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN, newuid )
+                    self:replaceUserHeadSprite(self.m_changeUserAniVec[i], Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN,pTableUser[5], pTableUser[3] )
                     self.m_pSpNoPlayer[i]:setVisible(false)
                     self.m_pNodeShowPlayer[i]:setVisible(true)
                     self.m_pLbShowPlayerName[i]:setString(LuaUtils.getDisplayNickName(pTableUser[2], 8, true))
                     self.m_pLbShowPlayerGold[i]:setString((pTableUser[3]))
                 end
             else
-                self:replaceUserHeadSprite(self.m_changeUserAniVec[i], Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN, newuid)
+                self:replaceUserHeadSprite(self.m_changeUserAniVec[i], Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN,pTableUser[5], pTableUser[3])
                 self.m_pSpNoPlayer[i]:setVisible(false)
                 self.m_pNodeShowPlayer[i]:setVisible(true)
                 self.m_pLbShowPlayerName[i]:setString(LuaUtils.getDisplayNickName(pTableUser[2], 8, true))
@@ -2293,7 +2426,7 @@ end
 -- 更新上桌玩家分数
 function GameViewLayer:updateTableUserScore()
     for i=1, cmd.TABEL_USER_COUNT do
-        local pTableUser =  self.playerInfoTable[i]
+        local pTableUser =  self:getUserInfoByUid((self.m_seats[i] or {})[1])
         if pTableUser and (pTableUser[1] ~= cc.exports.INVALID_CHAIR) then
             self.m_pLbShowPlayerGold[i]:setString((pTableUser[3]))
         end
@@ -2301,7 +2434,7 @@ function GameViewLayer:updateTableUserScore()
 end
 
 --切换用户头像
-function GameViewLayer:replaceUserHeadSprite(armature, cfg, faceId)
+function GameViewLayer:replaceUserHeadSprite(armature, cfg, sex, faceId)
     if not cfg then
         return
     end
@@ -2309,9 +2442,16 @@ function GameViewLayer:replaceUserHeadSprite(armature, cfg, faceId)
     local pBone = armature:getBone(cfg.NODES.HEAD)
     if pBone then
         local pNode = display.newNode()
-        local pSpValue1 = cc.Sprite:create('game/handredcattle/image/file/gui-icon-head-01.png')
-        ------local pSpValue1 = cc.Sprite:create()
-        ------pSpValue1:setSpriteFrame( string.format(Brnn_Res.PNG_OF_HEAD, faceId % cmd.FACE_NUM + 1))
+        --local pSpValue1 = cc.Sprite:create('game/handredcattle/image/file/gui-icon-head-01.png')
+        local pSpValue1 = cc.Sprite:create()
+        local name = nil
+        if sex ~= 0 then
+            name = string.format('head_mman_%02d.png', faceId % 10 + 1)
+        else
+            name = string.format('head_mwoman_%02d.png', faceId % 10 + 1)
+        end
+
+        pSpValue1:setSpriteFrame( name )
         pNode:addChild(pSpValue1)
         pBone:addDisplay(pNode, 0)
         pBone:changeDisplayWithIndex(0, true)
@@ -2391,8 +2531,6 @@ function GameViewLayer:adjustCardPos(idx)
 
         self.Pokers[idx][4]:setPositionX(self.Pokers[idx][4]:getPositionX() + 10)
         self.Pokers[idx][5]:setPositionX(self.Pokers[idx][5]:getPositionX() + 10)
-    else
-
     end
 end
 
@@ -2445,6 +2583,56 @@ function GameViewLayer:playTongEffect()
     Define:performWithDelay(animNode, function()
         animNode:removeFromParent()
     end, 1.2)
+end
+
+function GameViewLayer:setBankerHeadByUid()
+
+    local bankerInfo = nil
+    for i , v in pairs(self.playerInfoTable) do
+        if self.bankerUid == v[1] then
+            bankerInfo = v
+        end
+    end
+
+    if bankerInfo then
+        loadHeadMiddleSprite(self.m_pLbZhuangHead,bankerInfo[3], bankerInfo[5])
+        createStencilAvatar(self.m_pLbZhuangHead)
+    end
+end
+
+function GameViewLayer:getUserInfoByUid(uid)
+
+    if not uid then
+        return nil
+    end
+
+    for i , v in pairs(self.playerInfoTable) do
+        if uid == v[1] then
+            return v
+        end
+    end
+
+    return nil
+end
+
+function GameViewLayer:isInTable(uid)
+
+    if not uid then
+        return false
+    end
+
+    for i, v in pairs(self.m_seats) do
+
+        if i > cmd.TABEL_USER_COUNT then
+            return false
+        end
+
+        if uid == v[1] then
+            return true, i
+        end
+    end
+
+    return false
 end
 ------
 ------------------------------------------------------------------------
