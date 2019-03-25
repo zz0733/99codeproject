@@ -28,6 +28,7 @@ local HandredcattleOtherInfoLayer = appdf.req(module_pre .. ".views.layer.Handre
 
 local TAG_ENUM = Define.TAG_ENUM
 local TAG_ZORDER = Define.TAG_ZORDER
+local _ = {}
 
 
 local GameViewLayer = class("GameViewLayer",function(scene)
@@ -374,7 +375,8 @@ function GameViewLayer:initPokerFly( )
     self.startPos = cc.p(self.m_pNodeCard:getChildByName("card_start_pos"):getPosition())
     
     self.m_cbend = function ()
-        ----self:playWinEffect()暂时屏蔽赢牌动画
+        ----self:playWinEffect()------暂时屏蔽赢牌动画
+        self:playTongEffect()------播放通杀和通赔效果
         self:checkMyJetton()
         self:flychipex()
     end
@@ -2393,6 +2395,70 @@ function GameViewLayer:adjustCardPos(idx)
 
     end
 end
+
+-- 通杀、通赔
+function GameViewLayer:playTongEffect()
+
+    local tem = self.player_winZodics
+    local showTongShaEffect = true
+    local showTongPeiEffect = true
+    for i = 1, 4 do
+        if tem[i]<0 then
+            showTongPeiEffect = false
+        end
+        if tem[i]>0 then
+            showTongShaEffect = false
+        end
+    end
+
+    print('GameViewLayer:playTongEffect')
+
+    ------local tongType = event._userdata
+    ------local animNode = self['tongResult'..tongType]
+    ------local animNode = cc.Node:create()
+
+
+    local tongType = nil
+    if showTongShaEffect then
+        tongType = 1
+    elseif showTongPeiEffect then
+        tongType = 2
+    else
+        return
+    end
+
+    local csbPath = string.format('game/handredcattle/HandredcattleResutl%d.csb', tongType)
+    local animNode = cc.Sprite:create('game/handredcattle/image/empty.png')
+    local animNode = cc.CSLoader:createNode(csbPath)
+    if animNode == nil then
+        print('invalid tong anim node type:')
+        return
+    end
+
+    animNode:setPosition(0,0)
+    animNode:addTo(self.m_pathUI, 100)
+    --animNode:setScale(100)
+
+    animNode:setVisible(true)
+    _:playTimelineAction(csbPath, 'animation0', animNode, false)
+    ExternalFun.playSoundEffect(string.format('game/handredcattle/sound/tong_%d.mp3', tonumber(tongType)), false)
+    Define:performWithDelay(animNode, function()
+        animNode:removeFromParent()
+    end, 1.2)
+end
 ------
+------------------------------------------------------------------------
+function _:playTimelineAction(path, actionName, root, repeat_)
+    if repeat_ == nil then
+        repeat_ = true
+    end
+
+    local ac2 = cc.CSLoader:createTimeline(path)
+    if ac2:IsAnimationInfoExists(actionName) == true then
+        ac2:play(actionName, repeat_)
+    end
+    root:runAction(ac2)
+end
+------------------------------------------------------------------------
 
 return GameViewLayer
