@@ -374,7 +374,7 @@ function GameViewLayer:initPokerFly( )
     self.startPos = cc.p(self.m_pNodeCard:getChildByName("card_start_pos"):getPosition())
     
     self.m_cbend = function ()
-        self:playWinEffect()
+        ----self:playWinEffect()暂时屏蔽赢牌动画
         self:checkMyJetton()
         self:flychipex()
     end
