@@ -11,7 +11,7 @@ Handredcattle_Const.HAND_COUNT          = 5
 Handredcattle_Const.CARD_DIFFX          = 32
 Handredcattle_Const.JETTON_ITEM_COUNT   = 6
 
-Handredcattle_Const.waitArmPos = cc.p(632, 572)
+Handredcattle_Const.waitArmPos = cc.p(632, 152)
 Handredcattle_Const.waitArmTag = 11
 
 Handredcattle_Const.jieduanArmPos = cc.p(666, 354)
