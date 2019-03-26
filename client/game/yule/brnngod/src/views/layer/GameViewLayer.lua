@@ -244,6 +244,7 @@ function GameViewLayer:initVar()
 
     self.m_layerOtherUserInfo = nil
     self.m_layerTrend = nil
+    self.m_layerDealerQueue = nil
 end
 --ui对象引用初始化
 function GameViewLayer:initCCB()
@@ -842,7 +843,10 @@ function GameViewLayer:onEventDownDealers(bufferdate)
     local bankers_num = #self.bankersTable
     self.m_pLbAskNum:setString(bankers_num)       --申请上庄玩家人数
 
-
+    --更新申请上庄列表
+    if self.m_layerDealerQueue then
+        self.m_layerDealerQueue:recvNnGetApplyUpBankerRes()
+    end
 end
 
 function GameViewLayer:onEventWaitUpDealer(bufferdate)
@@ -882,6 +886,11 @@ function GameViewLayer:onEventUpDealer(bufferdate)
         self.banker_time = 0
         self.isWaitBanker = false
     end
+
+    --更新申请上庄列表
+    if self.m_layerDealerQueue then
+        self.m_layerDealerQueue:recvNnGetApplyUpBankerRes()
+    end
 end
 
 function GameViewLayer:onEventUpdateDealers(bufferdate)
@@ -900,6 +909,11 @@ function GameViewLayer:onEventUpdateDealers(bufferdate)
         end
     end  
     self.banker_time = 0
+
+    --更新申请上庄列表
+    if self.m_layerDealerQueue then
+        self.m_layerDealerQueue:recvNnGetApplyUpBankerRes()
+    end
 end
 
 function GameViewLayer:onEventPlayerCome(bufferdate)
@@ -1189,9 +1203,18 @@ function GameViewLayer:onDealerClicked()
         local dealerQueueView = layer:create(self,self.min_dealermoney)
         dealerQueueView:addTo(self)
         dealerQueueView:showPopup()
-
+        self.m_layerDealerQueue = dealerQueueView
     end
+end
 
+function GameViewLayer:DownDealer()
+    self._scene:sendDownDealer()
+end
+
+function GameViewLayer:UpDealer()
+    if self.isUpBanker == false then
+        self._scene:sendUpDealer()
+    end
 end
 --@@@@@@@@@@@@@@@                                                                      工具方法
 
@@ -2534,7 +2557,7 @@ end
 
 function GameViewLayer:isSelfInDealerQueue()
     for i, v in pairs(self.bankersTable) do
-        if v ==  GlobalUserItem.tabAccountInfo.userid then
+        if v[1] ==  GlobalUserItem.tabAccountInfo.userid then
             return true
         end
     end
@@ -2714,6 +2737,7 @@ function GameViewLayer:getJettonEndPosByIndex(areaIndex)
 
     return chipEnd_x, chipEnd_y
 end
+
 ------
 ------------------------------------------------------------------------
 function _:playTimelineAction(path, actionName, root, repeat_)

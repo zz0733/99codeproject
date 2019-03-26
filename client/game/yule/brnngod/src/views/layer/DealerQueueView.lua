@@ -4,9 +4,7 @@
 local ExternalFun       = appdf.req(appdf.EXTERNAL_SRC .. "ExternalFun")
 local module_pre = "game.yule.brnngod.src"
 
-------local BaseFullLayer = app.req("app.fw.common.BaseFullLayer")
-------local CommonHelper = app.req('app.fw.common.CommHelper')
-------local Const = app.req('app.games.Niuniu.NiuConst')
+local QueryDialog = appdf.req("app.views.layer.other.QueryDialog")
 local Define = appdf.req(module_pre..'.models.Define')
 local Lang = appdf.req(module_pre..'.views.layer.NiuLang')
 local HandredcattleRes = appdf.req(module_pre .. ".views.layer.handClasses.HandredcattleRes")
@@ -58,27 +56,35 @@ function DealerQueueView:onBack( ... )
 end
 
 function DealerQueueView:onClose()
+    self.m_pNodeGameView.m_layerDealerQueue = nil
     self:hidePopout()
 end
 
 -- 取消上庄点击时调用
 function DealerQueueView:onClickCancelZhuang()
-
+    ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_BUTTON)
     -- 老板，你确定要取消上庄申请吗？
-    require('app.fw.common.DialogBox').show("", Lang.DEALER_CANCEL_QUES, Lang.CONFIRM, Lang.CANCEL, function()
-        cc.loaded_packages.NiuTigerLogic:requestNnApplyUpDownBankerReq(false) -- 下庄
-        cc.loaded_packages.NiuTigerLogic:requestNnGetApplyUpBankerReq() -- 拉列表
-    end)
+    ---require('app.fw.common.DialogBox').show("", Lang.DEALER_CANCEL_QUES, Lang.CONFIRM, Lang.CANCEL, function()
+    ---    cc.loaded_packages.NiuTigerLogic:requestNnApplyUpDownBankerReq(false) -- 下庄
+    ---    cc.loaded_packages.NiuTigerLogic:requestNnGetApplyUpBankerReq() -- 拉列表
+    ---end)
 
+    self.m_querydialog = QueryDialog:create(Lang.DEALER_CANCEL_QUES,function()
+        self:onCancelDealer()
+    end,nil,1)
+    self.m_querydialog:setCanTouchOutside(false)
+    self.m_querydialog:addTo(self)
 end
 
 
 -- 上庄面板，上庄按钮点击时调用
 function DealerQueueView:onClickQPanelBeZhuang()
+    ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_BUTTON)
     -- 金币不足
     --self.m_pNodeGameView
-    local model = self.m_pNodeGameView
-    if not model:canBeDealer() then
+    local model = self.m_pNodeGameView:UpDealer()
+
+    --[[if not model:canBeDealer() then
         -- dispatchEvent('event_NiuMessage', Lang.DEALER_MONEY_NOT_ENOUGH)
         local showDialog = require('app.fw.common.DialogBox').show
         showDialog(Lang.DEF_MSG_TITLE, Lang.ZHUANG_BUY, Lang.OK, Lang.CANCEL, function()
@@ -90,6 +96,7 @@ function DealerQueueView:onClickQPanelBeZhuang()
 
     cc.loaded_packages.NiuTigerLogic:requestNnApplyUpDownBankerReq(true) -- 上庄
     cc.loaded_packages.NiuTigerLogic:requestNnGetApplyUpBankerReq() -- 上庄队列
+    ]]--
 end
 
 -- 事件：关闭UI
@@ -111,7 +118,7 @@ end
 function DealerQueueView:onEventDealerInfoRefresh()
     print('NiuDealerQView:onEventDealerInfoRefresh()')
     self:updateBtns()
-    dispatchEvent('event_closeDealerQ')
+    ---dispatchEvent('event_closeDealerQ')
 end
 
 -- 刷新按钮状态
@@ -147,6 +154,11 @@ function DealerQueueView:reloadDealerList()
     end
 end
 
+function DealerQueueView:onCancelDealer()
+    if self.m_pNodeGameView then
+        self.m_pNodeGameView:DownDealer()
+    end
+end
 
 ------------------------------------------------------------------------------------------------------------
 
