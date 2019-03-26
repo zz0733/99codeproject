@@ -250,7 +250,6 @@ function GameViewLayer:initCCB()
         --筹码层
     self.m_pNodeChipSpr         = self.m_rootNode:getChildByName("Panel_node_chip")
         --需要播入场动画
-    self.m_pNodeLeft            = self.m_pathUI:getChildByName("Panel_node_left")       --其他玩家
     self.m_pNodeMiddle          = self.m_rootNode:getChildByName("Panel_node_middle")       --天地玄黄信息
     self.m_pNodeTopInfo         = self.m_rootNode:getChildByName("Panel_node_top_info")     --庄家信息panel
     self.m_pNodeBottomButton    = self.m_rootNode:getChildByName("Panel_node_bottom_button")    --下注按钮panel
@@ -266,7 +265,7 @@ function GameViewLayer:initCCB()
     self.m_pNodeTip             = self.m_pathUI:getChildByName("Panel_node_tip")        --飘出来的字（换庄，输赢金币等），轮滑女飘逸轨迹
     self.m_pNodeClipMenu        = self.m_pathUI:getChildByName("Panel_node_clip")       --关闭菜单层
     self.m_pNodeDlg             = self.m_pathUI:getChildByName("Panel_dialog") 
-    self.m_pNodeTrend           = self.m_pathUI:getChildByName("Panel_node_trend")      --趋势，走向层
+    --self.m_pNodeTrend           = self.m_pathUI:getChildByName("Panel_node_trend")      --趋势，走向层
     ------------text---------------
     self.m_pLbUsrGold           = self.m_pNodeBottomInfo:getChildByName("Node_usergold"):getChildByName("TXT_player_gold_num")  --用户自己的金币数量
     self.m_pLbZhuangHead        = self.m_pNodeTopInfo:getChildByName("Sprite_zhuang_head")     --庄家头像
@@ -350,7 +349,7 @@ function GameViewLayer:initCCB()
         self.m_pSpHeadIcon[i] = self.m_userBtnVec[i]:getChildByName("Sprite_head")
         self.m_pSpHeadIcon[i]:setVisible(false)
         self.m_pLbShowPlayerName[i] = self.m_pNodeShowPlayer[i]:getChildByName("Text_showPlayer_name")
-        self.m_pLbShowPlayerGold[i] = self.m_pNodeShowPlayer[i]:getChildByName("BitmapFontLabel_showPlayer_gold")
+        self.m_pLbShowPlayerGold[i] = self.m_pNodeShowPlayer[i]:getChildByName("Text_showPlayer_gold")
         self.m_pBtnUserInfo[i] = self.m_pNodeShowPlayer[i]:getChildByName("Button_userInfo")
 
         ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(Brnn_Res.ANI_OF_CHANGEUSER.FILEPATH)
@@ -677,6 +676,7 @@ function GameViewLayer:onEventEnterGame(bufferdate)
         table.insert(self.bankersTable,player_)
     end
 
+    self.min_dealermoney = bufferdate.min_dealermoney
     self.m_seats = bufferdate.seats
     ------更新桌面玩家
     self:updateTableUserInfo()
@@ -828,8 +828,9 @@ function GameViewLayer:onEventFreeTime(bufferdate)
 end
 
 function GameViewLayer:onEventGetSeatInfo(bufferdate)
-
+    self.m_seats = bufferdate.seats
 end
+
 function GameViewLayer:onEventDownDealers(bufferdate)
     dump(self.bankersTable)
     if bufferdate[1] == GlobalUserItem.tabAccountInfo.userid then
@@ -842,7 +843,8 @@ function GameViewLayer:onEventDownDealers(bufferdate)
     end
     local bankers_num = #self.bankersTable
     self.m_pLbAskNum:setString(bankers_num)       --申请上庄玩家人数
-    
+
+
 end
 
 function GameViewLayer:onEventWaitUpDealer(bufferdate)
@@ -956,6 +958,8 @@ function GameViewLayer:onEventGameOver(bufferdate)
     self.player_winZodics = bufferdate.win_zodics
     self.selfcurscore = bufferdate.mywin -- 自己最终得分
     self.bankercurscore = bufferdate.dealer_win -- 庄家最终得分
+    self.m_tableUserWins = bufferdate.rank8_wins -- 桌上玩家输赢
+    self.m_topWinners = bufferdate.top4_wins     -- 赢钱最多的四个人
 
     self:refreshJettonState()
     self:showTimeTips(2)
@@ -1177,9 +1181,10 @@ function GameViewLayer:onDealerClicked()
         self._scene:sendUpDealer()
     else--显示申请列表
         local layer = appdf.req(module_pre .. ".views.layer.DealerQueueView")
-        local dealerQueueView = layer:create(self)
+        local dealerQueueView = layer:create(self,self.min_dealermoney)
         dealerQueueView:addTo(self)
         dealerQueueView:showPopup()
+
     end
 
 end
@@ -2015,9 +2020,6 @@ function GameViewLayer:doFlyJob()
                     job[i].preCB()
                     job[i].preCBExec = true
                 end
-                if #job[i].chips == cmd.TABEL_USER_COUNT then
-                    print('1111')
-                end
                 for j = 1, #job[i].chips do
                     local segnum = mf(#job[i].chips[j] / CHIP_FLY_SPLIT) -- 计算需要分成几段
                     for m = 0, segnum do
@@ -2053,8 +2055,6 @@ function GameViewLayer:doFlyJob()
         if tg and tg.sptg then
             local ts = job[tg.idx].flytimedelay and job[tg.idx].flytime + math.random(5,15) / 100 or job[tg.idx].flytime
 
-            print('费筹码')
-            dump(tg)
             if tg.sptg.endpos or true  then
 
                 local mt = cc.MoveTo:create(ts, tg.sptg.endpos)
@@ -2078,9 +2078,16 @@ function GameViewLayer:doFlyJob()
 end
 --得分动画
 function GameViewLayer:playUserScoreEffect()
+
+    local tableuserTotal = 0                    -- 桌面玩家总输赢
+    for i ,v in pairs(self.m_tableUserWins) do
+        tableuserTotal = tableuserTotal + v[2]
+    end
+
+    local tableUserWins = self.m_tableUserWins                 -- 桌面玩家输赢
     local selfcurscore = self.selfcurscore --+ self.myJjj      -- 自己最终得分
     local bankercurscore = self.bankercurscore  -- 庄家最终得分
-    local othercurscore = self.bankercurscore*-1-self.selfcurscore  -- 其他玩家最终得分
+    local othercurscore = self.bankercurscore*-1 - tableuserTotal -self.selfcurscore  -- 其他玩家最终得分
     self.myJjj = 0
     --加钱
 --    local tem = HoxDataMgr.getInstance():getOpenData()
@@ -2141,6 +2148,33 @@ function GameViewLayer:playUserScoreEffect()
         self:flyNumOfGoldChange(self.m_pLbResultSelf, curpath, str)
     end
 
+    -- 显示桌面分数动画
+    for i, v in pairs(tableUserWins) do
+
+        if i > cmd.TABEL_USER_COUNT then
+            break
+        end
+
+
+        if v[2] ~= 0 then
+            local userinfo = self:getUserInfoByUid((self.m_seats[i+1] or {})[1])
+            if v[1] == self.m_seats[i+1][1] and userinfo then
+                str = v[2]
+                if v[2] > 0 then
+                    str = "+" .. str
+                    curpath = HandredcattleRes.FNT_RESULT_WIN
+                else
+                    curpath = HandredcattleRes.FNT_RESULT_LOSE
+                end
+
+                self:flyNumOfGoldChange(self.m_pLbTableResultGold[i], curpath, str)
+            else
+                print('GameViewLayer:playUserScoreEffect 玩家信息对不上')
+            end
+
+        end
+    end
+
 --    --自己金币变化动画
 --    if llAwardValue > 0 then
 --        Effect:getInstance():showScoreChangeEffect(self.m_pLbUsrGold, llUserScore - llAwardValue, llAwardValue, PlayerInfo.getInstance():getUserScore(), 1, 10)
@@ -2188,7 +2222,7 @@ function GameViewLayer:flyNumOfGoldChange(lb, filepath, str)
     end)
 
     local pSeq = cc.Sequence:create(
-        cc.EaseBounceOut:create(cc.MoveBy:create(0.8, cc.p(0,-50))),
+        cc.EaseBounceOut:create(cc.MoveBy:create(0.8, cc.p(0,50))),
         cc.DelayTime:create(2.0),
         cc.FadeOut:create(0.4),
         callBack,
@@ -2369,7 +2403,7 @@ end
 -- 更新上桌玩家信息
 function GameViewLayer:updateTableUserInfo()
     for i=1, cmd.TABEL_USER_COUNT do
-        local pTableUser =  self:getUserInfoByUid((self.m_seats[i] or {})[1])
+        local pTableUser =  self:getUserInfoByUid((self.m_seats[i+1] or {})[1])
         if (not pTableUser) or (pTableUser[1] == cmd.INVALID_CHAIR) then
             self.m_pSpNoPlayer[i]:setVisible(true)
             self.m_pNodeShowPlayer[i]:setVisible(false)
@@ -2379,7 +2413,7 @@ function GameViewLayer:updateTableUserInfo()
             --换人播放动画
             local newuid = pTableUser[1]
             ------local lastuid = LhdzDataMgr.getInstance():getTableUserIdLast(i)
-            local lastuid = self.m_vecTableUserIdLast[i] and self.m_vecTableUserIdLast[i] or cmd.INVALID_CHAIR
+            local lastuid = self.m_vecTableUserIdLast[i] and self.m_vecTableUserIdLast[i] or cc.exports.INVALID_CHAIR
 
             local func = function(armatureBack, movementType, movementID)
                 if movementType == ccs.MovementEventType.complete then
@@ -2391,7 +2425,8 @@ function GameViewLayer:updateTableUserInfo()
                         self.m_pSpNoPlayer[i]:setVisible(false)
                         self.m_pNodeShowPlayer[i]:setVisible(true)
                         self.m_pLbShowPlayerName[i]:setString(LuaUtils.getDisplayNickName(pTableUser[2], 8, true))
-                        self.m_pLbShowPlayerGold[i]:setString((pTableUser[3]))
+                        self.m_pLbShowPlayerGold[i]:setString((pTableUser[6]))
+                        self.m_pLbShowPlayerGold[i]:setVisible(true)
                     end
                 end
             end
@@ -2409,14 +2444,16 @@ function GameViewLayer:updateTableUserInfo()
                     self.m_pSpNoPlayer[i]:setVisible(false)
                     self.m_pNodeShowPlayer[i]:setVisible(true)
                     self.m_pLbShowPlayerName[i]:setString(LuaUtils.getDisplayNickName(pTableUser[2], 8, true))
-                    self.m_pLbShowPlayerGold[i]:setString((pTableUser[3]))
+                    self.m_pLbShowPlayerGold[i]:setString((pTableUser[6]))
+                    self.m_pLbShowPlayerGold[i]:setVisible(true)
                 end
             else
                 self:replaceUserHeadSprite(self.m_changeUserAniVec[i], Brnn_Res.ANI_OF_CHANGEUSER.ANILIST.BEGIN,pTableUser[5], pTableUser[3])
                 self.m_pSpNoPlayer[i]:setVisible(false)
                 self.m_pNodeShowPlayer[i]:setVisible(true)
                 self.m_pLbShowPlayerName[i]:setString(LuaUtils.getDisplayNickName(pTableUser[2], 8, true))
-                self.m_pLbShowPlayerGold[i]:setString((pTableUser[3]))
+                self.m_pLbShowPlayerGold[i]:setString((pTableUser[6]))
+                self.m_pLbShowPlayerGold[i]:setVisible(true)
             end
 
         end
@@ -2426,9 +2463,10 @@ end
 -- 更新上桌玩家分数
 function GameViewLayer:updateTableUserScore()
     for i=1, cmd.TABEL_USER_COUNT do
-        local pTableUser =  self:getUserInfoByUid((self.m_seats[i] or {})[1])
+        local pTableUser =  self:getUserInfoByUid((self.m_seats[i+1] or {})[1])
         if pTableUser and (pTableUser[1] ~= cc.exports.INVALID_CHAIR) then
-            self.m_pLbShowPlayerGold[i]:setString((pTableUser[3]))
+            self.m_pLbShowPlayerGold[i]:setString((pTableUser[6]))
+            self.m_pLbShowPlayerGold[i]:setVisible(true)
         end
     end
 end
@@ -2621,19 +2659,23 @@ function GameViewLayer:isInTable(uid)
         return false
     end
 
+
     for i, v in pairs(self.m_seats) do
 
-        if i > cmd.TABEL_USER_COUNT then
+        if i > cmd.TABEL_USER_COUNT + 1 then
             return false
         end
 
-        if uid == v[1] then
-            return true, i
+        if i ~= 1 then
+            if uid == v[1] then
+                return true, i-1
+            end
         end
     end
 
     return false
 end
+
 ------
 ------------------------------------------------------------------------
 function _:playTimelineAction(path, actionName, root, repeat_)

@@ -41,18 +41,6 @@
 		"AnimationName": "dt_022",
 		"SortID": "0"
 	}, {
-		"KindID": "1115",
-		"KindName": "金蝉捕鱼",
-		"TypeID": "0",
-		"Status": 2,
-		"GameTypeIDs": "13",
-		"ModuleName": "yule.frogfish",
-		"ClientVersion": "101122049",
-		"ResVersion": "12",
-		"AnimationPath": "dt/image/zcmdwc_zjm/button_fishBtn.csb",
-		"AnimationName": "dt_018",
-		"SortID": "0"
-	}, {
 		"KindID": "1120",
 		"KindName": "李逵捕鱼",
 		"TypeID": "0",
@@ -65,18 +53,6 @@
 		"AnimationName": "dt_018",
 		"SortID": "0"
 	}, {
-		"KindID": "1122",
-		"KindName": "大闹天宫捕鱼",
-		"TypeID": "0",
-		"Status": 2,
-		"GameTypeIDs": "13",
-		"ModuleName": "yule.monkeyfish",
-		"ClientVersion": "101122049",
-		"ResVersion": "12",
-		"AnimationPath": "dt/image/zcmdwc_zjm/button_fishBtn.csb",
-		"AnimationName": "dt_018",
-		"SortID": "0"
-	},{
 		"KindID": "1125",
 		"KindName": "红黑大战",
 		"TypeID": "0",
@@ -112,19 +88,7 @@
 		"AnimationPath": "dt/image/zcmdwc_zjm/button_tbnnBtn.csb",
 		"AnimationName": "dt_023",
 		"SortID": "0"
-	}, {
-		"KindID": "1055",
-		"KindName": "四人斗牛",
-		"TypeID": "0",
-		"Status": 2,
-		"GameTypeIDs": "1",
-		"ModuleName": "yule.srnngod",
-		"ClientVersion": "101122049",
-		"ResVersion": "9",
-		"AnimationPath": "hall/effect/gamelist/gamekind_413/gamekind_413.ExportJson",
-		"AnimationName": "gamekind_413",
-		"SortID": "0"
-	}, {
+	},  {
 		"KindID": "1031",
 		"KindName": "百人牛牛",
 		"TypeID": "0",
@@ -133,44 +97,8 @@
 		"ModuleName": "yule.brnngod",
 		"ClientVersion": "101122049",
 		"ResVersion": "14",
-		"AnimationPath": "hall/effect/gamelist/gamekind_205/gamekind_205.ExportJson",
+		"AnimationPath": "dt/image/zcmdwc_zjm/button_brnnBtn.csb",
 		"AnimationName": "gamekind_205",
-		"SortID": "0"
-	}, {
-		"KindID": "2002",
-		"KindName": "飞禽走兽",
-		"TypeID": "0",
-		"Status": 2,
-		"GameTypeIDs": "1",
-		"ModuleName": "yule.fqzs",
-		"ClientVersion": "101122049",
-		"ResVersion": "12",
-		"AnimationPath": "hall/effect/gamelist/gamekind_201/gamekind_201.ExportJson",
-		"AnimationName": "gamekind_201",
-		"SortID": "0"
-	}, {
-		"KindID": "1034",
-		"KindName": "二人牛牛",
-		"TypeID": "0",
-		"Status": 2,
-		"GameTypeIDs": "1",
-		"ModuleName": "yule.niuniu",
-		"ClientVersion": "101122049",
-		"ResVersion": "9",
-		"AnimationPath": "hall/effect/gamelist/gamekind_402/gamekind_402.ExportJson",
-		"AnimationName": "gamekind_402",
-		"SortID": "0"
-	}, {
-		"KindID": "1077",
-		"KindName": "极速豪车",
-		"TypeID": "0",
-		"Status": 2,
-		"GameTypeIDs": "1",
-		"ModuleName": "yule.jshc",
-		"ClientVersion": "101122049",
-		"ResVersion": "10",
-		"AnimationPath": "hall/effect/gamelist/gamekind_207/gamekind_207.ExportJson",
-		"AnimationName": "gamekind_207",
 		"SortID": "0"
 	}, {
 		"KindID": "1236",
@@ -198,10 +126,10 @@
 		"SortID": "0"
 	}],
 	"gametype": [
-		[1006,1029, 1125, 2005, 1031, 2002, 1077, 1078, 1236, 1238,1101, 1115, 1120, 1122, 1002, 1036, 1055, 1083, 1015, 1034],
-		[1029, 1125, 2005, 1031, 2002, 1077, 1078],
-		[1115, 1120, 1122],
+		[1006,1029, 1125, 2005, 1031, 1078, 1236, 1238,1101, 1120, 1002, 1036, 1083, 1015],
+		[1029, 1125, 2005, 1031, 1078],
+		[1120],
 		[1238, 1236],
-		[1002, 1036, 1055, 1083, 1015, 1034]
+		[1002, 1036, 1083, 1015]
 	]
 }

@@ -213,7 +213,7 @@ function PlayerInfoItem:ctor(base, node)
     -- CommonHelper:loadHeadMiddleImg(self.avatar, player.sex or 0, player.logo or 1) -- 头像
     -- CommonHelper:setVIPIcon(self.avatar, player.vip or 0)
     -- self.name:setString(player.rolename)
-    Define:loadName(self.name, player.rolename, 18)
+    self.name:setString(LuaUtils.getDisplayNickName(player.rolename, 8, true))
     -- 钱钱
     self.coin:setString(player.coin or 0)
     -- 点头像弹信息面板

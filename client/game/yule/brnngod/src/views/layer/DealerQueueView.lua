@@ -19,7 +19,7 @@ local _ = {}
 
 
 -- 初始化UI
-function DealerQueueView:ctor( pNodeGameView)
+function DealerQueueView:ctor( pNodeGameView,mindealermoney)
     ------NiuDealerQView.super.initUI(self, ...)
 
     ------require('app.fw.common.PopupEffect').init(
@@ -36,6 +36,8 @@ function DealerQueueView:ctor( pNodeGameView)
     self.close:addClickEventListener(handler(self, self.onBack))
     self.cancelZhuangBtn:addClickEventListener(handler(self, self.onClickCancelZhuang))    
     self.beZhuangBtn:addClickEventListener(handler(self, self.onClickQPanelBeZhuang))    
+
+    self.minZhuangCarry:setString(mindealermoney or 0)
 
     ---addNodeListener(self, "recvNnGetApplyUpBankerRes", handler(self, self.recvNnGetApplyUpBankerRes))
     ---addNodeListener(self, "event_closeDealerQ", handler(self, self.onEventCloseDealerQ))
@@ -155,10 +157,22 @@ end
 function WaitQueueItem:init(index, player, itemModel,pNodeGameView)
 
     self.m_pNodeGameView = pNodeGameView
-    player.rolename = player[2]
-    player.rid = player[1]
-    player.sex = player[4] or 0         --暂时没有性别
-    player.coin = player[5] or 0        --玩家金币
+
+    local userInfo = self.m_pNodeGameView:getUserInfoByUid(player[1])
+
+    if userInfo then
+        player.rolename = player[2]
+        player.rid = player[1]
+        player.sex = userInfo[5]
+        player.coin = userInfo[6]
+        player.logo = userInfo[3]
+    else
+        player.rolename = player[2]
+        player.rid = player[1]
+        player.sex = player[4] or 0         --暂时没有性别
+        player.coin = player[6] or 0        --玩家金币
+    end
+
 
     --剩余局数
     if player.left_banker_num == nil then
@@ -170,7 +184,7 @@ function WaitQueueItem:init(index, player, itemModel,pNodeGameView)
     Define:getNodeList(self, self.node)
 
     --CommonHelper:loadHeadMiddleImg(self.avatar, player.sex or 0, player.logo or 1) -- 头像
-
+    self.avatar:setVisible(true)
     -- 头像
     self.avatar:setScale(0.6)
     self.avatar = createStencilAvatar(self.avatar, 'common/tx/tx_mask.png', 'common/tx/tx_2.png', cc.size(2, 2))
@@ -179,7 +193,7 @@ function WaitQueueItem:init(index, player, itemModel,pNodeGameView)
     -- self.avatar:getParent():setAlphaThreshold((player.vip or 0) > 0 and 0 or 0.6) -- 切换剪裁区域
 
     --CommonHelper:setVIPIcon(self.avatar, player.vip or 0)
-    Define:loadName(self.name, player.rolename, 6) -- 名字
+    self.name:setString(LuaUtils.getDisplayNickName(player.rolename, 8, true)) -- 名字
     if index == 1 then
         dump(player,"WaitQueueItem:init")
         if player.left_banker_num > 0 then
