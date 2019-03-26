@@ -29,11 +29,11 @@ Handredcattle_Const.winArmPos = {
 Handredcattle_Const.winArmTag = 50
 
 Handredcattle_Const.resultPos = {
-    [1]= cc.p(658.5,603),
-    [2]= cc.p(295.5,187),
-    [3]= cc.p(540,187),
-    [4]= cc.p(785.5,187),
-    [5]= cc.p(1029.5,187),
+    [1]= cc.p(683.5,633),
+    [2]= cc.p(300.5,187),
+    [3]= cc.p(550,187),
+    [4]= cc.p(795.5,187),
+    [5]= cc.p(1039.5,187),
 }
 
 Handredcattle_Const.cardStartPos = {

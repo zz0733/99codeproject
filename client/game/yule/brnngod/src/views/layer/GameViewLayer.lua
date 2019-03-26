@@ -182,7 +182,7 @@ function GameViewLayer:initVar()
     self.pokerPathPos               = {}
     self.m_othersPos                = nil
     self.m_selfPos                  = nil
-    self.m_bankPos                  = cc.p(411,678)
+    self.m_bankPos                  = cc.p(391,678)
     self.m_flyJobVec                = {}
 
 

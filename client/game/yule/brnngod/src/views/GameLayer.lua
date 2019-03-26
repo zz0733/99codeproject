@@ -67,15 +67,12 @@ end
 
 function GameLayer:onEnterTransitionFinish()
     GameLayer.super.onEnterTransitionFinish(self)
-    ------设计分辨率的宽度, 设计分辨率的高度, cc.ResolutionPolicy.NO_BORDER
-    cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(1280,720,cc.ResolutionPolicy.NO_BORDER)
 end
 
 function GameLayer:onExit()
     self:KillGameClock()
     self:dismissPopWait()
     GameLayer.super.onExit(self)
-    cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(1334,750,cc.ResolutionPolicy.NO_BORDER)
 end
 
 --退出桌子

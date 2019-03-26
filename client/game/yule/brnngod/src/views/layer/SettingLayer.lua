@@ -1,5 +1,7 @@
 
 local SettingLayer = class("SettingLayer", cc.exports.FixLayer)
+local module_pre                    = "game.yule.brnngod.src"
+local HandredcattleRes              = appdf.req(module_pre .. ".views.layer.handClasses.HandredcattleRes")
 
 function SettingLayer.create()
     return SettingLayer:new()
@@ -12,7 +14,7 @@ end
 
 function SettingLayer:init()
 
-    self.m_pathUI = cc.CSLoader:createNode("game/handredcattle/HandredcattleSetting.csb")
+    self.m_pathUI = cc.CSLoader:createNode(HandredcattleRes.CSB_GAME_SETTING)
     self.m_pathUI:addTo(self)
     self.m_pBg = self.m_pathUI:getChildByName("image_bg")
 
@@ -33,15 +35,15 @@ function SettingLayer:onReturnClicked()
 end
 
 function SettingLayer:initView()
-    local music = self.m_pBg:getChildByName("slider_music")    --����
+    local music = self.m_pBg:getChildByName("slider_music")    --音乐
     local a = GlobalUserItem.nMusic
     music:setPercent(a)
     music:addEventListener(function(ref,eventType)
         print(ref:getPercent())
         self:Slider_Music(ref:getPercent())
     end)
-    local voice = self.m_pBg:getChildByName("slider_voice")    --��Ч
-    local b = GlobalUserItem.nSound;
+    local voice = self.m_pBg:getChildByName("slider_voice")    --音效
+    local b = GlobalUserItem.nSound
     voice:setPercent(b)
     voice:addEventListener(function(ref,eventType)
         print(ref:getPercent())

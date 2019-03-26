@@ -18,6 +18,7 @@ local HandredcattleRes =
     ["CSB_GAME_TREND_VIEW"]     = 'game/handredcattle/HandredcattleTrend.csb',
     ["CSB_GAME_DEALER_QUEUE"]   = 'game/handredcattle/HandredcattleQueue.csb',
     ["CSB_GAME_PLAYER_LIST"]    = 'game/handredcattle/HandredcattlePlayerList.csb',
+    ["CSB_GAME_SETTING"]    = 'game/handredcattle/HandredcattleSetting.csb',
 
 
     --sprite
