@@ -10,7 +10,7 @@ local Define = appdf.req(module_pre .. ".models.Define")
 local TrendLayer = class("TrendLayer", cc.exports.FixLayer)
 local HandredcattleRes              = appdf.req(module_pre .. ".views.layer.handClasses.HandredcattleRes")
 -- 初始化UI
-function TrendLayer:ctor( ... )
+function TrendLayer:ctor(pGameViewLayer)
     --NiuTrendView.super.initUI(self, ...)
 
     --[[require('app.fw.common.PopupEffect').init(
@@ -28,6 +28,7 @@ function TrendLayer:ctor( ... )
     --addNodeListener(self, "recvNnGetTrendRes", handler(self, self.recvNnGetTrendRes))
 
 
+    self.m_pGameViewLayer = pGameViewLayer
     --cc.loaded_packages.NiuTigerLogic:requestNnGetTrendReq()
 end
 
@@ -37,6 +38,7 @@ function TrendLayer:onBack( ... )
 end
 
 function TrendLayer:onClose()
+    self.m_pGameViewLayer.m_layerTrend = nil
     self:hidePopout()
 end
 

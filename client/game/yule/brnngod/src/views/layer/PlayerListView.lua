@@ -19,7 +19,7 @@ local LineItem = class('LineItem', function() -- 闲家基本信息item
 end)
 
 -- 初始化UI
-function PlayerListView:ctor(playerInfoTable)
+function PlayerListView:ctor(pGameViewLayer, playerInfoTable)
     -----PlayerListView.super.initUI(self, ...)
     print("NiuniuPlayerListView")
     ----require('app.fw.common.PopupEffect').init(
@@ -29,6 +29,7 @@ function PlayerListView:ctor(playerInfoTable)
     ----    true,
     ----    handler(self, self.popupAniEnd)
     ----)
+    self.m_pGameViewLayer = pGameViewLayer
     self.m_playerInfoTable = playerInfoTable
     local csbNode = ExternalFun.loadCSB(HandredcattleRes.CSB_GAME_PLAYER_LIST, self)
     self:setTargetShowHideStyle(self, self.SHOW_POPUP, self.HIDE_POPOUT)
@@ -55,8 +56,6 @@ function PlayerListView:ctor(playerInfoTable)
 end
 
 function PlayerListView:popupAniEnd()
-    ------pcall(function () showLoadingView(LoadingViewType.LOAD_DATA) end)
-    ------addNodeListener(self, "recvNnGetPlayerListRes", handler(self, self.recvDraonfightPlayersInfoRes))
     Define:performWithDelay(self, function()
         cc.loaded_packages.NiuTigerLogic:requestNnGetPlayerListReq()
     end, 0.1)
@@ -64,22 +63,20 @@ end
 
 -- 返回按键响应
 function PlayerListView:onBack( ... )
-    ------pcall(function() hideLoadingView() end)
     self:onClose()
 end
 function PlayerListView:onCloseView()
-    ------pcall(function() hideLoadingView() end)
     self:onClose()
 end
 
 function PlayerListView:onClose()
+    self.m_pGameViewLayer.m_layerOtherUserInfo = nil
     self:hidePopout()
 end
 
 -- 事件：闲家列表
 function PlayerListView:recvDraonfightPlayersInfoRes(event)
-    print('NiuniuPlayerListView:recvDraonfightPlayersInfoRes')
-    ------pcall(function () hideLoadingView() end )
+    print('PlayerListView:recvDraonfightPlayersInfoRes')
     -- 变成二维数组（一行三个）
     local list = event or {}
     local tmp = {{}}

@@ -241,6 +241,9 @@ function GameViewLayer:initVar()
     self.num0 = 0
 
     self.m_seats = {}
+
+    self.m_layerOtherUserInfo = nil
+    self.m_layerTrend = nil
 end
 --ui对象引用初始化
 function GameViewLayer:initCCB()
@@ -738,35 +741,20 @@ end
 --【1】区域，【2】区域总钱数，【3】uid,【4】下注钱数，【5】剩余可下注
 function GameViewLayer:onEventBet(bufferdate)
     local chipBegin_x,chipBegin_y = 0,0     --筹码起飞的位置
-    local chipEnd_x,chipEnd_y = 0,0        --筹码终点位置
-    if bufferdate[1] == 0 then
-        self.tdxhTable[1]["allMoney"] = bufferdate[2]
-        self.m_pLbBettingGold[1]:setString(self.tdxhTable[1]["allMoney"])       --天区域下注钱数
-        chipEnd_x = math.random(210,370)
-        chipEnd_y = math.random(310,400)
-    elseif bufferdate[1] == 1 then
-        self.tdxhTable[2]["allMoney"] = bufferdate[2]
-        self.m_pLbBettingGold[2]:setString(self.tdxhTable[2]["allMoney"])       --地区域下注钱数
-        chipEnd_x = math.random(460,620)
-        chipEnd_y = math.random(310,400)
-    elseif bufferdate[1] == 2 then
-        self.tdxhTable[3]["allMoney"] = bufferdate[2]
-        self.m_pLbBettingGold[3]:setString(self.tdxhTable[3]["allMoney"])       --玄区域下注钱数
-        chipEnd_x = math.random(700,865)
-        chipEnd_y = math.random(310,400)
-    elseif bufferdate[1] == 3 then
-        self.tdxhTable[4]["allMoney"] = bufferdate[2]
-        self.m_pLbBettingGold[4]:setString(self.tdxhTable[4]["allMoney"])       --黄区域下注钱数
-        chipEnd_x = math.random(940,1110)
-        chipEnd_y = math.random(310,400)
-    end
+
+    --筹码终点位置
+    local chipEnd_x,chipEnd_y = self:getJettonEndPosByIndex(bufferdate[1])
+
+    self.tdxhTable[bufferdate[1]+1]["allMoney"] = bufferdate[2]
+    self.m_pLbBettingGold[bufferdate[1]+1]:setString(self.tdxhTable[bufferdate[1]+1]["allMoney"])       --天区域下注钱数
+
     self.allBetMoney = self.allBetMoney + bufferdate[4]
     self.m_pLbTotalBetting:setString(self.allBetMoney)          --已下注的总钱数
     self.m_pLbRemaingBetting:setString(bufferdate[5]-bufferdate[5]%0.01)
 --    self:chipAnimation(bufferdate[1],bufferdate[4])
     self.allRemainngBet = 200000000--bufferdate[5] --剩余可下注钱数
     local isMyFly_ = false
-    local bInTable, tableIndex = self:isInTable(bufferdate[3])
+    local bInTable, tableUserIndex = self:isInTable(bufferdate[3])
     --判断是不是自己
     if bufferdate[3] == GlobalUserItem.tabAccountInfo.userid then
         chipBegin_x = 60
@@ -774,22 +762,23 @@ function GameViewLayer:onEventBet(bufferdate)
         isMyFly_ = true
     --桌上玩家
     elseif bInTable then
-        chipBegin_x, chipBegin_y= self.m_pNodeTablePlayer[tableIndex]:getPosition()
+        chipBegin_x, chipBegin_y= self.m_pNodeTablePlayer[tableUserIndex]:getPosition()
 
         --播放桌上玩家动画
-        self:playTableUserChipAni(tableIndex)
+        self:playTableUserChipAni(tableUserIndex)
     else
-
         chipBegin_x = self.m_othersPos.x
         chipBegin_y = self.m_othersPos.y
     end
 
-    self:createFlyChipSprite(bufferdate[4],cc.p(chipBegin_x,chipBegin_y),cc.p(chipEnd_x,chipEnd_y),bufferdate[1],isMyFly_, tableIndex)
+    self:createFlyChipSprite(bufferdate[4],cc.p(chipBegin_x,chipBegin_y),cc.p(chipEnd_x,chipEnd_y),bufferdate[1],isMyFly_, tableUserIndex)
     self:refreshJettonState()
 
     --更新桌面玩家分数
     self:updateTableUserScore()
 end
+
+--自己下注
 function GameViewLayer:onEventMybet(bufferdate)
     self.myJjj = self.myJjj + bufferdate[1]
     self.tdxhTable[bufferdate[2]+1]["myMoney"] = bufferdate[1]+self.tdxhTable[bufferdate[2]+1]["myMoney"]
@@ -798,6 +787,9 @@ function GameViewLayer:onEventMybet(bufferdate)
     self.m_pLbTotalBetting:setString(self.allBetMoney)          --已下注的总钱数
     self.m_pLbBettingGold[bufferdate[2]+1]:setString(self.tdxhTable[bufferdate[2]+1]["allMoney"])       --区域下注钱数
     self.m_pLbMyBettingGold[bufferdate[2]+1]:setString(self.tdxhTable[bufferdate[2]+1]["myMoney"])      --玩家自身在区域下注的钱数
+
+    local chipEnd_x, chipEnd_y = self:getJettonEndPosByIndex(bufferdate[2])
+    self:createFlyChipSprite(bufferdate[1],cc.p(60,40),cc.p(chipEnd_x,chipEnd_y),bufferdate[2],true, nil)
     self:refreshJettonState()
     for key, player_ in ipairs(self.playerInfoTable) do
         if player_[1] == myUID then        --用户自身信息
@@ -1046,28 +1038,40 @@ function GameViewLayer:onReturnClicked()
 end
 --其他玩家
 function GameViewLayer:onOtherInfoClicked()
+
+    if self.m_layerOtherUserInfo ~= nil then
+        return
+    end
+
     ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_BUTTON)
     --玩家列表
     --local infoLayer = HandredcattleOtherInfoLayer.create(self.playerInfoTable)
     --self.m_pNodeDlg:addChild(infoLayer,4)
 
     local layernew = appdf.req(module_pre..'.views.layer.PlayerListView')
-    local layerInfo = layernew:create(self.playerInfoTable)
-    layerInfo:addTo(self.m_pNodeDlg)
+    local layerInfo = layernew:create(self, self.playerInfoTable)
+    layerInfo:addTo(self.m_pNodeDlg, 100)
     layerInfo:showPopup()
 
+    self.m_layerOtherUserInfo = layerInfo
 end
 
 --走势按钮回调
 function GameViewLayer:onTrendClicked()
+    if self.m_layerTrend ~= nil then
+        return
+    end
+
     ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_BUTTON)
 
     local layer = appdf.req(module_pre .. ".views.layer.TrendLayer")
 
-    local pRule = layer:create()
-    pRule:addTo(self.m_pNodeDlg, 100)
-    pRule:setTrendData(self.histroyTable)
-    pRule:showPopup()
+    local layerInfo = layer:create(self)
+    layerInfo:addTo(self.m_pNodeDlg, 100)
+    layerInfo:setTrendData(self.histroyTable)
+    layerInfo:showPopup()
+
+    self.m_layerTrend = layerInfo
 end
 
 function GameViewLayer:onPopClicked()
@@ -1119,7 +1123,7 @@ function GameViewLayer:hideReturnMenu()
 
     local originalX = -1280
     local moveX = -165
-    if IPHONE_X then
+    if LuaUtils.isIphoneXDesignResolution() then
         moveX = -140
     end
     local seq = cc.Sequence:create(cc.MoveTo:create(0.2, cc.p(moveX + originalX, self.m_pNodeMenu:getPositionY())), cc.CallFunc:create(function()
@@ -1134,17 +1138,12 @@ function GameViewLayer:onSettingClicked()
     ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_BUTTON)
     self:hideReturnMenu()
 
-    --音效
-    self.isEffectSound = GlobalUserItem.bSoundAble
-    if self.isEffectSound then
-        GlobalUserItem.setSoundAble(false)
-        self.m_pBtnSetting:loadTextureNormal(HandredcattleRes.IMG_SOUND_OFF,ccui.TextureResType.plistType)
-    else
-        --打开
-        GlobalUserItem.setSoundAble(true)
-        self.m_pBtnSetting:loadTextureNormal(HandredcattleRes.IMG_SOUND_ON,ccui.TextureResType.plistType)
-    end
+    local layerInfo = SettingLayer.create()
+    layerInfo:addTo(self.m_pNodeDlg, 100)
+    layerInfo:showPopup()
+
 end
+
 function GameViewLayer:onVoiceClicked()
     ExternalFun.playSoundEffect(HandredcattleRes.SOUND_OF_BUTTON)
     --音乐
@@ -1341,29 +1340,15 @@ function GameViewLayer:isBanker()
     return false
 end
 --@@@@@@@@@@@@@@@@@@ 动画
-function GameViewLayer:createFlyChipSprite(money_,flyBegin_pos,flyEnd_pos,quyu_,isMyFly, tableIndex)
+function GameViewLayer:createFlyChipSprite(money_, flyBegin_pos, flyEnd_pos, quyu_, isMyFly, tableUserIndex)
     local pSpr = nil
     local jettonIndex = 0
     
     for i=1,6 do
-        if money_ == self.chips[1] then
---            pSpr = cc.Sprite:createWithTexture(self.chipImageBgRes[1])
-            jettonIndex = 1
-        elseif money_ == self.chips[2] then
---            pSpr = cc.Sprite:createWithTexture(self.chipImageBgRes[2])
-            jettonIndex = 2
-        elseif money_ == self.chips[3] then
---            pSpr = cc.Sprite:createWithTexture(self.chipImageBgRes[3])
-            jettonIndex = 3
-        elseif money_ == self.chips[4] then
---            pSpr = cc.Sprite:createWithTexture(self.chipImageBgRes[4])
-            jettonIndex = 4
-        elseif money_ == self.chips[5] then
---            pSpr = cc.Sprite:createWithTexture(self.chipImageBgRes[5])
-            jettonIndex = 5
-        elseif money_ == self.chips[6] then
---            pSpr = cc.Sprite:createWithTexture(self.chipImageBgRes[6])
-            jettonIndex = 6
+        if money_ == self.chips[i] then
+--          pSpr = cc.Sprite:createWithTexture(self.chipImageBgRes[1])
+            jettonIndex = i
+            break
         end
     end
     pSpr = cc.Sprite:createWithSpriteFrameName(HandredcattleRes.vecChipImage[jettonIndex])
@@ -1413,12 +1398,12 @@ function GameViewLayer:createFlyChipSprite(money_,flyBegin_pos,flyEnd_pos,quyu_,
         chipInfo.wJettonIndex = jettonIndex     --级别
         chipInfo.pChipSpr = pSpr
         table.insert(self.m_vecSpriteSelf,chipInfo)
-    elseif tableIndex then
+    elseif tableUserIndex then
         local chipInfo = {}
         chipInfo.wChipIndex = quyu_     --区域
         chipInfo.wJettonIndex = jettonIndex     --级别
         chipInfo.pChipSpr = pSpr
-        table.insert(self.m_vecSpriteTableUser[tableIndex],chipInfo)
+        table.insert(self.m_vecSpriteTableUser[tableUserIndex],chipInfo)
     else
         local chipInfo = {}
         chipInfo.wChipIndex = quyu_
@@ -2710,6 +2695,25 @@ function GameViewLayer:addJettonLabel(psprite, money_)
 
 end
 
+function GameViewLayer:getJettonEndPosByIndex(areaIndex)
+
+    local chipEnd_x , chipEnd_y = 0 , 0
+    if areaIndex == 0 then
+        chipEnd_x = math.random(210,370)
+        chipEnd_y = math.random(310,400)
+    elseif areaIndex == 1 then
+        chipEnd_x = math.random(460,620)
+        chipEnd_y = math.random(310,400)
+    elseif areaIndex == 2 then
+        chipEnd_x = math.random(700,865)
+        chipEnd_y = math.random(310,400)
+    elseif areaIndex == 3 then
+        chipEnd_x = math.random(940,1110)
+        chipEnd_y = math.random(310,400)
+    end
+
+    return chipEnd_x, chipEnd_y
+end
 ------
 ------------------------------------------------------------------------
 function _:playTimelineAction(path, actionName, root, repeat_)
