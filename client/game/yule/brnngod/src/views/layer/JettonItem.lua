@@ -20,6 +20,7 @@ function JettonItem:ctor(Viewnode, parentNode, index)
     self.m_Image:setVisible(false)
 
     self.m_BtnMark = self.m_Button:getChildByName("Button_jetton_mark_"..index)
+    self.m_BtnMark:setZOrder(5) --修改zorder确保在数字之上
 
     -- 绑定事件
     self.m_Button:addClickEventListener(handler(self, self.onClick))
@@ -43,6 +44,10 @@ end
 
 function JettonItem:setEnabled(enabled)
     self.m_BtnMark:setVisible(not enabled)
+end
+
+function JettonItem:getButtonNode()
+    return self.m_Button
 end
 
 return JettonItem

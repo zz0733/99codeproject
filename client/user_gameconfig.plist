@@ -9,38 +9,38 @@
             <integer>0</integer>
             <integer>0</integer>
             <integer>0</integer>
-            <integer>55</integer>
-            <integer>70</integer>
-            <integer>70</integer>
-            <integer>65</integer>
-            <integer>50</integer>
-            <integer>49</integer>
-            <integer>70</integer>
-            <integer>56</integer>
-            <integer>69</integer>
-            <integer>65</integer>
-            <integer>67</integer>
             <integer>51</integer>
-            <integer>69</integer>
-            <integer>54</integer>
-            <integer>50</integer>
-            <integer>69</integer>
-            <integer>67</integer>
-            <integer>56</integer>
-            <integer>49</integer>
-            <integer>67</integer>
             <integer>70</integer>
-            <integer>54</integer>
-            <integer>54</integer>
-            <integer>68</integer>
-            <integer>51</integer>
-            <integer>50</integer>
-            <integer>48</integer>
-            <integer>48</integer>
-            <integer>49</integer>
             <integer>55</integer>
             <integer>67</integer>
-            <integer>68</integer>
+            <integer>69</integer>
+            <integer>49</integer>
+            <integer>51</integer>
+            <integer>49</integer>
+            <integer>69</integer>
+            <integer>65</integer>
+            <integer>53</integer>
+            <integer>48</integer>
+            <integer>65</integer>
+            <integer>48</integer>
+            <integer>55</integer>
+            <integer>57</integer>
+            <integer>65</integer>
+            <integer>55</integer>
+            <integer>49</integer>
+            <integer>53</integer>
+            <integer>69</integer>
+            <integer>50</integer>
+            <integer>48</integer>
+            <integer>69</integer>
+            <integer>54</integer>
+            <integer>67</integer>
+            <integer>69</integer>
+            <integer>48</integer>
+            <integer>54</integer>
+            <integer>51</integer>
+            <integer>70</integer>
+            <integer>48</integer>
             <integer>34</integer>
             <integer>50</integer>
             <integer>50</integer>
@@ -115,11 +115,11 @@
             <integer>53</integer>
             <integer>51</integer>
             <integer>53</integer>
-            <integer>54</integer>
-            <integer>54</integer>
-            <integer>52</integer>
-            <integer>48</integer>
+            <integer>55</integer>
+            <integer>50</integer>
+            <integer>49</integer>
             <integer>51</integer>
+            <integer>49</integer>
             <integer>59</integer>
             <integer>122</integer>
             <integer>108</integer>
@@ -166,38 +166,38 @@
             <integer>0</integer>
             <integer>0</integer>
             <integer>0</integer>
-            <integer>54</integer>
-            <integer>65</integer>
             <integer>66</integer>
-            <integer>67</integer>
+            <integer>48</integer>
+            <integer>51</integer>
+            <integer>52</integer>
             <integer>66</integer>
+            <integer>49</integer>
             <integer>67</integer>
-            <integer>57</integer>
-            <integer>53</integer>
-            <integer>70</integer>
-            <integer>50</integer>
             <integer>67</integer>
             <integer>68</integer>
-            <integer>66</integer>
-            <integer>54</integer>
+            <integer>53</integer>
             <integer>70</integer>
-            <integer>67</integer>
+            <integer>68</integer>
+            <integer>50</integer>
             <integer>53</integer>
-            <integer>66</integer>
-            <integer>53</integer>
-            <integer>65</integer>
-            <integer>57</integer>
-            <integer>65</integer>
             <integer>49</integer>
-            <integer>56</integer>
-            <integer>70</integer>
+            <integer>53</integer>
+            <integer>53</integer>
+            <integer>52</integer>
             <integer>69</integer>
-            <integer>65</integer>
+            <integer>54</integer>
+            <integer>56</integer>
+            <integer>67</integer>
+            <integer>56</integer>
+            <integer>53</integer>
             <integer>65</integer>
             <integer>57</integer>
-            <integer>51</integer>
-            <integer>66</integer>
             <integer>53</integer>
+            <integer>52</integer>
+            <integer>69</integer>
+            <integer>66</integer>
+            <integer>57</integer>
+            <integer>70</integer>
             <integer>123</integer>
             <integer>34</integer>
             <integer>118</integer>
@@ -608,8 +608,8 @@
             <integer>58</integer>
             <integer>49</integer>
             <integer>52</integer>
-            <integer>48</integer>
-            <integer>51</integer>
+            <integer>49</integer>
+            <integer>57</integer>
             <integer>44</integer>
             <integer>34</integer>
             <integer>101</integer>
@@ -1107,8 +1107,8 @@
             <integer>48</integer>
             <integer>48</integer>
             <integer>54</integer>
-            <integer>56</integer>
-            <integer>50</integer>
+            <integer>54</integer>
+            <integer>54</integer>
             <integer>48</integer>
             <integer>50</integer>
             <integer>48</integer>
@@ -1173,7 +1173,7 @@
             <integer>34</integer>
             <integer>58</integer>
             <integer>56</integer>
-            <integer>49</integer>
+            <integer>50</integer>
             <integer>44</integer>
             <integer>34</integer>
             <integer>112</integer>

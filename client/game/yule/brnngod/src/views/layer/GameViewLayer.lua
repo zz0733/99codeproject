@@ -676,6 +676,12 @@ function GameViewLayer:onEventEnterGame(bufferdate)
         table.insert(self.bankersTable,player_)
     end
 
+    --设置筹码按钮
+    for i ,v in pairs(self.chips) do
+        if i > 5 then break end
+        self:addJettonLabel(self.m_pControlButtonJetton[i]:getButtonNode(), v)
+    end
+
     self.min_dealermoney = bufferdate.min_dealermoney
     self.m_seats = bufferdate.seats
     ------更新桌面玩家
@@ -1070,7 +1076,7 @@ function GameViewLayer:onPopClicked()
     local originalX = -1280
     if self.isOpenMenu then
         self.m_pNodeMenu:stopAllActions()
-        if IPHONE_X then
+        if LuaUtils.isIphoneXDesignResolution() then
             self.m_pNodeMenu:runAction(cc.MoveTo:create(0.2, cc.p(-140 + originalX, self.m_pNodeMenu:getPositionY())))
         else
             self.m_pNodeMenu:runAction(cc.MoveTo:create(0.2, cc.p(-165 + originalX, self.m_pNodeMenu:getPositionY())))
@@ -1086,7 +1092,7 @@ function GameViewLayer:onPopClicked()
         ------self.backMenu:setVisible(not self.backMenu:isVisible())
         self.m_pNodeMenu:setVisible(true)
         self.m_pNodeMenu:stopAllActions()
-        if IPHONE_X then
+        if LuaUtils.isIphoneXDesignResolution() then
             self.m_pNodeMenu:runAction(cc.MoveTo:create(0.2, cc.p(140 + originalX, self.m_pNodeMenu:getPositionY())))
         else
             self.m_pNodeMenu:runAction(cc.MoveTo:create(0.2, cc.p(165 + originalX, self.m_pNodeMenu:getPositionY())))
@@ -1367,6 +1373,8 @@ function GameViewLayer:createFlyChipSprite(money_,flyBegin_pos,flyEnd_pos,quyu_,
     pSpr:setAnchorPoint(cc.p(0.5,0.5))
     pSpr:setPosition(flyBegin_pos)
     self.m_pNodeChipSpr:addChild(pSpr,1)
+
+    self:addJettonLabel(pSpr, money_)
 
 --    local pSp_num = cc.Sprite:createWithTexture(self.chipImageNumRes[jettonIndex])
 --    pSpr:addChild(pSp_num)
@@ -2025,8 +2033,6 @@ function GameViewLayer:doFlyJob()
                     for m = 0, segnum do
                         local tgg = job[i].chips[j][m*CHIP_FLY_SPLIT + self.m_flyJobVec.flyIdx]
                         if tgg then
-                            print('sptg')
-                            dump(tgg)
                             table.insert(flyvec, { sptg = tgg, idx = i })
                         end                    
                     end
@@ -2242,6 +2248,8 @@ function GameViewLayer:clonePayoutChip(jettonIndex)
     pSpr:setPosition(pos)
 --    pSpr:setLocalZOrder(G_CONSTANTS.Z_ORDER_COMMON)
     self.m_pNodeChipSpr:addChild(pSpr)
+
+    self:addJettonLabel(pSpr, self:getJettonScore(jettonIndex))
     return pSpr
 end 
 function GameViewLayer:effectEnd(armature,movementEventType,name)
@@ -2623,6 +2631,7 @@ function GameViewLayer:playTongEffect()
     end, 1.2)
 end
 
+--设置庄家头像
 function GameViewLayer:setBankerHeadByUid()
 
     local bankerInfo = nil
@@ -2638,6 +2647,7 @@ function GameViewLayer:setBankerHeadByUid()
     end
 end
 
+--根据uid获取玩家信息
 function GameViewLayer:getUserInfoByUid(uid)
 
     if not uid then
@@ -2653,12 +2663,13 @@ function GameViewLayer:getUserInfoByUid(uid)
     return nil
 end
 
+--判断是否是桌上用户
 function GameViewLayer:isInTable(uid)
 
+    -- 第一个是庄,所以要加1 减1
     if not uid then
         return false
     end
-
 
     for i, v in pairs(self.m_seats) do
 
@@ -2674,6 +2685,29 @@ function GameViewLayer:isInTable(uid)
     end
 
     return false
+end
+
+--添加筹码文字
+function GameViewLayer:addJettonLabel(psprite, money_)
+
+    if not psprite or not money_ then
+        return
+    end
+
+    --筹码
+    local txtnum = ""
+    txtnum = money_
+    if money_ >= 10000 then
+        txtnum = tostring(money_/10000).."万"
+    end
+
+    local rect = psprite:getContentSize()
+    local label = ccui.Text:create(txtnum,"fonts/round_body.ttf",25)
+    label:enableOutline(cc.c4b(0,0,0,255), 1)
+    label:enableShadow(cc.c3b(0,0,0), cc.size(0,-2), 1)  --阴影
+    label:setPosition(cc.p(rect.width/2,rect.height/2+9))
+    psprite:addChild(label,1)
+
 end
 
 ------

@@ -192,11 +192,11 @@ HandredcattleRes.vecChipImage_bg =
 }
 HandredcattleRes.vecChipImage = 
 {
-    "cm/1.png",
-    "cm/5.png",
-    "cm/10.png",
-    "cm/50.png",
-    "cm/100.png",
+    "cm_1.png",
+    "cm_10.png",
+    "cm_50.png",
+    "cm_100.png",
+    "cm_500.png",
 }
 return HandredcattleRes
 

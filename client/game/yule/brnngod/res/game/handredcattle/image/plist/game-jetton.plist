@@ -4,93 +4,60 @@
 	<dict>
 		<key>frames</key>
 		<dict>
-			<key>cm/1.png</key>
+			<key>cm_1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,483},{111,120}}</string>
-				<key>offset</key>
-				<string>{-3,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{116,121}</string>
-			</dict>
-			<key>cm/10.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{0,363},{112,120}}</string>
-				<key>offset</key>
-				<string>{-2,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{116,121}</string>
-			</dict>
-			<key>cm/100.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{0,121},{112,121}}</string>
-				<key>offset</key>
-				<string>{-2,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{116,121}</string>
-			</dict>
-			<key>cm/20.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{0,603},{111,120}}</string>
-				<key>offset</key>
-				<string>{-3,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{116,121}</string>
-			</dict>
-			<key>cm/200.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{0,723},{111,120}}</string>
-				<key>offset</key>
-				<string>{-3,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{116,121}</string>
-			</dict>
-			<key>cm/5.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{0,843},{111,120}}</string>
-				<key>offset</key>
-				<string>{-3,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{116,121}</string>
-			</dict>
-			<key>cm/50.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{0,242},{112,121}}</string>
-				<key>offset</key>
-				<string>{-2,0}</string>
-				<key>rotated</key>
-				<false />
-				<key>sourceSize</key>
-				<string>{116,121}</string>
-			</dict>
-			<key>cm/500.png</key>
-			<dict>
-				<key>frame</key>
-				<string>{{0,0},{116,121}}</string>
+				<string>{{0,0},{101,100}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
-				<string>{116,121}</string>
+				<string>{101,100}</string>
+			</dict>
+			<key>cm_10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{101,0},{101,100}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{101,100}</string>
+			</dict>
+			<key>cm_100.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{202,0},{101,100}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{101,100}</string>
+			</dict>
+			<key>cm_50.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{303,0},{101,100}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{101,100}</string>
+			</dict>
+			<key>cm_500.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{404,0},{101,100}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{101,100}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>
@@ -102,14 +69,14 @@
 			<key>realTextureFileName</key>
 			<string>game-jetton.png</string>
 			<key>size</key>
-			<string>{116,963}</string>
+			<string>{512,128}</string>
 		</dict>
 		<key>texture</key>
 		<dict>
 			<key>width</key>
-			<integer>116</integer>
+			<integer>512</integer>
 			<key>height</key>
-			<integer>963</integer>
+			<integer>128</integer>
 		</dict>
 	</dict>
 </plist>
