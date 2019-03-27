@@ -453,7 +453,7 @@ function loadHeadMiddleImg(image, sex, index)
         str = string.format("head_mwoman_%02d.png", faceid)
     end
 
-    image:loadTexture(str, 1) ---1为读取plist
+    image:loadTexture(str, ccui.TextureResType.plistType) ---1为读取plist
     -----image:setScale(0.7)
     ------self.m_fScale = self.m_headSize / SYS_HEADSIZE
     ------self:setScale(self.m_fScale)

@@ -638,8 +638,6 @@ function GameLayer:onEventGameMessage(sub,dataBuffer)   --接收消息通知
         self._gameView:onEventGameOver(dataBuffer)
     elseif sub == "updealer_fail_nomoney" then    
         self._gameView:onEventUpdealer_fail_nomoney(dataBuffer)
-    elseif sub == 'pong' then
-        ---dump(dataBuffer)
     else
         print('未知消息'..sub)
     end

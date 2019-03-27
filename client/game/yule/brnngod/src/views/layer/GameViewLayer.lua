@@ -1441,7 +1441,7 @@ end
 
 --转场动画(开始/停止下注)
 function GameViewLayer:initJieduanAnim(index)
-    local armature = ccs.Armature:create("kaishixiazhu_kaijiang")--(HandredcattleRes.ANI_OF_JIEDUAN)
+    --[[local armature = ccs.Armature:create("kaishixiazhu_kaijiang")--(HandredcattleRes.ANI_OF_JIEDUAN)
     armature:setPosition(Handredcattle_Const.jieduanArmPos)
     local animationEvent = function(armature, movementType, movementID)
         if (movementType == ccs.MovementEventType.complete or movementType == ccs.MovementEventType.loopComplete) then
@@ -1457,7 +1457,29 @@ function GameViewLayer:initJieduanAnim(index)
     armature:getAnimation():setMovementEventCallFunc(animationEvent)
     armature:setName(HandredcattleRes.ANI_OF_JIEDUAN)
     armature:setTag(Handredcattle_Const.jieduanArmTag)
-    self.m_pNodeTip:addChild(armature)
+    self.m_pNodeTip:addChild(armature)]]--
+
+    local ani = cc.CSLoader:createNode(HandredcattleRes.CSB_GAME_BET_TIP)
+    local diffX = 145-(1624-display.size.width)/2
+    ani:setPosition(display.size.width/2 - diffX,display.size.height/2)
+    ani:addTo(self.m_pNodeDlg, 100)
+
+    local action = cc.CSLoader:createTimeline(HandredcattleRes.CSB_GAME_BET_TIP)
+    ani:runAction(action)
+    ani:setVisible(true)
+
+    if index == 1 then
+        action:gotoFrameAndPlay(0,25, false)
+        self:doSomethingLater(function()
+            ani:removeFromParent()
+        end, 1)
+    elseif index == 2 then
+        action:gotoFrameAndPlay(30,55, false)
+        self:doSomethingLater(function()
+            ani:removeFromParent()
+            self:playCardsEffect()
+        end, 1)
+    end
 end
 --替换开牌牌面资源
 function GameViewLayer:playCardsEffect()
