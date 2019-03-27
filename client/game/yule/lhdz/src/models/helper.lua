@@ -410,3 +410,27 @@ function createSpark(imagePath)
 
     return clip
 end
+--绑定UI
+function bindCCBNode(CCBNode, pContainer)
+    local function bindChild(pParentNode)
+        if #pParentNode:getChildren() <= 0 then
+            return
+        end
+        for _, pChildNode in pairs(pParentNode:getChildren()) do
+            local szName = pChildNode:getName()
+            local nIndex = string.find(szName,"_")
+            if nIndex ~=nil then
+                local szNodeName = string.sub(szName, nIndex + 1)
+                pContainer[szNodeName] = pChildNode
+            end
+            bindChild(pChildNode)
+        end
+    end
+    bindChild(CCBNode)
+end
+
+-- 统一处理数字显示格式
+function formatNumber(num)
+    -- 数字最多到9999999.99 必须保留两位小数
+    return string.format("%.02f", num)
+end

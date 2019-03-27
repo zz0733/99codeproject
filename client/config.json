@@ -3,7 +3,7 @@
     "isLandscape": true,
     "isWindowTop": false,
     "name": "GloryProject",
-    "width": 1334,
+    "width": 1624,
     "height": 750,
     "entry": "base/src/main.lua",
     "consolePort": 6050,

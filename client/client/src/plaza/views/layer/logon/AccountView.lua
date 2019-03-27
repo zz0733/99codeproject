@@ -116,7 +116,6 @@ function AccountView:numberOfCellsInTableView(table_)
 end
 
 function AccountView:tableCellTouched(table, cell)
-
 end
 
 

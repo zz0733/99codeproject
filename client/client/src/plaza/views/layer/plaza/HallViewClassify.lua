@@ -56,11 +56,10 @@ function HallViewClassify:initCSB()
     self.m_pNodeMain = self.m_pathUI:getChildByName("HallViewClassify"):getChildByName("node_main")
     --适配全面屏,全面屏有刘海要左移
     local diffX = 0
-    if display.size.width == 1334 then
+    if LuaUtils.isIphoneXDesignResolution() then
+        diffX = -25
+    else      
         diffX = 30
-    else
-        --为了刘海右移50个像素
-        diffX = (1624-display.size.width)/2 + 50
     end
     self.m_pNodeMain:setPositionX(diffX)
 
@@ -165,7 +164,7 @@ function HallViewClassify:createArrow()
     local posX = display.size.width
     if display.size.width ~= 1334 then
         --全面屏增宽度,减去刘海不移动的距离
-        posX  = display.size.width - 50
+        posX  = display.size.width-25
     end
     self.m_pBtnRightArrow:setPosition(cc.p(posX, 360))
     local seq2 = cc.Sequence:create(cc.MoveBy:create(0.4, cc.p(8,0)),cc.MoveBy:create(0.4, cc.p(-8,0)))

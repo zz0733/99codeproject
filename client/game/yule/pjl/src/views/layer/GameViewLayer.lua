@@ -69,6 +69,12 @@ local GI_ZHONGYITANG = 7   -- 忠义堂
 local GI_SHUIHUZHUAN = 8   -- 水浒传
 local GI_COUNT = 9
 
+local commonStartX = 239
+local differX = 213
+
+local commonStartY = 560
+local differY = 173
+
 --自动次数
 local AUTO_COUNT = { 25, 50, 100 }
 
@@ -99,7 +105,7 @@ function GameViewLayer:onEnter()
 
     self:init()
 
-    self:flyIn()
+    --self:flyIn()
 end
 function GameViewLayer:setDiffY(diffY)
     self.m_diffY = diffY
@@ -188,7 +194,7 @@ function GameViewLayer:initVars()
     self.pChatNoticeEffect = nil
     self.pShakeFlagEffect = nil
 
-    self.m_nPerShowCellHeight = 160.0
+    self.m_nPerShowCellHeight = 164
     
     self.m_pSpLine = {}
     self.m_pNodeLineEffectPos = {}
@@ -217,28 +223,33 @@ function GameViewLayer:initVars()
     self.m_DiceMoney = 0            --比倍结束飘的钱数
     self.isMusicOn = true
     self.isMusicEffictOn = true
-
+    self.m_nautoBtnClickTimes = 0
+    self.m_nLastTouchTime = 0
+    self.isSettingPanelShowing = false
     WaterMarginDataMgr.getInstance():setGameHandleStatus(WaterMarginDataMgr.eGAME_HANDLE_IDLE)
 end
 function GameViewLayer:onAnimationInitFinish()
     
    -- 加载UI
-   self.m_pUI = cc.CSLoader:createNode("game/watermargin/GameScene.csb")
+   self.m_pUI = cc.CSLoader:createNode("shuihuzhuan/SHZ_Main.csb")
    self.m_pUI:addTo(self)
    self.m_pUI:setPosition((145 - (1624 - display.width) / 2), 0)
-
+   self.panelBet = self:getChildByUIName(self.m_pUI, "panelBet"):setPositionX( display.width/2)
+   self.panelFront = self:getChildByUIName(self.m_pUI, "panelFront"):setPositionX( display.width/2)  
+   self.panelFront_0 = self:getChildByUIName(self.m_pUI, "panelFront_0"):setPositionX( display.width/2)  
    print("---加载UI成功")
-
+   
    -- 初始化CCS
    self:initCCS()
    print("---初始化CCS成功")
-
+--[[
    --有小玛丽进入小玛丽
    local littleCount = 0 --WaterMarginDataMgr.getInstance():getLittleMaryCount()
    print("---小玛丽次数："..littleCount)
    if littleCount > 0 then 
         self:enterLittleMaryGame()
    end
+--]]
 end
 function GameViewLayer:initCCS()
    --初始化 UI 变量
@@ -253,60 +264,75 @@ function GameViewLayer:initCCS()
    self:initOther()
 end
 function GameViewLayer:onAssignCCBMemberVariable()
-    self.CCSpriteMainBg = self:getChildByUIName(self.m_pUI, "CCSpriteMainBg")           --BG
+    self.CCSpriteMainBg = self:getChildByUIName(self.m_pUI, "bg")           --BG
+    --[[
     self.m_pBtnBank = self:getChildByUIName(self.m_pUI, "m_pBtnBank")                   --上边保险箱
-    self.m_pBtnBank1 = self:getChildByUIName(self.m_pUI, "m_pBtnBank1")                 --下边的+ 保险箱
+    --self.m_pBtnBank1 = self:getChildByUIName(self.m_pUI, "m_pBtnBank1")                 --下边的+ 保险箱
     self.m_pBtnBank:setTouchEnabled(false)
     self.m_pBtnBank:setColor(cc.c4b(100,100,100,100))
     self.m_pBtnBank1:setTouchEnabled(false)
     self.m_pBtnBank1:setColor(cc.c4b(100,100,100,100))
-    self.m_pBtnAddChip = self:getChildByUIName(self.m_pUI, "m_pBtnAddChip")             --押注“+”
-    self.m_pBtnSubChip = self:getChildByUIName(self.m_pUI, "m_pBtnSubChip")             --押注“-”
-    self.m_pBtnAutoGame = self:getChildByUIName(self.m_pUI, "m_pBtnAutoGame") 
-    self.m_pBtnStopAutoGame = self:getChildByUIName(self.m_pUI, "m_pBtnStopAutoGame")   --关闭自动托管
+    --]]
+    self.m_pBtnAddChip = self:getChildByUIName(self.m_pUI, "button_btnIncrease")             --押注“+”
+    self.m_pBtnSubChip = self:getChildByUIName(self.m_pUI, "button_btnDecrease")             --押注“-”
+    --self.m_pBtnStopAutoGame = self:getChildByUIName(self.m_pUI, " button_btnStart") 
+      --关闭自动托管
+    --[[
     self.m_pBtnSound = self:getChildByUIName(self.m_pUI, "m_pBtnSound")                 --音效
     self.m_pBtnVoice = self:getChildByUIName(self.m_pUI, "m_pBtnVoice")                 --音乐
     self.m_btn_close = self:getChildByUIName(self.m_pUI, "m_btn_close")                 --退出房间按钮
-    self.m_pBtnMenuPush = self:getChildByUIName(self.m_pUI, "m_pBtnMenuPush")           --菜单 倒三角
-    self.m_pBtnMenuPop = self:getChildByUIName(self.m_pUI, "m_pBtnMenuPop")             --菜单 正上角
-
-    self.m_pLbUserName = self:getChildByUIName(self.m_pUI, "m_pLbNickName")             --玩家昵称
-    self.m_pLbUsrGold = self:getChildByUIName(self.m_pUI, "m_pLbUsrGold")               --玩家金币
-    self.m_pLbTotalCostGold = self:getChildByUIName(self.m_pUI, "m_pLbTotalCostGold")   --总押注
-    self.m_pLbCurCostGold = self:getChildByUIName(self.m_pUI, "m_pLbCurCostGold")       --单线押注
-    
-    self.m_pNodeLeft = self:getChildByUIName(self.m_pUI, "m_pNodeLeft") 
-    self.m_pNodeChildMenu = self:getChildByUIName(self.m_pUI, "m_pNodeMenu")            --菜单 节点
+       self.m_pBtnMenuPop = self:getChildByUIName(self.m_pUI, "m_pBtnMenuPop")             --菜单 正上角
+    --]]
+   --  self.m_pBtnMenuPush = self:getChildByUIName(self.m_pUI, "button_back")           --菜单 倒三角
+    --self.m_pLbUserName = self:getChildByUIName(self.m_pUI, "m_pLbNickName")             --玩家昵称
+    self.m_pLbUsrGold = self:getChildByUIName(self.m_pUI, "bmfont_myGold")               --玩家金币
+    self.m_pLbTotalCostGold = self:getChildByUIName(self.m_pUI, "text_zongyafen")        --总押注
+    self.m_pLbCurCostGold = self:getChildByUIName(self.m_pUI, "text_yafen")              --单线押注
+    self.m_pLbyaxian = self:getChildByUIName(self.m_pUI, "text_yaxian")               --压线数
+    self.m_pLbyyingfen = self:getChildByUIName(self.m_pUI, "text_yingfen")               --赢分
+    self.back = self:getChildByUIName(self.m_pUI, "button_back")            --菜单 节点
     self.m_pNodeCenter = self:getChildByUIName(self.m_pUI, "m_pNodeCenter") 
     self.m_pNodeEffect = self:getChildByUIName(self.m_pUI, "m_pNodeEffect") 
     self.m_pNodeEffectLow = self:getChildByUIName(self.m_pUI, "m_pNodeEffectLow") 
     self.m_pNodeEffectLine = self:getChildByUIName(self.m_pUI, "m_pLineEffectNode") 
     self.m_pKuangEffectNode = self:getChildByUIName(self.m_pUI, "m_pKuangEffectNode")
+    self.m_pHeadImg = self:getChildByUIName(self.m_pUI, "norFrame")   --头像节点
+    self.settingPanel = self:getChildByUIName(self.m_pUI, "image_settingPanel")
+    self.backMenu = self:getChildByUIName(self.m_pUI, "panel_backMenu")  
+    self.backMenu:setVisible(false)
+    self.m_btn_close = self:getChildByUIName(self.m_pUI, "button_exit")
+    self.setting = self:getChildByUIName(self.m_pUI, "button_setting")       
+    --[[
     self.m_node_bottom = self:getChildByUIName(self.m_pUI, "node_bottom")
     self.m_node_top = self:getChildByUIName(self.m_pUI, "node_top")
-
+    --]]
     self.m_pNodeCenter:setPositionY(-5)
 
     for i=1,tonumber(WATER_MAX_LINE_NUM),1 do 
-        local str = "m_pSpLine"..(i-1)
+        local str = "line"..i
         self.m_pSpLine[i] = self:getChildByUIName(self.m_pUI, str)                      --9条线
 
-        local str2 = "m_pNodeLineEffect"..(i-1)
-        self.m_pNodeLineEffectPos[i] = self:getChildByUIName(self.m_pUI, str2) 
+       -- local str2 = "m_pNodeLineEffect"..(i-1)
+       -- self.m_pNodeLineEffectPos[i] = self:getChildByUIName(self.m_pUI, str2) 
 
     end
 
-    self.m_pBtnGameStart = self:getChildByUIName(self.m_pUI, "m_pBtnGameStart")             --开始转动
-    self.m_pLbCurrentAuto = self:getChildByUIName(self.m_pUI, "m_pLbCurrentAuto")
-    self.m_pNodeChooseAuto = self:getChildByUIName(self.m_pUI, "node_chooseAuto") 
-    self.m_pNodeBtnCount = self:getChildByUIName(self.m_pUI, "nod_btncount")
-    self.m_pBtnChooseAutoClose = self:getChildByUIName(self.m_pUI, "m_pBtnChooseAutoClose")
-
+    self.m_pBtnGameStart = self:getChildByUIName(self.m_pUI, "button_btnStart")             --开始转动
+    self.m_pBtnAutoGame = self:getChildByUIName(self.m_pUI, "button_btnAuto")               --开始自动按钮
+    self.m_pBtnGSTextimg = self:getChildByUIName(self.m_pUI, "image_btnStartText")
+    self.m_pAutoLight = self:getChildByUIName(self.m_pUI, "image_imgAutoLight") 
+    --self.m_pLbCurrentAuto = self:getChildByUIName(self.m_pUI, "m_pLbCurrentAuto")
+    --self.m_pNodeChooseAuto = self:getChildByUIName(self.m_pUI, "node_chooseAuto") 
+    --self.m_pNodeBtnCount = self:getChildByUIName(self.m_pUI, "nod_btncount")
+    --self.m_pBtnChooseAutoClose = self:getChildByUIName(self.m_pUI, "button_btnAuto")
+    
     --ccs之外增加
-    self.m_pRuleButton = self:getChildByUIName(self.m_pUI, "m_pRuleButton")                 --规则按钮
+    self.m_pRuleButton = self:getChildByUIName(self.m_pUI, "button_helpX")  
+    --[[               --规则按钮
     self.m_pPushClicked = self:getChildByUIName(self.m_pUI, "m_pPushClicked")               --菜单 空白可触摸
     self.m_pPushClicked:setVisible(false)
-
+    --]]
+    --[[
     if (GlobalUserItem.bVoiceAble)then
         GlobalUserItem.setVoiceAble(true)
         self.m_pBtnVoice:loadTextureNormal("game/watermargin/images/gui-water-button-yingyue-1.png",ccui.TextureResType.plistType)
@@ -321,7 +347,7 @@ function GameViewLayer:onAssignCCBMemberVariable()
         GlobalUserItem.setSoundAble(false)
         self.m_pBtnSound:loadTextureNormal("game/watermargin/images/gui-water-button-shengyin-2.png",ccui.TextureResType.plistType)    
     end
-
+    --]]
 --    --房间号
 --    local strName = ""
 --    local nBaseScore = PlayerInfo.getInstance():getBaseScore()
@@ -377,6 +403,7 @@ function GameViewLayer:onResolveCCBCCControlSelector()
 
         self.m_CommonRuleView = CommonRuleView:create()
         self.m_CommonRuleView:addTo(self, WaterMarginDataMgr.Order_Result+100)
+        self.onPushClicked()
     end    
     self.m_pRuleButton:addTouchEventListener(onOpenRuleCallBack)
     -- onRuleClicked --
@@ -387,12 +414,14 @@ function GameViewLayer:onResolveCCBCCControlSelector()
             if WaterMarginDataMgr.getInstance():getGameHandleStatus() ~= WaterMarginDataMgr.eGAME_HANDLE_IDLE then 
                 return
             end
+            --[[
             if self.m_onLongPressCallBack ~= nil then 
                 cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.m_onLongPressCallBack)
             end
             self.m_onLongPressCallBack = cc.Director:getInstance():getScheduler():scheduleScriptFunc(handler(self, self.onLongPressCallBack),1.0,false)
+            --]]
         elseif eventType == ccui.TouchEventType.moved then
-
+         --[[
             local offsetX = 145 - (1624 - display.width) / 2
             local touchPos = cc.p(sender:getTouchMovePosition())
             local point = cc.p(touchPos.x - offsetX, touchPos.y -(display.height - 750) / 2)
@@ -405,10 +434,11 @@ function GameViewLayer:onResolveCCBCCControlSelector()
                     cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.m_onLongPressCallBack)
                 end
             end
+            --]]
         elseif eventType == ccui.TouchEventType.ended then
-            if self.m_bLongPress then
-                return
-            end
+            
+
+
             if eventType ~= ccui.TouchEventType.ended then
                 return
             end
@@ -420,11 +450,14 @@ function GameViewLayer:onResolveCCBCCControlSelector()
                 end
             elseif WaterMarginDataMgr.getInstance():getGameHandleStatus() == WaterMarginDataMgr.eGAME_HANDLE_OPEN then 
                 self:instantPlayResultEffect()
+                self:showStartBtnStyle("normal")
             end
         else
+        --[[
             if self.m_onLongPressCallBack ~= nil then 
                 cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.m_onLongPressCallBack)
             end
+            --]]
         end
 --        if eventType ~= ccui.TouchEventType.ended then
 --            return
@@ -495,58 +528,34 @@ function GameViewLayer:onResolveCCBCCControlSelector()
         ingameBankView:setTag(2147483647)
         self:addChild(ingameBankView, 500)
     end
-    self.m_pBtnBank:addTouchEventListener(onOpenBankCallBack)
-    self.m_pBtnBank1:addTouchEventListener(onOpenBankCallBack)
+    --self.m_pBtnBank:addTouchEventListener(onOpenBankCallBack)
+    --self.m_pBtnBank1:addTouchEventListener(onOpenBankCallBack)
     -- onBankClicked --
 
     -- onAutoGameClicked --
-    local onBegineAutoGameCallBack = function (sender,eventType)
-        if WaterMarginDataMgr.getInstance():getGameHandleStatus() ~= WaterMarginDataMgr.eGAME_HANDLE_IDLE then 
-            return
+    local onBegineAutoGameCallBack = function (sender)
+        ExternalFun.playSoundEffect("sound-water-bt-click.mp3")
+        self.m_nautoBtnClickTimes = self.m_nautoBtnClickTimes + 1
+        local nCurTime = os.time()
+        if self.m_nautoBtnClickTimes > 2 and self.m_nLastTouchTime and nCurTime - self.m_nLastTouchTime <= 2 then
+            FloatMessage.getInstance():pushMessage("点击频繁，请稍后再试")
+            return  
         end
-        if eventType == ccui.TouchEventType.began then
 
-            if self.m_onLongPressCallBack ~= nil then 
-                cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.m_onLongPressCallBack)
-            end
-            self.m_onLongPressCallBack = cc.Director:getInstance():getScheduler():scheduleScriptFunc(handler(self, self.onLongPressCallBack),1.0,false)
-        elseif eventType == ccui.TouchEventType.moved then
-
-            local offsetX = 145 - (1624 - display.width) / 2
-            local touchPos = cc.p(sender:getTouchMovePosition())
-            local point = cc.p(touchPos.x - offsetX, touchPos.y -(display.height - 750) / 2)
-            local startBtnPos = cc.p(sender:getPosition())
-            local btnSize = sender:getContentSize()
-            local rect = cc.rect(startBtnPos.x - btnSize.width / 2, startBtnPos.y-btnSize.height/2, btnSize.width, btnSize.height)
-            if not cc.rectContainsPoint(rect, point) then -- 移出按纽区域
-                if self.m_onLongPressCallBack ~= nil then 
-                    cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.m_onLongPressCallBack)
-                end
-            end
-        elseif eventType == ccui.TouchEventType.ended then
-
-            if self.m_bLongPress then 
-                return
-            end
-            ExternalFun.playSoundEffect("sound-water-bt-click.mp3")
-            if WaterMarginDataMgr.getInstance():getGameHandleStatus() ~= WaterMarginDataMgr.eGAME_HANDLE_IDLE then
-                return
-            end
-            self.m_bLongPress = false
-            if self.m_onLongPressCallBack ~= nil then 
-                cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.m_onLongPressCallBack)
-            end
-            self.m_nCurrentAutoCount = -1
+        if self.m_nautoBtnClickTimes ~= 2 then
+            self.m_nLastTouchTime = nCurTime
+        end 
+        
+        if WaterMarginDataMgr.getInstance():getIsAuto() then
+            self:stopAuto()
+        else
             if self:begineGame() then
                 self:startAuto()
             end
-        else
-            if self.m_onLongPressCallBack ~= nil then 
-                cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.m_onLongPressCallBack)
-            end
-        end   
+        end
+
     end
-    --self.m_pBtnAutoGame:addTouchEventListener(onBegineAutoGameCallBack)       
+    self.m_pBtnAutoGame:addClickEventListener(onBegineAutoGameCallBack)       
     -- onAutoGameClicked --
     
     -- onStopAutoGameClicked --
@@ -560,7 +569,7 @@ function GameViewLayer:onResolveCCBCCControlSelector()
         end
         self:stopAuto()
     end
-    self.m_pBtnStopAutoGame:addTouchEventListener(onStopAutoGameCallBack)       
+    --self.m_pBtnStopAutoGame:addTouchEventListener(onStopAutoGameCallBack)       
     -- onStopAutoGameClicked --
 
 
@@ -573,7 +582,7 @@ function GameViewLayer:onResolveCCBCCControlSelector()
 
         self.m_pNodeChildMenu:setVisible(true)
         self.m_pNodeChildMenu:stopAllActions()
-        self.m_pNodeChildMenu:setPositionY(400)
+        --self.m_pNodeChildMenu:setPositionY(400)
         local moveTo = cc.MoveTo:create(0.2, cc.p(0, 0))
         local callBack = cc.CallFunc:create(function()
             self.m_pBtnMenuPop:setVisible(false)
@@ -583,29 +592,43 @@ function GameViewLayer:onResolveCCBCCControlSelector()
         local seq = cc.Sequence:create(moveTo, callBack)
         self.m_pNodeChildMenu:runAction(seq)
     end
-    self.m_pBtnMenuPop:addTouchEventListener(onPopClicked)        
+    --self.m_pBtnMenuPop:addTouchEventListener(onPopClicked)        
     -- onPopClicked --
    
     -- onPushClicked --
-    local onPushClicked = function (sender,eventType)
-       if eventType ~= ccui.TouchEventType.ended then
-            return
-       end
-        ExternalFun.playSoundEffect("sound-button.mp3")
-        self.m_pNodeChildMenu:stopAllActions()
-        local moveTo = cc.MoveTo:create(0.2, cc.p(0, 400))
-        local callBack = cc.CallFunc:create(function ()
-            self.m_pNodeChildMenu:setVisible(false)
-            self.m_pBtnMenuPop:setVisible(true)
-            self.m_pBtnMenuPush:setVisible(false)
-            self.m_pPushClicked:setVisible(false)
-        end)
+    self.onPushClicked = function (sender)
 
-        local seq = cc.Sequence:create(moveTo, callBack)
-        self.m_pNodeChildMenu:runAction(seq)
+       local IPHONE_X = LuaUtils.isIphoneXDesignResolution()
+        ExternalFun.playSoundEffect("sound-button.mp3") 
+        if self.isSettingPanelShowing then
+            self.settingPanel:stopAllActions()
+            if IPHONE_X then
+                self.settingPanel:runAction(cc.MoveTo:create(0.2, cc.p(-140, self.settingPanel:getPositionY())))
+            else
+                self.settingPanel:runAction(cc.MoveTo:create(0.2, cc.p(-100, self.settingPanel:getPositionY())))
+            end
+            self.back:getChildByName("Image_5"):runAction(cc.Sequence:create(cc.RotateTo:create(0.2, 90),cc.CallFunc:create(function()
+                        self.backMenu:setVisible(not self.backMenu:isVisible())
+                        self.isSettingPanelShowing = not self.isSettingPanelShowing
+                    end)
+                ))
+        else
+            self.backMenu:setVisible(not self.backMenu:isVisible())
+            self.isSettingPanelShowing = not self.isSettingPanelShowing
+            self.settingPanel:stopAllActions()
+            if IPHONE_X then
+                self.settingPanel:runAction(cc.MoveTo:create(0.2, cc.p(20, self.settingPanel:getPositionY())))
+            else
+                self.settingPanel:runAction(cc.MoveTo:create(0.2, cc.p(100, self.settingPanel:getPositionY())))
+            end
+            self.back:getChildByName("Image_5"):runAction(cc.RotateTo:create(0.2, -180))
+
+        end
     end    
-    self.m_pBtnMenuPush:addTouchEventListener(onPushClicked)    
-    self.m_pPushClicked:addTouchEventListener(onPushClicked)    
+    self.back:addClickEventListener(handler(self, self.onPushClicked))
+    self.backMenu:setTouchEnabled(true)
+    self.backMenu:addClickEventListener(handler(self, self.onPushClicked))    
+    --self.m_pPushClicked:addTouchEventListener(onPushClicked)    
     -- onPushClicked --
 
     -- onReturnClicked --
@@ -644,9 +667,22 @@ function GameViewLayer:onResolveCCBCCControlSelector()
             self.m_pBtnSound:loadTextureNormal("game/watermargin/images/gui-water-button-shengyin-1.png",ccui.TextureResType.plistType)
         end
     end
-    self.m_pBtnSound:addTouchEventListener(onSoundClicked)
-    -- onSoundClicked --
+    
 
+    --self.m_pBtnSound:addTouchEventListener(onSoundClicked)
+    -- onSoundClicked --
+    local onSettingClicked = function (sender,eventType)
+        if eventType ~= ccui.TouchEventType.ended then
+            return
+        end
+        ExternalFun.playSoundEffect("sound-button.mp3")
+        self.SettingLayer = SettingLayer:create()
+        self.SettingLayer:addTo(self, WaterMarginDataMgr.Order_Result+100)
+--self:addChild(self.SettingLayer)
+--	    self:onBtnMenu() 
+        self.onPushClicked() 
+    end
+    self.setting:addTouchEventListener(onSettingClicked)
     -- onMusicClicked --
     local onMusicClicked = function (sender,eventType)
         if eventType ~= ccui.TouchEventType.ended then
@@ -665,7 +701,7 @@ function GameViewLayer:onResolveCCBCCControlSelector()
             self.m_pBtnVoice:loadTextureNormal("game/watermargin/images/gui-water-button-yingyue-1.png",ccui.TextureResType.plistType)
         end
     end
-    self.m_pBtnVoice:addTouchEventListener(onMusicClicked)        
+   -- self.m_pBtnVoice:addTouchEventListener(onMusicClicked)        
     -- onMusicClicked --
 
     -- onChooseAutoCountClicked --
@@ -717,11 +753,11 @@ function GameViewLayer:onResolveCCBCCControlSelector()
 end
 function GameViewLayer:onNodeLoaded()
 
-    self.m_pBtnMenuPush:setVisible(false)
-    self.m_pNodeChildMenu:setVisible(false)
-    self.m_pBtnStopAutoGame:setVisible(false)
+    --self.m_pBtnMenuPush:setVisible(false)
+    --self.m_pNodeChildMenu:setVisible(true)
+    --self.m_pBtnStopAutoGame:setVisible(false)
 
-    self:initClippingMenu()
+    --self:initClippingMenu()
     self:initPlayerInfo()
     self:createClipersArea()
     self:initIconAtCliperNode()
@@ -752,7 +788,7 @@ function GameViewLayer:onLongPressCallBack()
 end
 
 function GameViewLayer:initClippingMenu()------------------------------1
-
+--[[
     local shap = cc.DrawNode:create()
     local point = {cc.p(1045,300), cc.p(1290, 300), cc.p(1290, 660), cc.p(1045, 660)}
     shap:drawPolygon(point, 4, cc.c4b(255, 255, 255, 255), 2, cc.c4b(255, 255, 255, 255))
@@ -761,15 +797,16 @@ function GameViewLayer:initClippingMenu()------------------------------1
     self.m_pUI:addChild(self.m_pClippingMenu)
     self.m_pNodeChildMenu:removeFromParent()
     self.m_pClippingMenu:addChild(self.m_pNodeChildMenu)
+    --]]
 end
 --初始化自己信息
 function GameViewLayer:initPlayerInfo()-------------------------------2
-
+--[[
     if (self.m_pLbUserName) then
         local str_name = GlobalUserItem.tabAccountInfo.nickname
         self.m_pLbUserName:setString(str_name)
     end
-    
+    --]]
 --    self:onMsgGoldChange()
     self:onMsgUpdateBetData(nil)
 --    self:initSubMenuBtState()
@@ -782,12 +819,11 @@ function GameViewLayer:createClipersArea()----------------------------------3
         local shap = cc.DrawNode:create()
         local point = {cc.p(0,0), cc.p(200, 0), cc.p(200, 480), cc.p(0, 480)}
         shap:drawPolygon(point, 4, cc.c4b(255, 255, 255, 255), 2, cc.c4b(255, 255, 255, 255))
-        
-        local posx = { 128, 347, 566, 785, 1004}
+        local posx = { 144, 347+12, 566+4, 781, 1004-9}
         self.m_cliperArea[i] = cc.ClippingNode:create()
         self.m_cliperArea[i]:setStencil(shap)
         self.m_cliperArea[i]:setAnchorPoint(cc.p(0,0))
-        self.m_cliperArea[i]:setPosition(cc.p(posx[i], 145.0))
+        self.m_cliperArea[i]:setPosition(cc.p(posx[i], 145.0+7))
         self.m_pNodeCenter:addChild(self.m_cliperArea[i],80)
         
         self.m_cliperNode[i] = cc.Node:create()
@@ -798,9 +834,10 @@ function GameViewLayer:createClipersArea()----------------------------------3
     end
 
     --构建遮罩，利用滑动裁剪区域的方式来制造线条动画效果
-    local nodeLine = self:getChildByUIName(self.m_pUI, "node-line")
+    local nodeLine = self:getChildByUIName(self.m_pUI, "panel_panelLine")
     self.m_pAniShap = cc.DrawNode:create()
-    local vecPoint = {cc.p(85, 120), cc.p(1250, 130), cc.p(1250, 620), cc.p(85, 620)}
+    --local vecPoint = {cc.p(85, 120), cc.p(1250, 130), cc.p(1250, 620), cc.p(85, 620)}
+    local vecPoint = {cc.p(85, 10), cc.p(1250, 10), cc.p(1250, 620), cc.p(85, 620)}
     self.m_pAniShap:drawPolygon(vecPoint, 4, cc.c4f(255, 255, 255, 255), 2, cc.c4f(255, 255, 255, 255))
     self.m_pCliper = cc.ClippingNode:create(self.m_pAniShap)
     self.m_pCliper:setAnchorPoint(cc.p(0,0))
@@ -814,6 +851,7 @@ function GameViewLayer:createClipersArea()----------------------------------3
         self.m_pSpLine[i]:addTo(self.m_pCliper)
     end
 end
+--初始化小格
 function GameViewLayer:initIconAtCliperNode()---------------------------------------------4
 
     local gameResultLast = WaterMarginDataMgr.getInstance():getGameResultLast()
@@ -823,13 +861,14 @@ function GameViewLayer:initIconAtCliperNode()-----------------------------------
             local strIconFile = string.format("game/watermargin/images/gui-water-icon-%d.png", iconIdex)
             local icon = cc.Sprite:createWithSpriteFrameName(strIconFile)
             icon:setAnchorPoint(cc.p(0,0))
-            icon:setPosition(cc.p(0.0, (WATER_ICON_ROW - 1 - (i-1) ) * self.m_nPerShowCellHeight))
+            icon:setPosition(cc.p(0, (WATER_ICON_ROW - 1 - (i-1) ) * self.m_nPerShowCellHeight))
             self.m_cliperNode[j]:addChild(icon)
-
+            --[[
             local dikuang = cc.Sprite:createWithSpriteFrameName("game/watermargin/images/icondakuang.png")
             dikuang:setAnchorPoint(cc.p(0,0))
             dikuang:setPosition(cc.p(-2, (WATER_ICON_ROW - 1 - (i-1) ) * self.m_nPerShowCellHeight-4))
             self.m_cliperNode[j]:addChild(dikuang)
+            --]]
         end
     end
 end
@@ -880,13 +919,19 @@ function GameViewLayer:playShakeFlagEffect(isRoll)------------------------------
 end
 function GameViewLayer:tryFixIphoneX()------------------------------------------------8
     if LuaUtils.isIphoneXDesignResolution() then
+    --[[
         self.m_pBtnMenuPop:setPositionX(self.m_pBtnMenuPop:getPositionX() + 80)
         self.m_pBtnMenuPush:setPositionX(self.m_pBtnMenuPush:getPositionX() + 80)
         self.m_pClippingMenu:setPositionX(self.m_pClippingMenu:getPositionX() + 80)
         self.m_btn_close:setPositionX(self.m_btn_close:getPositionX() - 80)
+        --]]
+          self.panelBet:setPositionX( display.width/2-145)
+   self.panelFront:setPositionX( display.width/2-145)  
+   self.panelFront_0:setPositionX( display.width/2-145)
     end
 end
 function GameViewLayer:initSpine()----------------骨骼动画 放开会崩
+    --[[
     local armature1 = sp.SkeletonAnimation:create("game/watermargin/effect/shuihuzhuan4_beijing/shuihuzhuan4_beijing.json", 
         "game/watermargin/effect/shuihuzhuan4_beijing/shuihuzhuan4_beijing.atlas",1)
     armature1:setPosition(812,375)
@@ -899,7 +944,7 @@ function GameViewLayer:initSpine()----------------骨骼动画 放开会崩
     armature2:setPosition(812,375)
     armature2:setAnimation(0, "animation2", true)
     self.CCSpriteMainBg:addChild(armature2)
-
+    --]]
 --     local armature2 = sp.SkeletonAnimation:create("game/watermargin/effect/shuihuzhuan4_dashasifang/shuihuzhuan4_dashasifang.json", 
 --         "game/watermargin/effect/shuihuzhuan4_dashasifang/shuihuzhuan4_dashasifang.atlas",1)
 --     armature2:setPosition(667,375)
@@ -910,7 +955,7 @@ function GameViewLayer:initOther()
 
 ----    ExternalFun.playSoundEffect:stopMusic()
 ----    ExternalFun.playSoundEffect:playMusic("sound_water_bg.mp3")
-
+--游戏结果
     self.m_onMsgGetGameResult = SLFacade:addCustomEventListener(WaterMarginScene_Events.MSG_UPDATE_WATER_SCENE1_RESULT, handler(self, self.onMsgGetGameResult), self.__cname)--
 
 --    self.m_onMsgUpdateBetData = SLFacade:addCustomEventListener(WaterMarginScene_Events.MSG_WATER_MARGIN_UPDATE_BET_INFO, handler(self, self.onMsgUpdateBetData), self.__cname)--
@@ -983,12 +1028,14 @@ end
 function GameViewLayer:stopAuto()
     print("取消自动")
     WaterMarginDataMgr.getInstance():setIsAuto(false)
-    self.m_pBtnStopAutoGame:setVisible(false)
+    self.m_pAutoLight:setVisible(false)
+    --self.m_pBtnStopAutoGame:setVisible(false)
 end
 function GameViewLayer:startAuto()
     print("自动模式")
     WaterMarginDataMgr.getInstance():setIsAuto(true)
-    self.m_pBtnStopAutoGame:setVisible(true)
+    self.m_pAutoLight:setVisible(true)
+    --self.m_pBtnStopAutoGame:setVisible(true)
 end
 function GameViewLayer:instantPlayResultEffect()
 
@@ -1111,7 +1158,14 @@ function GameViewLayer:onMsgUpdateBetData(userdata)
     
     self.m_pLbTotalCostGold:setString(self:getFormatGold(nCurrentBetMoney))             --总的押注
     self.m_pLbCurCostGold:setString(self:getFormatGold(nBaseBetGlod * nChangeBetMoney)) --单注
-
+    self.m_pLbyaxian:setString("9")                                                     --写死九条线
+    -- 创建头像
+    local head = HeadSprite:createClipHead(GlobalUserItem.tabAccountInfo, 76)
+    if nil ~= head then
+        --head:setPosition(ccp(self.m_pSpHeadImage:getPositionX()-1,self.m_pSpHeadImage:getPositionY()-1))
+        head:setAnchorPoint(cc.p(0,0))
+        self.m_pHeadImg:addChild(head)
+    end
 --    self.m_pBtnAddChip:setEnabled(nChangeBetMoney~=5)
 --    self.m_pBtnSubChip:setEnabled(nChangeBetMoney~=1)
 end
@@ -1161,6 +1215,7 @@ end
 function GameViewLayer:onEventStart(bufferData)
     self.m_winMoney = bufferData[5]     --赢得金额
     WaterMarginDataMgr.getInstance():setGameCompareBet( bufferData[5] )
+    self:updateWinScore("onEventStart")
 end
 function GameViewLayer:onEventEnter(bufferData)
     self.m_enterIntoMoney = bufferData.members[1][6]
@@ -1257,14 +1312,16 @@ function GameViewLayer:resetCliperNodeIcon()--------------------------1
             
             local strIconFile = string.format("game/watermargin/images/gui-water-icon-%d.png", iconIndex)
             local icon = cc.Sprite:createWithSpriteFrameName(strIconFile)
+            icon:setScale(0.945)
             icon:setAnchorPoint(cc.p(0,0))
             icon:setPosition(cc.p(0.0, (WATER_ICON_ROW-1-(i-1))*self.m_nPerShowCellHeight))
             self.m_cliperNode[j]:addChild(icon)
-
+            --[[
             local dikuang = cc.Sprite:createWithSpriteFrameName("game/watermargin/images/icondakuang.png")
             dikuang:setAnchorPoint(cc.p(0,0))
             dikuang:setPosition(cc.p(-2, (WATER_ICON_ROW-1-(i-1))*self.m_nPerShowCellHeight-4))
             self.m_cliperNode[j]:addChild(dikuang)
+            --]]
         end
     end
 
@@ -1280,7 +1337,8 @@ function GameViewLayer:resetCliperNodeIcon()--------------------------1
             local strIconFile = string.format("game/watermargin/images/gui-water-icon-mix-%d.png",WaterMarginDataMgr.getInstance():getRandomIconIndex())
             local icon = cc.Sprite:createWithSpriteFrameName(strIconFile)
             icon:setAnchorPoint(cc.p(0,0))
-            icon:setPosition(cc.p(0.0, (i-1)*self.m_nPerShowCellHeight-20.0))
+            icon:setScale(0.945)
+            icon:setPosition(cc.p(0.0, (i-1)*self.m_nPerShowCellHeight))
             self.m_cliperNode[j]:addChild(icon)
          end
     end
@@ -1297,16 +1355,18 @@ function GameViewLayer:resetCliperNodeIcon()--------------------------1
             local iconIdex = gameResult.result_icons[i][j]
             local strIconFile = string.format("game/watermargin/images/gui-water-icon-%d.png", iconIdex)
             local icon = cc.Sprite:createWithSpriteFrameName(strIconFile)
+            icon:setScale(0.945)
             icon:setAnchorPoint(cc.p(0,0))
             --"WATER_MAX_ROW_ICON_NUM-1-i"实际为:"(WATER_ICON_ROW-1)-i+(WATER_MAX_ROW_ICON_NUM-WATER_ICON_ROW)"
             icon:setPosition(cc.p(0.0, (WATER_MAX_ROW_ICON_NUM-1-(i-1))*self.m_nPerShowCellHeight))
             icon:setTag(i+1+j+1)
             self.m_cliperNode[j]:addChild(icon)
-
+            --[[
             local dikuang = cc.Sprite:createWithSpriteFrameName("game/watermargin/images/icondakuang.png")
             dikuang:setAnchorPoint(cc.p(0,0))
             dikuang:setPosition(cc.p(-2, (WATER_MAX_ROW_ICON_NUM-1-(i-1))*self.m_nPerShowCellHeight-4))
             self.m_cliperNode[j]:addChild(dikuang)
+            --]]
         end
     end
 
@@ -1354,9 +1414,33 @@ function GameViewLayer:updateStartBtState()-------------------------------------
 
     if WaterMarginDataMgr.getInstance():getIsAuto() then
         self.m_pBtnGameStart:setEnabled(false)
+        self.m_pAutoLight:setVisible(true)
     else 
         self.m_pBtnGameStart:setEnabled(true)
+        self.m_pAutoLight:setVisible(false)
     end
+
+    local bEnble = WaterMarginDataMgr.getInstance():getGameHandleStatus() == WaterMarginDataMgr.eGAME_HANDLE_IDLE
+    if bEnble then
+        self:showStartBtnStyle("normal")
+    else
+        self:showStartBtnStyle("press")
+    end
+
+end
+
+function GameViewLayer:showStartBtnStyle(v)
+    local pressbgStrPath = "shuihuzhuan/image/shuihuzhuan_zhuye_tingzhi0.png"
+    local normalbglStrPath = "shuihuzhuan/image/shuihuzhuan_zhuye_kaishi0.png"
+    local pressTextStrPath = "shuihuzhuan/image/shuihuzhuan_zhuye_tingzhi.png"
+    local normalTextlStrPath = "shuihuzhuan/image/shuihuzhuan_zhuye_kaishi.png"
+    if v == "normal" then
+       self.m_pBtnGSTextimg:loadTexture(normalTextlStrPath)
+       self.m_pBtnGameStart:loadTextureNormal(normalbglStrPath)
+    elseif v == "press" then
+       self.m_pBtnGSTextimg:loadTexture(pressTextStrPath)
+       self.m_pBtnGameStart:loadTextureNormal(pressbgStrPath)
+    end   
 end
 
 function GameViewLayer:showALlLineOfWin()
@@ -1451,7 +1535,7 @@ function GameViewLayer:showWinAllEffect(iType)
     for i=1,tonumber(WATER_ICON_ROW),1 do 
         for j=1,tonumber(WATER_ICON_COL),1 do 
             local iconType = gameResult.result_icons[i][j]
-            local pos = cc.p(227 + (j-1) * 220, 550 - (i-1) * 170)
+            local pos = cc.p(commonStartX + (j-1) * differX, commonStartY - (i-1) * differY)
             if i-1 == 0 then
                 pos.y  = pos.y - 10
             elseif i-1 == 2 then
@@ -1582,13 +1666,13 @@ end
 function GameViewLayer:showWinLineIcons( nLineIndex,  vecIcons)
     for i=1,tonumber(#vecIcons),1 do 
         local info = vecIcons[i]
-        local pos = cc.p(227 + info.pos.y * 220, 550 - info.pos.x * 170-1)
+        local pos = cc.p(commonStartX + info.pos.y * differX, commonStartY - info.pos.x * differY-1)
         if info.pos.x == 0 then
             pos.y  = pos.y - 10
         elseif info.pos.x == 2 then
             pos.y  = pos.y + 10
         end
-        self:showPerIconEffect(info.giType,pos,false,0)
+        --self:showPerIconEffect(info.giType,pos,false,0)
         local tab = {row = info.pos.x,col = info.pos.y}
         self:showPerKuangEffect(pos,tab)
     end
@@ -1621,7 +1705,7 @@ function GameViewLayer:showPerIconEffect( iconType,  pos,  isQueue,  animationId
 	    armature:addTo(self.m_pNodeEffect)
 	    armature:getAnimation():playWithIndex(animationIdx)
         if(armature)then
-            armature:setScale(1.24)
+            armature:setScale(1.15)
             armature:setName(strArmName)
             table.insert(self.m_vecPlayIconEffect,armature)
             if(isQueue)then
@@ -1678,9 +1762,17 @@ function GameViewLayer:showPerKuangEffect(pos,rc)
     armature:registerSpineEventHandler(function ()
         --armature:setVisible(false)
     end , sp.EventType.ANIMATION_COMPLETE)
-    armature:setScale(1.05)
+    armature:setScale(1.00)
     armature:setPosition(pos)
     armature:setAnimation(0, "animation", true)
+ 
+--[[
+     local sp = cc.Sprite:create("shuihuzhuan/image/shuihuzhuan_zhuye_zidong1.png")
+	 sp:setPosition(pos)
+     local sequence = cc.Sequence:create(cc.DelayTime:create(0.3),cc.Hide:create(),cc.DelayTime:create(0.5),cc.Show:create(),NULL)
+     local repeatForever = CCRepeatForever:create(sequence)
+             sp:runAction(repeatForever)
+    --]]
     self.m_pKuangEffectNode:addChild(armature)
 end
 function GameViewLayer:stopGame()
@@ -1702,9 +1794,28 @@ function GameViewLayer:stopGame()
     else
         self:playFlyScoreEffect()
     end
+    
 --    CMsgWaterMargin.getInstance():sendMsgGameStop() -----?
     SLFacade:dispatchCustomEvent(WaterMarginScene_Events.MSG_UPDATE_WATER_GAME_END)   
 end
+--更新赢分
+function GameViewLayer:updateWinScore(name)
+    if nil == self.m_pLbyyingfen then
+       return
+    end
+    local result = WaterMarginDataMgr.getInstance():getGameResult()
+    if result.llResultScore <= 0 then 
+        return
+    end
+    if name == "stopGame" then
+        local var = self:getFormatGold(result.llResultScore)
+        self.m_pLbyyingfen:setString(var)
+    else
+        self.m_pLbyyingfen:setString(0)
+    end
+
+end
+
 function GameViewLayer:playFlyScoreEffect()
 
     local result = WaterMarginDataMgr.getInstance():getGameResult()
@@ -1764,7 +1875,7 @@ function GameViewLayer:repeatPlayAllLineWinEffect()
                 
                     if(isAddAction)then
                         table.insert(vecShowList,info.pos)
-                        local pos = cc.p(227 + info.pos.y * 220-1, 550 - info.pos.x * 170-4)
+                        local pos = cc.p(commonStartX + info.pos.y * differX-1, commonStartY - info.pos.x * differY-4)
                         if info.pos.x == 0 then
                             pos.y  = pos.y - 10
                         elseif info.pos.x == 2 then
@@ -1857,6 +1968,7 @@ function GameViewLayer:enterJieSuan()
         self:enterResultView()
     end
     self.m_pNodeEffect:stopAllActions()
+    self:updateWinScore("stopGame")
 end
 --结算界面
 function GameViewLayer:enterResultView()
@@ -1884,7 +1996,7 @@ function GameViewLayer:setPerLinesVisible( bVisble, index)
     end
 end
 function GameViewLayer:playPerWinLineEffect( lineIndex, isClean)
-
+--[[
     if(self.m_pNodeEffectLine == nil or (lineIndex > WATER_MAX_LINE_NUM) or (lineIndex < 0))then
         return
     end
@@ -1894,7 +2006,7 @@ function GameViewLayer:playPerWinLineEffect( lineIndex, isClean)
         self.m_pNodeEffectLine:removeAllChildren()
     end
 
-    local posX,posY = self.m_pNodeLineEffectPos[lineIndex]:getPosition()
+    local posX,posY = self.m_pSpLine[lineIndex]:getPosition()
     local pos = cc.p(posX,posY)
     local size = self.m_pSpLine[lineIndex]:getContentSize()
 
@@ -1913,6 +2025,7 @@ function GameViewLayer:playPerWinLineEffect( lineIndex, isClean)
     kuangkuang_2:setPosition(RightPos)
 	kuangkuang_2:addTo(self.m_pNodeEffectLine)
 	kuangkuang_2:getAnimation():play(Animation1)
+    --]]
 end
 
 ----------------------

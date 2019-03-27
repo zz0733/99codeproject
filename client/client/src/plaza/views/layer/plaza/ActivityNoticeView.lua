@@ -167,6 +167,7 @@ function ActivityNoticeView:initImageview()
         self.m_itemLight[i] = item:getChildByName("light"):setVisible(false)
         local sp = ccui.Button:create(self:getrealname(BTN_Num[i]));
         sp:setAnchorPoint(cc.p(0,0))
+        sp:setPosition(cc.p(10,-5))
         sp:setTag(i)
         sp:addTo(item)
         sp:addClickEventListener(handler(self,self.OnBtnImageChick))
@@ -180,6 +181,7 @@ function ActivityNoticeView:initWorldview()
         local item = self.m_ptabItem:clone();
         self.m_itemLight2[i] = item:getChildByName("light"):setVisible(false)
         local sp = ccui.Button:create(self:getrealname(BTN_Num[i+5]));
+        sp:setPosition(cc.p(10,-5))
         sp:setAnchorPoint(cc.p(0,0))
         sp:setTag(i)
         sp:addTo(item)
@@ -211,7 +213,6 @@ function ActivityNoticeView:OnBtnImageChick(sender)
         self.ImageSp:setPosition(cc.p(0,10))
         self.ScrollView:addChild(self.ImageSp)
     end
-
 end
 --公告点击
 function ActivityNoticeView:OnBtnWorldChick(sender)

@@ -3,23 +3,9 @@
 
 <plist version="1.0">
     <dict>
-        <key>res_game_2005</key>
-        <real>16.0000000000000000</real>
         <key>res_client</key>
         <real>6.0000000000000000</real>
-        <key>res_game_1238</key>
-        <real>12.0000000000000000</real>
-        <key>res_game_1029</key>
-        <real>7.0000000000000000</real>
-        <key>res_game_1036</key>
-        <real>9.0000000000000000</real>
         <key>res_game_1031</key>
         <real>14.0000000000000000</real>
-        <key>res_game_2002</key>
-        <real>12.0000000000000000</real>
-        <key>res_game_1077</key>
-        <real>10.0000000000000000</real>
-        <key>res_game_1236</key>
-        <real>10.0000000000000000</real>
     </dict>
 </plist>

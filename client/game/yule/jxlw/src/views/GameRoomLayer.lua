@@ -103,7 +103,9 @@ function GameRoomLayer:initCSB()
     self.m_pBtnQuickStart:setPositionX(display.size.width/2)
     --self.m_pQuickStartArm    = self.m_pBtnQuickStart:getChildByName("Arm_quickStart")
     --self.m_pBtnRule          = self.m_pNodeTop:getChildByName("BTN_Rule")
-
+    if LuaUtils.isIphoneXDesignResolution() then
+         self.m_pBtnQuickStart:setPositionX(display.size.width/2-145)
+    end
     -- 返回按钮
     self.m_pBtnBack:addClickEventListener(handler(self, self.onCloseBtnClick))
 
@@ -208,6 +210,11 @@ function GameRoomLayer:createScrollRoomList()
     local centerX = (display.size.width)/2+145
     local commonY = display.size.height/2-170
     local nOffX = 130 -- 偏移
+
+    if LuaUtils.isIphoneXDesignResolution() then
+        centerX = (display.size.width)/2
+        nOffX = 140 -- 偏移
+    end
     local pos = {ccp(centerX-nOffX*3,commonY),ccp(centerX,commonY),ccp(centerX+nOffX*3,commonY)}
     local btnSize = cc.size(330, 448) -- 按纽大小
     self.jackPotText = {}

@@ -105,15 +105,13 @@ function PlazaLayer:initCCB()
     local diffX = 145 - (1624-display.size.width)/2
     self.m_pNodeRootUI:setPositionX(diffX)
 
-    if LuaUtils.isIphoneXDesignResolution() then
-        local diffXx = 125 - (1624-display.size.width)/2
-        self.m_pNodeRootUI:setPositionX(diffXx)
-    end
-
     self.image_topBar = self.m_pNodeRootUI:getChildByName("image_topBar")
     self.panel_bottomBar = self.m_pNodeRootUI:getChildByName("panel_bottomBar")
     self.scrollView_littlegamescroll = self.m_pNodeRootUI:getChildByName("scrollView_littlegamescroll")
     self.adPanel            = self.m_pNodeRootUI:getChildByName("panel_adPanel")
+    if LuaUtils.isIphoneXDesignResolution() then
+         self.adPanel:setPositionX(0)
+    end
     --顶部按钮
     self.m_pQuanmindaili    = self.image_topBar:getChildByName("button_downloadEWMnew"):getChildByName("fileNode_tuiguangRun")
     self.m_pUserInfo        = self.image_topBar:getChildByName("panel_userInfoPanel"):getChildByName("node_portrait"):getChildByName("Button_userinfo")

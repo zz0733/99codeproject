@@ -8,13 +8,17 @@ local Lhdz_Res = {} --所有资源
 
 --csb
 Lhdz_Res.CSB_OF_MAINSCENE       = "game/longhudazhan/lhdzMainLayer.csb"
-Lhdz_Res.CSB_OF_RULE            = "game/longhudazhan/lhdzRuleLayer.csb"
+Lhdz_Res.CSB_OF_RULE            = "game/longhudazhan/DragonHelp.csb"
 Lhdz_Res.CSB_OF_RANK            = "game/longhudazhan/lhdzRankLayer.csb"
 Lhdz_Res.CSB_OF_RANK_ITEM       = "game/longhudazhan/lhdzRankInfoItem.csb"
 Lhdz_Res.CSB_OF_TREND           = "game/longhudazhan/lhdzTrendLayer.csb"
 Lhdz_Res.CSB_OF_USERINFO        = "game/longhudazhan/lhdzUserInfo.csb"
 Lhdz_Res.CSB_OF_LOADING         = "game/longhudazhan/lhdzLoading.csb"
 Lhdz_Res.CSB_OF_MESSAGEBOX      = "game/longhudazhan/lhdzmessage-box.csb"
+Lhdz_Res.CSB_OF_DRAGONTREND      = "game/longhudazhan/DragonTrend.csb"
+Lhdz_Res.CSB_OF_DRAGONRESULT      = "game/longhudazhan/DragonRoundResult.csb"
+Lhdz_Res.CSB_GAME_USERINFO      = "game/longhudazhan/DragonPlayerList.csb"
+Lhdz_Res.CSB_OF_SETTING         = "game/longhudazhan/DragonSetting.csb"
 
 --plist
 Lhdz_Res.vecPlist = {
@@ -35,10 +39,10 @@ Lhdz_Res.PNG_OF_MUSIC_OFF = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-bt
 Lhdz_Res.PLIST_OF_GOLD = "game/longhudazhan/plist/fuhao-coin.plist"
 Lhdz_Res.PLIST_OF_BAGUA = "game/longhudazhan/plist/guifu_1.plist"
 
-Lhdz_Res.PNG_OF_JETTON = "cm/%d.png"--"game/longhudazhan/gui-longhudazhan-main/new-game-jetton-%d.png"   --筹码
+Lhdz_Res.PNG_OF_JETTON = "game/longhudazhan/image/chip/cm_id_%d.png"--"game/longhudazhan/gui-longhudazhan-main/new-game-jetton-%d.png"   --筹码
 Lhdz_Res.PNG_OF_STATUS_BET = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-status-bet.png"  --下注状态
 Lhdz_Res.PNG_OF_STATUS_LOTTERY = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-status-lottery.png"  -- 开奖状态
-Lhdz_Res.PNG_OF_HEAD = "gui-icon-head-%02d.png" -- 头像
+Lhdz_Res.PNG_OF_HEAD = "head_mman_%02d.png" -- 头像
 Lhdz_Res.PNG_OF_ICON_DRAGON = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-icon-dragon.png" -- 龙
 Lhdz_Res.PNG_OF_ICON_TIGER = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-icon-tiger.png" -- 虎
 Lhdz_Res.PNG_OF_ICON_DRAW = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-icon-draw.png" -- 和
@@ -54,7 +58,8 @@ Lhdz_Res.PNG_OF_BANKERCHANGE = "game/longhudazhan/gui-longhudazhan-main/gui-wz-l
 
 Lhdz_Res.PNG_OF_BANKER_CONTINUE = "game/longhudazhan/gui-longhudazhan-main/gui-wz-%d.png" -- 连庄
 Lhdz_Res.PNG_OF_BANKER_SPLINE = "game/longhudazhan/gui-longhudazhan-main/banklistfengexian.png" -- 庄家列表的线
-Lhdz_Res.PNG_OF_CHIP_EFFECT = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-chip-effect.png"
+--Lhdz_Res.PNG_OF_CHIP_EFFECT = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-chip-effect.png"
+Lhdz_Res.PNG_OF_CHIP_EFFECT = "common/zcmdwc_common/choose.png"
 
 Lhdz_Res.PNG_OF_BAGUAEFFECT = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-baguaani.png" -- 光效八卦
 Lhdz_Res.PNG_OF_BAGUAFLY = "game/longhudazhan/gui-longhudazhan-main/gui-lhdz-baguafly.png" -- 飞行八卦
@@ -65,7 +70,7 @@ Lhdz_Res.MESSAGEBOX_IMG = {
     QUIT     = "game/longhudazhan/plist/MessageBox/message-quit.png",
 }
 
-Lhdz_Res.FNT_OF_COUNTDOWN = "game/longhudazhan/font/sz-lhdz-01.fnt"
+Lhdz_Res.FNT_OF_COUNTDOWN = "game/longhudazhan/font/lh_countdown.fnt"
 Lhdz_Res.FNT_OF_RESULT_WIN = "game/longhudazhan/font/lhd_jbjia.fnt"
 Lhdz_Res.FNT_OF_RESULT_LOSE = "game/longhudazhan/font/lhd_jbjian.fnt"
 Lhdz_Res.FONT_ROOM          = "game/longhudazhan/font/jxlw_fc.fnt"

@@ -136,14 +136,14 @@ end
 -- 后台回调
 function ClientScene:onBackgroundCallBack( bEnter )
     if not bEnter then
-        print("onBackgroundCallBack not bEnter")
+--        print("onBackgroundCallBack not bEnter")
 --        if nil ~= self._gameFrame and self._gameFrame:isSocketServer() and GlobalUserItem.bAutoConnect then         
 --            self._gameFrame:onCloseSocket()
 --        end
-        self._sceneLayer:setKeyboardEnabled(false)
+--        self._sceneLayer:setKeyboardEnabled(false)
     else
-        print("onBackgroundCallBack  bEnter")
-        --local curTag = self._sceneLayer:getCurrentTag()
+--        print("onBackgroundCallBack  bEnter")
+--        local curTag = self._sceneLayer:getCurrentTag()
 --        if curTag == yl.SCENE_GAME then               
 --            if self._gameFrame:isSocketServer() == false and GlobalUserItem.bAutoConnect then
 --                self._gameFrame:OnResetGameEngine()
@@ -151,7 +151,7 @@ function ClientScene:onBackgroundCallBack( bEnter )
 --            end
 --        end
 
-        self._sceneLayer:setKeyboardEnabled(true)
+--        self._sceneLayer:setKeyboardEnabled(true)
     end
 end
 
@@ -371,12 +371,18 @@ function ClientScene:dismissPopWait()
    FloatPopWait.getInstance():dismiss()
 end
 
--- 断网等待
-function ClientScene:showReConnect()
+
+--关闭等待
+function ClientScene:dismissReConnect()
     if self._popWait ~= nil and tolua.isnull(self._popWait) == false then
         self._popWait:removeFromParent()
         self._popWait = nil
-    end
+    end 
+end
+
+-- 断网等待
+function ClientScene:showReConnect()
+    self:dismissReConnect()
     local reconnect = ClientPopWait.ReConnectPopWait:create(20, function(dt)
         if 10 == dt then
             print("尝试重连")
@@ -387,7 +393,7 @@ function ClientScene:showReConnect()
             print("重连超时")
             local curTag = self._sceneLayer:getCurrentTag()
             if curTag == yl.SCENE_GAME then
-                self:dismissPopWait()             
+                self:dismissReConnect()           
                 self._gameFrame:onCloseSocket()
                 self._gameFrame:removeNetQuery()
                 self:onKeyBack()

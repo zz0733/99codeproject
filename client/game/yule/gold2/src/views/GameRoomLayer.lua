@@ -97,7 +97,9 @@ function GameRoomLayer:initCSB()
     self.m_pBtnQuickStart:setPositionX(display.size.width/2)
     --self.m_pQuickStartArm    = self.m_pBtnQuickStart:getChildByName("Arm_quickStart")
     --self.m_pBtnRule          = self.m_pNodeTop:getChildByName("BTN_Rule")
-
+    if LuaUtils.isIphoneXDesignResolution() then
+         self.m_pBtnQuickStart:setPositionX(display.size.width/2-145)
+    end
     -- 返回按钮
     self.m_pBtnBack:addClickEventListener(handler(self, self.onCloseBtnClick))
 

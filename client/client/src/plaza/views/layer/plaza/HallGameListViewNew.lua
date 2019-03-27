@@ -156,8 +156,12 @@ end
 
 -- 获取滑动框的size
 function HallGameListView:GetScrollSize(showClassify)
-    local scrool_height = 480                                               --高度    
-    local scrollViewSize = cc.size(display.width-340, scrool_height)        --滑动框范围       
+    local scrool_height = 480 
+    local sizeX = 340
+    if LuaUtils.isIphoneXDesignResolution() then
+         sizeX = 430
+    end                                              --高度    
+    local scrollViewSize = cc.size(display.width-sizeX, scrool_height)        --滑动框范围       
     if showClassify then  -- 减去列表栏的宽度
         scrollViewSize.width = scrollViewSize.width - 110
     end
@@ -243,10 +247,6 @@ function HallGameListView:animationTransform(Data)
     end
 
     local str = Data.strAnimationPath
-
-    if Data._KindID == "1055" or Data._KindID == "1031" or Data._KindID == "2002" or Data._KindID == "1034" or Data._KindID == "1077" or Data._KindID == "1077" then
-       Data.strAnimationPath = "dt/image/zcmdwc_zjm/button_tbnnBtn.csb"
-    end
 
     return Data.strAnimationPath
 end

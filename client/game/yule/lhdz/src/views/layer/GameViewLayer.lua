@@ -3,25 +3,25 @@
 -- Date: 2016-11-02 17:28:24
 --
 local ExternalFun = appdf.req(appdf.EXTERNAL_SRC .. "ExternalFun")
+local HeadSprite               = appdf.req(appdf.EXTERNAL_SRC .. "HeadSprite")
 --local GameChatLayer = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.game.GameChatLayer")
 --local ClipText = appdf.req(appdf.EXTERNAL_SRC .. "ClipText")
---local AnimationMgr = appdf.req(appdf.EXTERNAL_SRC .. "AnimationMgr")
 
 local module_pre = "game.yule.lhdz.src."
 
---local CMsgLhdz = appdf.req(module_pre.."game.longhudazhan.proxy.CMsgLhdz")
 local LhdzDataMgr           = appdf.req(module_pre.."game.longhudazhan.manager.LhdzDataMgr")
 local Lhdz_Res              = appdf.req(module_pre.."game.longhudazhan.scene.Lhdz_Res")
 local Lhdz_Const            = appdf.req(module_pre.."game.longhudazhan.scene.Lhdz_Const")
-local Lhdz_Events           = appdf.req(module_pre.."game.longhudazhan.manager.Lhdz_Events")
 local ParticalPool          = appdf.req(module_pre.."game.longhudazhan.bean.ParticalPool")
 
 local ChipFlyManager        = appdf.req(module_pre.."game.longhudazhan.bean.ChipFlyManager")
-local LhdzRuleLayer         = appdf.req(module_pre.."game.longhudazhan.layer.LhdzRuleLayer")
-local LhdzRankLayer         = appdf.req(module_pre.."game.longhudazhan.layer.LhdzRankLayer")
-local LhdzTrendLayer        = appdf.req(module_pre.."game.longhudazhan.layer.LhdzTrendLayer")
+local LhdzRuleLayer         = appdf.req(module_pre.."game.longhudazhan.layer.DragonHelpView")
 local LhdzUserInfoLayer     = appdf.req(module_pre.."game.longhudazhan.layer.LhdzUserInfoLayer")
+local LhdzOtherInfoLayer    = appdf.req(module_pre.."game.longhudazhan.layer.LhdzOtherInfoLayer")
 local MessageBoxNew         = appdf.req(module_pre.."game.longhudazhan.layer.LhdzMessageBox")
+local TrendView             = appdf.req(module_pre.."game.longhudazhan.trend.TrendView")
+local DragonRoundResultView = appdf.req(module_pre.."game.longhudazhan.layer.DragonRoundResultView")
+local SettingLayer          = appdf.req(module_pre.."game.longhudazhan.layer.SettingLayer")
 local CBetManager           = appdf.req(module_pre.."models.CBetManager")
 
 local MsgBoxPreBiz          = appdf.req(module_pre.."models.MsgBoxPreBiz")
@@ -37,6 +37,10 @@ end)
 local Chip_EnableOpacity = 255
 local Chip_DisableOpacity = 180
 
+local TAG_ROUNDRESULT_UI = 31
+
+local _ = {}
+
 local function LOG_PRINT(...) if true then printf(...) end end
 ---------------------------- constructor --------------------------------------
 --GameViewLayer.instance_ = nil
@@ -51,7 +55,10 @@ local function LOG_PRINT(...) if true then printf(...) end end
 
 function GameViewLayer:ctor(scene)
     -- 进入游戏重置设计分辨率
---    LuaUtils.setIphoneXDesignResolution()
+    --display.setAutoScale({width = 1280, height = 720, autoscale = "EXACT_FIT"})
+    --cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(1280, 720, cc.ResolutionPolicy.EXACT_FIT)
+    --cc.Director:getInstance():getOpenGLView():setDesignResolutionSize(1334,750,cc.ResolutionPolicy.NO_BORDER)
+    --LuaUtils.setIphoneXDesignResolution()
     self._scene = scene
 
     self:enableNodeEvents()
@@ -84,12 +91,10 @@ function GameViewLayer:initAllVar_()
     self.m_pNodeBetArea = nil
     self.m_pNodeBetValue = nil
     self.m_pNodeHistory = nil
-    self.m_pNodeTableView = nil
     self.m_pNodeBanker = nil
     self.m_pNodeCountTime = nil
 
     self.m_pNodeButton = nil
-    self.m_pNodeMenu = nil
 
     self.m_pNodeJetton = nil
     self.m_pNodeUserInfo = nil
@@ -98,6 +103,7 @@ function GameViewLayer:initAllVar_()
     self.m_pNodeShowPlayer = {}
     self.m_pNodeChip = nil
     self.m_pNodeArmature = nil
+    self.m_FileNodeStartEnd = nil
     self.m_pNodeBackground = nil
     self.m_pNodeLantern = nil
     self.m_pNodeStar = nil
@@ -144,6 +150,7 @@ function GameViewLayer:initAllVar_()
     self.m_pLbOnlieCount = nil
     self.m_pLbAllBetValue = {}
     self.m_pLbMyBetValue = {}
+    self.m_pLbMyBetBg = {}
     self.m_pLbShowPlayerName = {}
     self.m_pLbShowPlayerGold = {}
     self.m_pLbTableResultGold = {}
@@ -198,6 +205,7 @@ end
 ---------------------------------- init view start ----------------------------------
 function GameViewLayer:init() --onEnter:init
     self:initVar()
+    self:initRes()
     self:initCCB()
     self:initNode()
     self:initChipMgr()
@@ -237,23 +245,23 @@ function GameViewLayer:initCCB()
     self.m_rootUI:addTo(self)
     -- load csb.
     self.m_rootWidget = cc.CSLoader:createNode(Lhdz_Res.CSB_OF_MAINSCENE)
-    local diffY = (display.size.height - 750) / 2
+    local diffY = (display.size.height - 720) / 2
     -- 屏幕适配，截取可视区域
     local shap = cc.DrawNode:create()
     local pointArr = {cc.p(0,0), cc.p(1624, 0), cc.p(1624, 750), cc.p(0, 750)}
     shap:drawPolygon(pointArr, 4, cc.c4f(255, 255, 255, 0), 2, cc.c4f(255, 255, 255, 0))
     self.m_pClipping = cc.ClippingNode:create(shap)
     self.m_pClipping:setPosition(cc.p(0,diffY))
-    self.m_pClipping:addChild(self.m_rootWidget)
-    self.m_rootUI:addChild(self.m_pClipping)
+    --self.m_pClipping:addChild(self.m_rootWidget)
+    self.m_rootUI:addChild(self.m_rootWidget)
     
     local diffX = 145 - (1624-display.size.width)/2 
     self.m_pNodeRoot = self.m_rootWidget:getChildByName("Panel_root")
     self.m_pNodeRoot:setPositionX(diffX)
     -----node-----------
-    self.m_pNodeBackground = self.m_pNodeRoot:getChildByName("Node_background")
+    --self.m_pNodeBackground = self.m_pNodeRoot:getChildByName("Node_background")
     -- 灯笼
-    self.m_pNodeLantern = self.m_pNodeRoot:getChildByName("Node_lantern")
+    --self.m_pNodeLantern = self.m_pNodeRoot:getChildByName("Node_lantern")
     -- 桌子节点
     self.m_pNodeTable = self.m_pNodeRoot:getChildByName("Node_table")
     -- 下注区域节点
@@ -262,19 +270,19 @@ function GameViewLayer:initCCB()
     self.m_pNodeBetValue = self.m_pNodeTable:getChildByName("Node_betValue")
     -- 历史记录节点
     self.m_pNodeHistory = self.m_pNodeTable:getChildByName("Node_history")
-    -- 历史记录TableView节点
-    self.m_pNodeTableView = self.m_pNodeHistory:getChildByName("Panel_table")
     -- 庄家节点
     self.m_pNodeBanker = self.m_pNodeTable:getChildByName("Node_banker")
     -- 倒计时节点
     self.m_pNodeCountTime = self.m_pNodeTable:getChildByName("Node_countTime")
     -- 神算子星
     self.m_pNodeStar = self.m_pNodeTable:getChildByName("Node_star")
-    
+    -- 新下注节点
+    self.m_pNodeChipNew = self.m_pNodeTable:getChildByName("Node_chip")
+
     self.m_pNodeButton = self.m_pNodeRoot:getChildByName("Node_button")
-    self.m_pNodeMenu = self.m_pNodeButton:getChildByName("Node_menu")
 
     self.m_pNodeJetton = self.m_pNodeRoot:getChildByName("Node_jetton")
+
     self.m_pNodeUserInfo = self.m_pNodeRoot:getChildByName("Node_userInfo")
     
     self.m_pNodePlayer = self.m_pNodeRoot:getChildByName("Node_player")
@@ -291,7 +299,7 @@ function GameViewLayer:initCCB()
     --         end
     --     end
     -- end
-
+    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(Lhdz_Res.ANI_OF_CHANGEUSER.FILEPATH)
     for i=1, Lhdz_Const.TABEL_USER_COUNT do
         self.m_pNodeTablePlayer[i] = self.m_pNodePlayer:getChildByName(string.format("Node_tablePlayer%d",i))
         self.m_pSpNoPlayer[i] = self.m_pNodeTablePlayer[i]:getChildByName("Sprite_noBody")
@@ -305,8 +313,7 @@ function GameViewLayer:initCCB()
         self.m_pLbShowPlayerName[i] = self.m_pNodeShowPlayer[i]:getChildByName("Text_showPlayer_name")
         self.m_pLbShowPlayerGold[i] = self.m_pNodeShowPlayer[i]:getChildByName("BitmapFontLabel_showPlayer_gold")
         self.m_pBtnUserInfo[i] = self.m_pNodeShowPlayer[i]:getChildByName("Button_userInfo")
-        
-        ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(Lhdz_Res.ANI_OF_CHANGEUSER.FILEPATH)
+
         self.m_changeUserAniVec[i] = ccs.Armature:create(Lhdz_Res.ANI_OF_CHANGEUSER.FILENAME)
         self.m_changeUserAniVec[i]:addTo(self.m_userBtnVec[i]:getChildByName("Node_ani"))
         self.m_changeUserAniVec[i]:setTag(255)
@@ -315,23 +322,27 @@ function GameViewLayer:initCCB()
     self.m_pNodeChip = self.m_pNodeRoot:getChildByName("Node_chip")
     self.m_pNodeUserTips = self.m_pNodeRoot:getChildByName("Node_userTips")
     self.m_pNodeArmature = self.m_pNodeRoot:getChildByName("Node_anim")
+    self.m_FileNodeStartEnd = self.m_pNodeRoot:getChildByName("FileNode_start_end")
+    self.m_FileNodeStartEnd:setVisible(false)
     self.m_pNodeAnimVS = self.m_pNodeRoot:getChildByName("Panel_animVS")
     self.m_pNodeTips = self.m_pNodeRoot:getChildByName("Node_tips")
     self.m_pNodeTips:setPosition(cc.p(667, 245))
     
     -------------------
-    self.m_pSpMenuBg = self.m_pNodeMenu:getChildByName("Sprite_menu_bg")
+    self.m_pSpMenuBg = self.m_pNodeButton:getChildByName("Sprite_menu_bg")
     ----- Button --------
-    self.m_pBtnExit = self.m_pNodeButton:getChildByName("Button_exit")
     self.m_pBtnMenuPush = self.m_pNodeButton:getChildByName("Button_push")
-    self.m_pBtnMenuPop = self.m_pNodeButton:getChildByName("Button_pop")
+    --self.m_pBtnMenuPop = self.m_pNodeButton:getChildByName("Button_pop")
     self.m_pBtnTrend = self.m_pNodeButton:getChildByName("Button_trend")
     self.m_pBtnTrend2 = self.m_pNodeButton:getChildByName("Button_trend2")
     self.m_pBtnContinue = self.m_pNodeButton:getChildByName("Button_continue")
-    self.m_pBtnMenuClose = self.m_pSpMenuBg:getChildByName("Button_menu_close")
+    self.m_pBtnExit = self.m_pSpMenuBg:getChildByName("Button_exit")
+    self.m_pBtnMenuClose = self.m_pNodeButton:getChildByName("Button_menu_close")
+    self.m_pBtnMenuClose:setVisible(false)
     self.m_pBtnRule = self.m_pSpMenuBg:getChildByName("Button_rule")
-    self.m_pBtnEffect = self.m_pSpMenuBg:getChildByName("Button_effect")
-    self.m_pBtnMusic = self.m_pSpMenuBg:getChildByName("Button_music")
+    self.m_pBtnSetting = self.m_pSpMenuBg:getChildByName("Button_set")
+    --self.m_pBtnEffect = self.m_pSpMenuBg:getChildByName("Button_effect")
+    --self.m_pBtnMusic = self.m_pSpMenuBg:getChildByName("Button_music")
     -- 银行保险柜
     self.m_pBtnStrongBox = self.m_pSpMenuBg:getChildByName("Button_strongBox")
     self.m_pBtnBank = self.m_pNodeUserInfo:getChildByName("Button_bank")
@@ -344,8 +355,9 @@ function GameViewLayer:initCCB()
     -- 上庄 下庄
     self.m_pBtnUpBanker = self.m_pNodeBanker:getChildByName("Button_upBanker")
     self.m_pBtnDownBanker = self.m_pNodeBanker:getChildByName("Button_downBanker")
+
     -- 下注筹码
-    for i =1, Lhdz_Const.JETTON_ITEM_COUNT do
+    for i =1, Lhdz_Const.JETTON_ITEM_USE_COUNT do
         self.m_pBtnJetton[i] = self.m_pNodeJetton:getChildByName(string.format("Button_jetton%d", i))
     end
 
@@ -356,9 +368,10 @@ function GameViewLayer:initCCB()
     end
     ------sprite------
     -- 倒计时
-    self.m_pSpCountTime = self.m_pNodeCountTime:getChildByName("Sprite_countTime_bg")
+    self.m_pLvCountTime = self.m_pNodeCountTime:getChildByName("listView_countdownLv")
     -- 状态
     self.m_pSpStauts = self.m_pNodeCountTime:getChildByName("Sprite_status")
+    self.m_pSpStautsKaipai = self.m_pNodeCountTime:getChildByName("Sprite_status_kaipai")
 
     -- 历史记录
     for i=1, Lhdz_Const.MAX_HISTORY_COUNT-5 do
@@ -388,7 +401,7 @@ function GameViewLayer:initCCB()
     -- 其他玩家数量
     self.m_pLbOnlieCount = self.m_pNodeOnliePlayer:getChildByName("BitmapFontLabel_online")
     -- 倒计时数字
-    self.m_pLbCountTime = self.m_pSpCountTime:getChildByName("BitmapFontLabel_countTime")
+    self.m_pLbCountTime = self.m_pLvCountTime:getChildByName("BitmapFontLabel_countTime")
     --上庄列表
     self.m_pBtnBankList = self.m_pNodeBanker:getChildByName("btn_bank_list")
     self.m_pBankListNode = self.m_pNodeRoot:getChildByName("banklisgNode")
@@ -403,40 +416,52 @@ function GameViewLayer:initCCB()
     for i=1, Lhdz_Const.GAME_DOWN_COUNT do
         self.m_pLbAllBetValue[i] = self.m_pNodeBetValue:getChildByName(string.format("BitmapFontLabel_allBetValue_%d", i))
         self.m_pLbMyBetValue[i] = self.m_pNodeBetValue:getChildByName(string.format("Text_myBetValue_%d", i))
+        self.m_pLbMyBetBg[i] = self.m_pNodeBetValue:getChildByName(string.format("Sprite_myBetBg_%d", i))
     end
     -- 玩家昵称
     self.m_pLbUserName = self.m_pNodeUserInfo:getChildByName("Text_user_name")
     -- 玩家金币
     self.m_pLbUserGold = self.m_pNodeUserInfo:getChildByName("Node_score"):getChildByName("BitmapFontLabel_user_gold")
     self.m_pLbResultGold = self.m_pNodeUserInfo:getChildByName("BitmapFontLabel_userResult")
-
+    --玩家头像
+    self.m_pUserHeadNode = self.m_pNodeUserInfo:getChildByName("Node_ani")
+    self.m_pUserHead = HeadSprite:createClipHead(GlobalUserItem.tabAccountInfo,94)
+    self.m_pUserHead:addTo(self.m_pUserHeadNode)
+    local spTx = cc.Sprite:create("common/tx/tx_2.png")
+    spTx:addTo(self.m_pUserHeadNode,2)
     self.m_pNo1BetPre = self.m_pNodeTable:getChildByName("Node_shengsuanzi")
     self.m_pNo1BetPreNum = self.m_pNo1BetPre:getChildByName("BitmapFontLabel_shengshuanzi")
     self.m_pNo1BetPreNum:setString("")
     self.m_pNo1BetPreBar1 = self.m_pNo1BetPre:getChildByName("Image_bar_lift")
     self.m_pNo1BetPreBar2 = self.m_pNo1BetPre:getChildByName("Image_bar_right")
     self.m_pNo1BetPreBar3 = self.m_pNo1BetPre:getChildByName("Image_bar_mid")
+    --历史记录节点
+    self.m_pNodeHistoryNew = self.m_pNodeRoot:getChildByName("Node_history_new")
+    self.m_trendView = TrendView:create( )
+    self.m_pNodeHistoryNew:addChild(self.m_trendView)
+
+    --其他玩家节点
+    self.m_pNodeOtherPlayer = self.m_pNodeRoot:getChildByName("Node_otherPlayer")
 end
 
 -- 初始化界面
 function GameViewLayer:initNode()
     LOG_PRINT(" GameViewLayer:initNode")
-    self.m_pBtnMenuPop:setVisible(false)
-    self.m_pSpMenuBg:setVisible(false)
-    local shap = cc.DrawNode:create()
-    local pointArr = {cc.p(1080,300), cc.p(1320, 300), cc.p(1320, 640), cc.p(1080, 640)}
-    shap:drawPolygon(pointArr, 4, cc.c4f(255, 255, 255, 255), 2, cc.c4f(255, 255, 255, 255))
-    self.m_pClippingMenu = cc.ClippingNode:create(shap)
-    self.m_pClippingMenu:addTo(self.m_pNodeMenu)
-    self.m_pSpMenuBg:removeFromParent()
-    self.m_pSpMenuBg:addTo(self.m_pClippingMenu)
-    self.m_pClippingMenu:setPosition(cc.p(0,0))
+    --self.m_pBtnMenuPop:setVisible(false)
+    --self.m_pSpMenuBg:setVisible(false)
+    --local shap = cc.DrawNode:create()
+    --local pointArr = {cc.p(1080,300), cc.p(1320, 300), cc.p(1320, 640), cc.p(1080, 640)}
+    --shap:drawPolygon(pointArr, 4, cc.c4f(255, 255, 255, 255), 2, cc.c4f(255, 255, 255, 255))
+    --self.m_pClippingMenu = cc.ClippingNode:create(shap)
+    --self.m_pClippingMenu:addTo(self.m_pNodeMenu)
+    --self.m_pSpMenuBg:removeFromParent()
+    --self.m_pSpMenuBg:addTo(self.m_pClippingMenu)
+    --self.m_pClippingMenu:setPosition(cc.p(0,0))
 
     self.m_pLbCountTime:setVisible(false)
-
-    self:showBackgroundAnim() --耗时
+    --展示桌面动画取消
+    --self:showBackgroundAnim() --耗时
     -- 初始化按纽响应
-
     self:initBtnClickEvent()
 
     self:updateButtonOfSound()
@@ -458,6 +483,8 @@ function GameViewLayer:initNode()
     self:tryLayoutforIphoneX()
 
     self.m_pLbUserName:setString(GlobalUserItem.tabAccountInfo.nickname)
+    self.m_pUserHead = HeadSprite:createClipHead(GlobalUserItem.tabAccountInfo,94)
+    self.m_pUserHead:addTo(self.m_pUserHeadNode)
 
     --房间号
 --    local rooms = GameListManager.getInstance():getStructRoomByKindID(PlayerInfo.getInstance():getKindID(), PlayerInfo.getInstance():getBaseScore())
@@ -500,14 +527,39 @@ function GameViewLayer:initNode()
     self:clearFlyStatus()
 end
 
+function GameViewLayer:initRes()
+    -- 释放动画
+    for _, strPathName in pairs(Lhdz_Res.vecAnim) do
+        local strJsonName = string.format("%s%s/%s.ExportJson", Lhdz_Res.strAnimPath, strPathName, strPathName)
+        ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(strJsonName)
+    end
+    -- 释放整图
+    for _, strPathName in pairs(Lhdz_Res.vecPlist) do
+        display.loadSpriteFrames(strPathName[1], strPathName[2])
+    end
+    -- 释放背景图
+    for _, strFileName in pairs(Lhdz_Res.vecReleaseImg) do
+        display.loadImage(strFileName)
+    end
+    -- 释放音频
+    for _, strFileName in pairs(Lhdz_Res.vecSound) do
+        AudioEngine.preloadEffect(strFileName)
+    end
+    -- 释放背景音乐
+    for _, strFileName in pairs(Lhdz_Res.vecLoadingMusic) do
+        AudioEngine.preloadEffect(strFileName)
+    end
+end
+
 function GameViewLayer:initChipMgr()
     self.m_chipMgr = ChipFlyManager.getInstance()
     local data = {}
-    data.chipNode = self.m_pNodeChip
+    data.chipNode = self.m_pNodeChipNew
     data.chipAreaVec = {}
     data.bankerPos = cc.p(244, 540)
     data.selfPos = cc.p(52, 24)
-    data.otherPos = cc.p(68, 125)
+    --data.otherPos = cc.p(68, 125)
+    data.otherPos = cc.p(self.m_pNodeOnliePlayer:getPosition())
     data.tableUserPos = {}
     data.chipPosVec = {}
     data.getChipEffect = self.m_getChipEffect
@@ -524,7 +576,7 @@ function GameViewLayer:initChipMgr()
         data.tableUserPos[i] = cc.p(self.m_pNodeTablePlayer[i]:getPosition())
     end
 
-    for i = 1, Lhdz_Const.JETTON_ITEM_COUNT do
+    for i = 1, Lhdz_Const.JETTON_ITEM_USE_COUNT do
         data.chipPosVec[i] = cc.p(self.m_pBtnJetton[i]:getPosition())
         data.chipPosVec[i].y = data.chipPosVec[i].y + 14
     end
@@ -535,21 +587,22 @@ end
 -- 初始化按钮监听器
 function GameViewLayer:initBtnClickEvent()
     self.m_pBtnExit:addClickEventListener(handler(self, self.onBtnExitClicked))
-    self.m_pBtnMenuPush:addClickEventListener(handler(self, self.onBtnMenuPushClicked))
-    self.m_pBtnMenuPop:addClickEventListener(handler(self, self.onBtnMenuPopClicked))
+    self.m_pBtnMenuPush:addClickEventListener(handler(self, self.onClickBackMenu))
+    --self.m_pBtnMenuPop:addClickEventListener(handler(self, self.onBtnMenuPopClicked))
     self.m_pBtnTrend:addClickEventListener(handler(self, self.onBtnTrendClicked))
     self.m_pBtnTrend2:addClickEventListener(handler(self, self.onBtnTrendClicked))
-    self.m_pBtnMenuClose:addClickEventListener(handler(self, self.onBtnMenuPopClicked))
+    self.m_pBtnMenuClose:addClickEventListener(handler(self, self.onClickHideMenu))
     self.m_pBtnContinue:addClickEventListener(handler(self, self.onBtnContinueClicked))
     self.m_pBtnRule:addClickEventListener(handler(self, self.onBtnRuleClicked))
-    self.m_pBtnEffect:addClickEventListener(handler(self, self.onBtnEffectClicked))
-    self.m_pBtnMusic:addClickEventListener(handler(self, self.onBtnMusicClicked))
+    self.m_pBtnSetting:addClickEventListener(handler(self, self.onBtnSettingClicked))
+    --self.m_pBtnEffect:addClickEventListener(handler(self, self.onBtnEffectClicked))
+    --self.m_pBtnMusic:addClickEventListener(handler(self, self.onBtnMusicClicked))
     self.m_pBtnBank:addClickEventListener(handler(self, self.onBtnBankClicked))
     self.m_pBtnStrongBox:addClickEventListener(handler(self, self.onBtnBankClicked))
     self.m_pBtnOnliePlayer:addClickEventListener(handler(self, self.onBtnOtherPlayerClicked))
     self.m_pBtnBankList:addClickEventListener(handler(self, self.ClickBankList))
     self.m_pClickMoveListBtn:addClickEventListener(handler(self, self.ClickRemoveBankList))
-    for i =1, Lhdz_Const.JETTON_ITEM_COUNT do
+    for i =1, Lhdz_Const.JETTON_ITEM_USE_COUNT do
         self.m_pBtnJetton[i]:addClickEventListener(handler(self, self.onBtnJettonNumClicked))
     end
     for i = 1, Lhdz_Const.GAME_DOWN_COUNT do
@@ -682,15 +735,15 @@ function GameViewLayer:event_GameState(dataBuffer)         -- 进入
             LhdzDataMgr.getInstance():setBankerScore(v[6])
         end
     end
-    self.m_pLbOnlieCount:setString(table.nums(dataBuffer.members))
+    self.m_pLbOnlieCount:setString("(" .. table.nums(dataBuffer.members) .. ")")
     for k,v in ipairs(dataBuffer.dealers) do
         LhdzDataMgr.getInstance():addBankerList(v[1])
     end
     self.delerID = dataBuffer.dealer
-    local chip = {1,5,10,50,100,500};
+    local chip = {1,10,50,100,500};
     for i=1,tonumber(Lhdz_Const.JETTON_ITEM_COUNT),1 do
         print(dataBuffer.chips[i])
-        CBetManager.getInstance():setJettonScore(i,chip[i]);
+        CBetManager.getInstance():setJettonScore(i,dataBuffer.chips[i]);
     end
     self:updateJettonValues()
     LhdzDataMgr.getInstance():setBankerResult(dataBuffer.dealer_winlost)
@@ -720,6 +773,8 @@ function GameViewLayer:event_GameState(dataBuffer)         -- 进入
                 self:event_CountTime()
             end, 1, false)   
     self:event_GameStatus()
+    --更新走势界面
+    self.m_trendView:updateTrend()
 end
 function GameViewLayer:intoBetMoney(dataBuffer)    -- 下注
 
@@ -756,7 +811,6 @@ function GameViewLayer:onGameEnd(dataBuffer)      -- 结算
       
     local handcard = {}
     for i = 1, 2 do
-        print(dataBuffer.hands[i])
         if dataBuffer.hands[i] >= 0 and dataBuffer.hands[i] <= 12 then
             handcard[i] = dataBuffer.hands[i]+1
         elseif dataBuffer.hands[i] >= 13 and dataBuffer.hands[i] <= 25 then
@@ -768,15 +822,30 @@ function GameViewLayer:onGameEnd(dataBuffer)      -- 结算
         end
     end
     LhdzDataMgr.getInstance():setCards(handcard)
+
     local AreaType = 0
-    if dataBuffer.win_zodics[1] == 1 then   AreaType = 1
-    elseif dataBuffer.win_zodics[2] == 1 then AreaType = 2
-    else AreaType = 3
+    --添加结果类型 符合新代码
+    local resultType = nil
+    if dataBuffer.win_zodics[1] == 1 then
+        AreaType = 1
+        resultType = 0
+    elseif dataBuffer.win_zodics[2] == 1 then
+        AreaType = 2
+        resultType = 2
+    else
+        AreaType = 3
+        resultType = 1
     end
     LhdzDataMgr:getInstance():setAreaType(AreaType)    
     LhdzDataMgr:getInstance():setMyResult(dataBuffer.mywin)
     LhdzDataMgr:getInstance():setBankerResult(dataBuffer.dealer_win)
-
+    local result = {
+        cards = handcard,
+        playercoinchange = dataBuffer.mywin,
+        dealerwincoin = dataBuffer.dealer_win,
+        result = resultType,
+    }
+    LhdzDataMgr.getInstance():setResult(result)
     for i =1, Lhdz_Const.TABEL_USER_COUNT do
         LhdzDataMgr:getInstance():setTableResult(i,dataBuffer.rank8_wins[i][2])
     end
@@ -805,12 +874,20 @@ end
 function GameViewLayer:otherBetMoney(dataBuffer)
     print(dataBuffer[4])
     local lastChip = {};
-    if dataBuffer[4] == 1 then lastChip.wJettonIndex = 1
-    elseif dataBuffer[4] == 5 then lastChip.wJettonIndex = 2
-    elseif dataBuffer[4] == 10 then lastChip.wJettonIndex = 3
-    elseif dataBuffer[4] == 50 then lastChip.wJettonIndex = 4
-    elseif dataBuffer[4] == 100 then lastChip.wJettonIndex = 5
-    elseif dataBuffer[4] == 500 then lastChip.wJettonIndex = 6
+    --if dataBuffer[4] == 1 then lastChip.wJettonIndex = 1
+    ----elseif dataBuffer[4] == 5 then lastChip.wJettonIndex = 2
+    --elseif dataBuffer[4] == 10 then lastChip.wJettonIndex = 2
+    --elseif dataBuffer[4] == 50 then lastChip.wJettonIndex = 3
+    --elseif dataBuffer[4] == 100 then lastChip.wJettonIndex = 4
+    --elseif dataBuffer[4] == 500 then lastChip.wJettonIndex = 5
+    --end
+
+    for i = 1, Lhdz_Const.JETTON_ITEM_COUNT do
+        local jetton = CBetManager.getInstance():getJettonScore(i)
+        if jetton == dataBuffer[4] then
+            lastChip.wJettonIndex = i
+            break
+        end
     end
     
     lastChip.wChipIndex = dataBuffer[1] + 1
@@ -832,14 +909,21 @@ function GameViewLayer:otherBetMoney(dataBuffer)
     self:event_Chip(msg)
 end
 function GameViewLayer:myBetMoney(dataBuffer)
-    print(dataBuffer[1])
     local lastChip = {};
-    if dataBuffer[1] == 1 then lastChip.wJettonIndex = 1
-    elseif dataBuffer[1] == 5 then lastChip.wJettonIndex = 2
-    elseif dataBuffer[1] == 10 then lastChip.wJettonIndex = 3
-    elseif dataBuffer[1] == 50 then lastChip.wJettonIndex = 4
-    elseif dataBuffer[1] == 100 then lastChip.wJettonIndex = 5
-    elseif dataBuffer[1] == 500 then lastChip.wJettonIndex = 6
+    --if dataBuffer[1] == 1 then lastChip.wJettonIndex = 1
+    ----elseif dataBuffer[1] == 5 then lastChip.wJettonIndex = 2
+    --elseif dataBuffer[1] == 10 then lastChip.wJettonIndex = 2
+    --elseif dataBuffer[1] == 50 then lastChip.wJettonIndex = 3
+    --elseif dataBuffer[1] == 100 then lastChip.wJettonIndex = 4
+    --elseif dataBuffer[1] == 500 then lastChip.wJettonIndex = 5
+    --end
+
+    for i = 1, Lhdz_Const.JETTON_ITEM_COUNT do
+        local jetton = CBetManager.getInstance():getJettonScore(i)
+        if jetton == dataBuffer[1] then
+            lastChip.wJettonIndex = i
+            break
+        end
     end
     
     lastChip.wChipIndex = dataBuffer[2] + 1
@@ -858,7 +942,6 @@ function GameViewLayer:myBetMoney(dataBuffer)
 end
 
 function GameViewLayer:updataSeatinfo(dataBuffer)--{seats={} rank8={} }{[1]={} [2]={} [3]={} [4]={} [5]={} [6]={} [7]={} [8]={} [9]={} }
-    print("...")
     LhdzDataMgr.getInstance():clearTableUserInfo()
     for i =1, Lhdz_Const.TABEL_USER_COUNT do
         LhdzDataMgr.getInstance():addTableUserInfo(dataBuffer.rank8[i])
@@ -930,13 +1013,13 @@ function GameViewLayer:updataPlayerPanpel(player_,plyertype)
         end
         if isHavePlayer == false then
             LhdzDataMgr.getInstance():addRankUserToList(player_)
-            self.m_pLbOnlieCount:setString(LhdzDataMgr.getInstance():getRankUserSize())
+            self.m_pLbOnlieCount:setString("(" ..LhdzDataMgr.getInstance():getRankUserSize() .. ")")
         end
     else
         for key, player in ipairs(LhdzDataMgr.getInstance():getRankUserByIndex()) do
             if player[1] == player_ then
                 table.remove(LhdzDataMgr.getInstance():getRankUserByIndex(),key)
-                self.m_pLbOnlieCount:setString(LhdzDataMgr.getInstance():getRankUserSize())
+                self.m_pLbOnlieCount:setString("(" ..LhdzDataMgr.getInstance():getRankUserSize() .. ")")
             end
         end
     end
@@ -991,44 +1074,78 @@ function GameViewLayer:showMessageBox(msg, cb, timer) --打开确认框
     self:addChild(pMessageBox, 101)
 end
 
--- 菜单下拉
-function GameViewLayer:onBtnMenuPushClicked(sender)
-    ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BUTTON)
-    if self.m_bIsMenuMove then return end
-    self.m_bIsMenuMove = true
-
-    self.m_pSpMenuBg:setVisible(true)
-    self.m_pSpMenuBg:stopAllActions()
-    self.m_pSpMenuBg:setPositionY(955)
-    local moveTo = cc.MoveTo:create(0.2, cc.p(self.m_pSpMenuBg:getPositionX(), 485))
-    local callBack = cc.CallFunc:create(function()
-            self.m_bIsMenuMove = false
-            self.m_pBtnMenuPop:setVisible(true)
-            self.m_pBtnMenuClose:setVisible(true)
-            self.m_pBtnMenuPush:setVisible(false)
+-- 返回菜单
+function GameViewLayer:onClickBackMenu()
+    if self.m_bIsMenuMove then
+        self.m_pSpMenuBg:stopAllActions()
+        if LuaUtils.isIphoneXDesignResolution() then
+            self.m_pSpMenuBg:runAction(cc.MoveTo:create(0.2, cc.p(-280, self.m_pSpMenuBg:getPositionY())))
+        else
+            self.m_pSpMenuBg:runAction(cc.MoveTo:create(0.2, cc.p(-100, self.m_pSpMenuBg:getPositionY())))
+        end
+        self.m_pBtnMenuPush:getChildByName("Image_4"):runAction(cc.Sequence:create(cc.RotateTo:create(0.2, 90),cc.CallFunc:create(function()
+            self.m_pBtnMenuClose:setVisible(not self.m_pBtnMenuClose:isVisible())
+            self.m_bIsMenuMove = not self.m_bIsMenuMove
         end)
-    local seq = cc.Sequence:create(moveTo, callBack)
-    self.m_pSpMenuBg:runAction(seq)
+        ))
+    else
+        self.m_pBtnMenuClose:setVisible(not self.m_pBtnMenuClose:isVisible())
+        self.m_bIsMenuMove = not self.m_bIsMenuMove
+        self.m_pSpMenuBg:stopAllActions()
+        if LuaUtils.isIphoneXDesignResolution() then
+            self.m_pSpMenuBg:runAction(cc.MoveTo:create(0.2, cc.p(100, self.m_pSpMenuBg:getPositionY())))
+        else
+            self.m_pSpMenuBg:runAction(cc.MoveTo:create(0.2, cc.p(100, self.m_pSpMenuBg:getPositionY())))
+        end
+        self.m_pBtnMenuPush:getChildByName("Image_4"):runAction(cc.RotateTo:create(0.2, -180))
+        self.leftPanelDt = 5
+    end
 end
 
--- 菜单上移
-function GameViewLayer:onBtnMenuPopClicked(sender)
-    ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BUTTON)
-    if self.m_bIsMenuMove then return end
-    self.m_bIsMenuMove = true
-
-    self.m_pSpMenuBg:stopAllActions()
-    local moveTo = cc.MoveTo:create(0.2, cc.p(self.m_pSpMenuBg:getPositionX(), 955))
-    local callBack = cc.CallFunc:create(function()
-            self.m_bIsMenuMove = false
-            self.m_pSpMenuBg:setVisible(false)
-            self.m_pBtnMenuPop:setVisible(false)
-            self.m_pBtnMenuClose:setVisible(false)
-            self.m_pBtnMenuPush:setVisible(true)
-        end)
-    local seq = cc.Sequence:create(moveTo, callBack)
-    self.m_pSpMenuBg:runAction(seq)
+-- 点击隐藏菜单
+function GameViewLayer:onClickHideMenu()
+    -- self.backMenu:setVisible(false)
+    self:onClickBackMenu()
 end
+
+---- 菜单下拉
+--function GameViewLayer:onBtnMenuPushClicked(sender)
+--    ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BUTTON)
+--    if self.m_bIsMenuMove then return end
+--    self.m_bIsMenuMove = true
+--
+--    self.m_pSpMenuBg:setVisible(true)
+--    self.m_pSpMenuBg:stopAllActions()
+--    self.m_pSpMenuBg:setPositionY(955)
+--    local moveTo = cc.MoveTo:create(0.2, cc.p(self.m_pSpMenuBg:getPositionX(), 485))
+--    local callBack = cc.CallFunc:create(function()
+--            self.m_bIsMenuMove = false
+--            --self.m_pBtnMenuPop:setVisible(true)
+--            self.m_pBtnMenuClose:setVisible(true)
+--            self.m_pBtnMenuPush:setVisible(false)
+--        end)
+--    local seq = cc.Sequence:create(moveTo, callBack)
+--    self.m_pSpMenuBg:runAction(seq)
+--end
+--
+---- 菜单上移
+--function GameViewLayer:onBtnMenuPopClicked(sender)
+--    ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BUTTON)
+--    if self.m_bIsMenuMove then return end
+--    self.m_bIsMenuMove = true
+--
+--    self.m_pSpMenuBg:stopAllActions()
+--    local moveTo = cc.MoveTo:create(0.2, cc.p(self.m_pSpMenuBg:getPositionX(), 955))
+--    local callBack = cc.CallFunc:create(function()
+--            self.m_bIsMenuMove = false
+--            self.m_pSpMenuBg:setVisible(false)
+--            self.m_pBtnMenuPop:setVisible(false)
+--            self.m_pBtnMenuClose:setVisible(false)
+--            self.m_pBtnMenuPush:setVisible(true)
+--        end)
+--    local seq = cc.Sequence:create(moveTo, callBack)
+--    self.m_pSpMenuBg:runAction(seq)
+--end
 
 -- 续投
 function GameViewLayer:onBtnContinueClicked(sender)
@@ -1085,6 +1202,13 @@ function GameViewLayer:onBtnContinueClicked(sender)
         end 
         index = index+1
     end, 0.2, false)
+end
+
+function GameViewLayer:onBtnSettingClicked(sender)
+    ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BUTTON)
+    self:onClickBackMenu()
+    local pSet = SettingLayer.create()
+    pSet:addTo(self.m_rootUI)
 end
 
 -- 音效
@@ -1165,7 +1289,7 @@ function GameViewLayer:onBtnJettonNumClicked(sender)
     end
 
     self.m_chipEffect:setColor(Lhdz_Const.BTNEFFCRT_COLOR[nIndex])
-    self.m_chipEffect:setPosition(cc.p(self.m_pBtnJetton[nIndex]:getPositionX(), self.m_pBtnJetton[nIndex]:getPositionY() + 3))
+    self.m_chipEffect:setPosition(cc.p(self.m_pBtnJetton[nIndex]:getPositionX(), self.m_pBtnJetton[nIndex]:getPositionY()))
     self.m_chipEffect:setVisible(Chip_EnableOpacity == self.m_pBtnJetton[nIndex]:getOpacity())
     
     CBetManager.getInstance():setLotteryBaseScore(score); 
@@ -1173,17 +1297,7 @@ function GameViewLayer:onBtnJettonNumClicked(sender)
         ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_JETTON)
     end
     
-    -- 让先前选中的变成原始位置
-    local fNormalY = 53
-    local fSelectY = 67
-    if (self.m_nIndexChoose > 0)then
-        local posNowX = self.m_pBtnJetton[self.m_nIndexChoose]:getPositionX();
-        self.m_pBtnJetton[self.m_nIndexChoose]:setPosition(cc.p(posNowX, fNormalY));
-    end
-
-    local posNewX = self.m_pBtnJetton[nIndex]:getPositionX();
-    self.m_pBtnJetton[nIndex]:setPosition(cc.p(posNewX, fSelectY));
-    self.m_chipEffect:setPosition(cc.p(self.m_pBtnJetton[nIndex]:getPositionX(), self.m_pBtnJetton[nIndex]:getPositionY() + 5))
+    self.m_chipEffect:setPosition(cc.p(self.m_pBtnJetton[nIndex]:getPositionX(), self.m_pBtnJetton[nIndex]:getPositionY()))
     self.m_nIndexChoose = nIndex;
 end
 
@@ -1215,17 +1329,9 @@ end
 function GameViewLayer:onBtnOtherPlayerClicked(sender)
     ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BUTTON)
     if self:isDelayHandleEvent() then return end
-    if not self.m_bIsRequestRank then
-        self.m_bIsRequestRank = true
---        CMsgLhdz.getInstance():sendMsgRank(1)
-    end
-    local pLhdzRankLayer = self.m_rootUI:getChildByName("LhdzRankLayer")
-    if not pLhdzRankLayer then
-        pLhdzRankLayer = LhdzRankLayer.create()
-        pLhdzRankLayer:setName("LhdzRankLayer")
-        self.m_rootUI:addChild(pLhdzRankLayer, G_CONSTANTS.Z_ORDER_COMMON)
-        pLhdzRankLayer:updateTableView()
-    end
+    --玩家列表
+    local infoLayer = LhdzOtherInfoLayer:create()
+    self.m_pNodeOtherPlayer:addChild(infoLayer)
 end
 
 function GameViewLayer:ClickRemoveBankList()
@@ -1371,9 +1477,11 @@ end
 -- 规则界面
 function GameViewLayer:onBtnRuleClicked(sender)
     ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BUTTON)
+    self:onClickBackMenu()
     local pLhdzRuleLayer = LhdzRuleLayer.create()
     pLhdzRuleLayer:setName("LhdzRulelayer")
     self.m_rootUI:addChild(pLhdzRuleLayer, G_CONSTANTS.Z_ORDER_COMMON)
+
 end
 ---------------------------------- btn click event end ----------------------------------
 
@@ -1517,7 +1625,7 @@ function GameViewLayer:event_GameResult(msg)
     self:updateContinueStatus(false)
     self:doSomethingLater(function( ... )
         self:showSendCardAnim(true)
-    end, 1)
+    end, 0)
 --    CMsgLhdz.getInstance():sendMsgRank(1)
 end
 
@@ -1800,14 +1908,14 @@ end
 function GameViewLayer:updateButtonOfSound(enable)
     local bEnable = enable or GlobalUserItem.bSoundAble
     local path = bEnable and Lhdz_Res.PNG_OF_SOUND_ON or Lhdz_Res.PNG_OF_SOUND_OFF
-    self.m_pBtnEffect:loadTextureNormal(path, ccui.TextureResType.plistType)
+    --self.m_pBtnEffect:loadTextureNormal(path, ccui.TextureResType.plistType)
 end
 
 -- 更新音乐图标
 function GameViewLayer:updateButtonOfMusic(enable)
     local bEnable = enable or GlobalUserItem.bVoiceAble
     local path = bEnable and Lhdz_Res.PNG_OF_MUSIC_ON or Lhdz_Res.PNG_OF_MUSIC_OFF
-    self.m_pBtnMusic:loadTextureNormal(path, ccui.TextureResType.plistType)
+    --self.m_pBtnMusic:loadTextureNormal(path, ccui.TextureResType.plistType)
     if bEnable then
         --播放音乐
         ExternalFun.playGameBackgroundAudio(Lhdz_Res.vecLoadingMusic.MUSIC_OF_BGM)
@@ -1817,8 +1925,10 @@ end
 -- 更新游戏状态
 function GameViewLayer:updateGameStatus()
     local status = LhdzDataMgr.getInstance():getGameStatus()
-    local pStatusPath = status == Lhdz_Const.STATUS.GAME_SCENE_BET and Lhdz_Res.PNG_OF_STATUS_BET or Lhdz_Res.PNG_OF_STATUS_LOTTERY
-    self.m_pSpStauts:setSpriteFrame(pStatusPath)
+    local bPre = status == Lhdz_Const.STATUS.GAME_SCENE_BET
+    self.m_pSpStauts:setVisible(bPre)
+    self.m_pSpStautsKaipai:setVisible(not bPre)
+    self.m_pLbCountTime:setVisible(bPre)
 end
 
 -- 更新神算子胜率
@@ -1831,7 +1941,7 @@ end
 
 -- 更新庄家提示
 function GameViewLayer:showBankerTips(isUpBanker)
-    local strTips = "";
+--[[    local strTips = "";
     local strPath = nil
     local bSystemBanker = LhdzDataMgr.getInstance():getBankerId() == G_CONSTANTS.INVALID_CHAIR
     if (isUpBanker)then
@@ -1866,12 +1976,13 @@ function GameViewLayer:showBankerTips(isUpBanker)
         self.m_pNodeTips:setVisible(false);
     end)
     local seq = cc.Sequence:create(cc.DelayTime:create(3.0), callback1, cc.DelayTime:create(1.0), cc.FadeOut:create(0.2), callback);
-    self.m_pNodeTips:runAction(seq);
+    self.m_pNodeTips:runAction(seq);]]
 end
 
 -- 更新筹码面值
 function GameViewLayer:updateJettonValues()
-    for i=1, Lhdz_Const.JETTON_ITEM_COUNT do
+    local strChipName = "ChipNum"
+    for i=1, Lhdz_Const.JETTON_ITEM_USE_COUNT do
         local needSocre = CBetManager.getInstance():getJettonScore(i)
 --        if needSocre < 100 then return end
 --        if needSocre == 1 then needSocre = 500
@@ -1881,10 +1992,30 @@ function GameViewLayer:updateJettonValues()
 --        elseif needSocre == 100 then needSocre = 50000
 --        elseif needSocre == 500 then needSocre = 100000
 --        end
-        local str1 =  string.format(Lhdz_Res.PNG_OF_JETTON, needSocre)
-        self.m_pBtnJetton[i]:loadTextureNormal(str1,ccui.TextureResType.plistType)
-        self.m_pBtnJetton[i]:loadTexturePressed(str1,ccui.TextureResType.plistType)
-        self.m_pBtnJetton[i]:loadTextureDisabled(str1,ccui.TextureResType.plistType)
+        local strFile = Lhdz_Res.PNG_OF_JETTON
+        local txtnum = needSocre
+        if needSocre >= 10000 then
+            txtnum = tostring(needSocre/10000).."万"
+        end
+        local childNum = self.m_pBtnJetton[i]:getChildByName(strChipName)
+        if childNum then
+            childNum:setString(txtnum)
+        else
+            local label = ccui.Text:create(txtnum,"fonts/round_body.ttf",26)
+            label:setColor(cc.c3b(21,21,21))
+            --label:enableOutline(cc.c4b(0,0,0,255), 1)
+            label:enableShadow(cc.c3b(110,110,110), cc.size(0,-2), 1)  --阴影
+            label:setPosition(cc.p(52,57))
+            self.m_pBtnJetton[i]:addChild(label)
+            label:setName(strChipName)
+        end
+
+
+        local str1 =  string.format(strFile, i)
+        print("=============================" .. str1)
+        self.m_pBtnJetton[i]:loadTextureNormal(str1)
+        self.m_pBtnJetton[i]:loadTexturePressed(str1)
+        self.m_pBtnJetton[i]:loadTextureDisabled(str1)
     end
 end
 
@@ -2034,7 +2165,7 @@ end
 
 -- 更新筹码状态
 function GameViewLayer:updateJettonStatus()
-    for i = 1, Lhdz_Const.JETTON_ITEM_COUNT do
+    for i = 1, Lhdz_Const.JETTON_ITEM_USE_COUNT do
         local bStatus = LhdzDataMgr.getInstance():getJettonEnableStatus(i)
         local color = bStatus and cc.c3b(255,255,255) or cc.c3b(160,160,160)
         local opacity = bStatus and Chip_EnableOpacity or Chip_DisableOpacity
@@ -2085,25 +2216,26 @@ function GameViewLayer:updateBetAreaValue()
         local llMyValue = LhdzDataMgr.getInstance():getMyBetValue(i);
         local llOtherValue = LhdzDataMgr.getInstance():getOtherBetValue(i);
         
-        self.m_pLbMyBetValue[i]:setString("下注:" .. llMyValue)
+        self.m_pLbMyBetValue[i]:setString(llMyValue)
         self.m_pLbAllBetValue[i]:setString((llMyValue + llOtherValue))
 
         self.m_pLbMyBetValue[i]:setVisible(llMyValue > 0)
+        self.m_pLbMyBetBg[i]:setVisible(llMyValue > 0)
         self.m_pLbAllBetValue[i]:setVisible((llMyValue + llOtherValue) > 0)
     end
 end
 
 -- 更新走势界面
 function GameViewLayer:updateTrendLayer(bOpen)
-    local pLhdzTrendLayer = self.m_rootUI:getChildByName("LhdzTrendLayer")
-    if not pLhdzTrendLayer and bOpen then
-        pLhdzTrendLayer = LhdzTrendLayer.create()
-        pLhdzTrendLayer:setName("LhdzTrendLayer")
-        self.m_rootUI:addChild(pLhdzTrendLayer, G_CONSTANTS.Z_ORDER_COMMON)
-    end
-    if pLhdzTrendLayer then
-        pLhdzTrendLayer:updateInfo()
-    end
+    --local pLhdzTrendLayer = self.m_rootUI:getChildByName("LhdzTrendLayer")
+    --if not pLhdzTrendLayer and bOpen then
+    --    pLhdzTrendLayer = LhdzTrendLayer.create()
+    --    pLhdzTrendLayer:setName("LhdzTrendLayer")
+    --    self.m_rootUI:addChild(pLhdzTrendLayer, G_CONSTANTS.Z_ORDER_COMMON)
+    --end
+    --if pLhdzTrendLayer then
+    --    pLhdzTrendLayer:updateInfo()
+    --end
 end
 
 -- 清除等待下局
@@ -2221,8 +2353,38 @@ end
 
 --发牌动画
 function GameViewLayer:showSendCardAnim(isResule)
+    self.callBackResult = function ()
+        if self.m_trendView then
+            self.m_trendView:updateTrend()
+        end
+    end
+    if isResule then
+        local result = LhdzDataMgr.getInstance():getResult()
+        local view = DragonRoundResultView:create(self.callBackResult)
+        self:removeChildByTag(TAG_ROUNDRESULT_UI)
+        self:addChild(view)
+        view:setTag(TAG_ROUNDRESULT_UI)
+        view:setRoundResult(result)
+        --self:updateGameRecord()
+        --self:updateTempGameRecord()
+        --self:showWinAreaAnim()
+        self:doSomethingLater(function( ... )
+            local areaType = LhdzDataMgr:getInstance():getAreaType()
+            local areaSound = Lhdz_Res.vecSound.SOUND_OF_DRAW
+            if areaType == Lhdz_Const.AREA.DRAGON then
+                areaSound = Lhdz_Res.vecSound.SOUND_OF_DRAGON
+            elseif areaType == Lhdz_Const.AREA.TIGER then
+                areaSound = Lhdz_Res.vecSound.SOUND_OF_TIGER
+            end
+            ExternalFun.playGameEffect(areaSound)
+            self.m_chipMgr:flychipex(function()
+                self:playUserScoreEffect()
+            end)
+        end, 3)
 
-    local cards = LhdzDataMgr.getInstance():getCards()
+    end
+
+--[[    local cards = LhdzDataMgr.getInstance():getCards()
     for i = 1, Lhdz_Const.CARD_COUNT do
         if not self.m_pAnimCard[i] then
             ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("game/longhudazhan/effect/longhudazhan4_fanpai/longhudazhan4_fanpai.ExportJson") 
@@ -2280,7 +2442,7 @@ function GameViewLayer:showSendCardAnim(isResule)
         end
     end
 
-    self:showPokerAmin(isResule)
+    self:showPokerAmin(isResule)]]
 end
 
 -- 播放牌的特效
@@ -2322,28 +2484,26 @@ end
 
 -- 开始下注or结算下注
 function GameViewLayer:showGameStatusAnim()
-    if not self.m_pAnimStatus then
-        local strJson = string.format(Lhdz_Res.ANI_OF_GAME_TIPS, "json")
-        local strAtlas = string.format(Lhdz_Res.ANI_OF_GAME_TIPS, "atlas")
-        self.m_pAnimStatus = sp.SkeletonAnimation:create(strJson, strAtlas)
-        self.m_pAnimStatus:setPosition(cc.p(667, 375))
-        self.m_pNodeArmature:addChild(self.m_pAnimStatus, Z_ORDER_BOTTOM)
-    end
-
-    self.m_pAnimStatus:setToSetupPose()
     if LhdzDataMgr.getInstance():getGameStatus() == Lhdz_Const.STATUS.GAME_SCENE_BET then
         ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_START_BET)
-        self.m_pAnimStatus:setAnimation(0, "animation1", false)
---        self:updateTableUserInfo()
+        self.m_FileNodeStartEnd:setVisible(true)
+        _:playTimelineAction('game/longhudazhan/DragonBetTip.csb', 'kaishixiazhu', self.m_FileNodeStartEnd, false)
+        performWithDelay(self.m_FileNodeStartEnd, function()
+            self.m_FileNodeStartEnd:setVisible(false)
+        end, 1.2)
     elseif LhdzDataMgr.getInstance():getGameStatus() == Lhdz_Const.STATUS.GAME_SCENE_RESULT then
         ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_STOP_BET)
-        self.m_pAnimStatus:setAnimation(0, "animation2", false)
+        self.m_FileNodeStartEnd:setVisible(true)
+        _:playTimelineAction('game/longhudazhan/DragonBetTip.csb', 'xiazhujieshu', self.m_FileNodeStartEnd, false)
+        performWithDelay(self.m_FileNodeStartEnd, function()
+            self.m_FileNodeStartEnd:setVisible(false)
+        end, 1.2)
     end
 end
 
 -- VS动画
 function GameViewLayer:showGameVSAnim()
-    if LhdzDataMgr.getInstance():getGameStatus() == Lhdz_Const.STATUS.GAME_SCENE_FREE then
+--[[    if LhdzDataMgr.getInstance():getGameStatus() == Lhdz_Const.STATUS.GAME_SCENE_FREE then
         ExternalFun.playGameEffect(Lhdz_Res.vecSound.SOUND_OF_BATTLE)
         if not self.m_pAnimVs then
             local strJson = string.format(Lhdz_Res.ANI_OF_ANIMAL, "json")
@@ -2359,12 +2519,12 @@ function GameViewLayer:showGameVSAnim()
             self.m_pNodeAnimVS:setVisible(false)
         end,2)
 
-    end
+    end]]
 end
 
 -- 神算子下注飘星
 function GameViewLayer:playFlyStarAnim(isInitGame)
-    for i=1, Lhdz_Const.GAME_DOWN_COUNT do
+--[[    for i=1, Lhdz_Const.GAME_DOWN_COUNT do
         local isNo1Bet = LhdzDataMgr.getInstance():getIsNo1BetByIndex(i)
         if isNo1Bet and (not self.m_bIsShowStar[i]) then
             self.m_bIsShowStar[i] = true
@@ -2374,7 +2534,7 @@ function GameViewLayer:playFlyStarAnim(isInitGame)
                 self:playstar(i)
             end
         end
-    end
+    end]]
 end
 
 -- 结算飘数字动画
@@ -2424,12 +2584,12 @@ function GameViewLayer:playUserScoreEffect()
                 self.m_pLbTableResultGold[i]:setPosition(posx, 0)
             
                 local fuhaoStr = ((tableUserResult >= 0)) and "+" or ""
-                local decimal = math.modf(tableUserResult)
+                local nNum,decimal = math.modf(tableUserResult)
                 if math.abs(decimal)==0 then
-                    local goldStr = string.format("%s%s元",fuhaoStr,tableUserResult)
+                    local goldStr = string.format("%+d元",tableUserResult)
                     self.m_pLbTableResultGold[i]:setString(goldStr)
                 else
-                    self.m_pLbTableResultGold[i]:setString( string.format("%s%0.2f元",fuhaoStr,tableUserResult))
+                    self.m_pLbTableResultGold[i]:setString( string.format("%+0.2f元",tableUserResult))
                 end
                 
                 self.m_pLbTableResultGold[i]:setPosition(cc.p(self.m_pLbTableResultGold[i]:getPositionX(), -30))
@@ -2529,7 +2689,7 @@ function GameViewLayer:playUserScoreEffect()
 
     
     if not bBanker and LhdzDataMgr.getInstance():getAllMyBetValue() == 0 then
-        FloatMessage.getInstance():pushMessageForString("本局您没有下注!");
+        --FloatMessage.getInstance():pushMessageForString("本局您没有下注!");
     end
 
     local llUserScore = self.m_iLastPlayerGold
@@ -2564,7 +2724,7 @@ end
 -- 上桌玩家获胜动画
 function GameViewLayer:showTableUserWinAnim(index)
 
-    --神算子和富豪的特效
+--[[    --神算子和富豪的特效  屏蔽
     if 1 == index then
         self.m_luckyWinEffect:getAnimation():play(Lhdz_Res.ANI_OF_TOPWINEFFECT.ANILIST.LUCKYPLAY.NAME, -1, -1)
     elseif 2 == index then
@@ -2584,14 +2744,14 @@ function GameViewLayer:showTableUserWinAnim(index)
         userWin:setVisible(false)
         tableUser:addChild(userWin, Z_ORDER_BOTTOM)
     end
-    userWin:setVisible(true)
+    userWin:setVisible(true)]]
 end
 
 -- 隐藏上桌玩家获胜动画
 function GameViewLayer:hideTableUserWinAnim()
-    --神算子和富豪的特效
+--[[    --神算子和富豪的特效
     self.m_luckyWinEffect:getAnimation():play(Lhdz_Res.ANI_OF_TOPWINEFFECT.ANILIST.LUCKYNORMAL.NAME, -1, 0)
-    self.m_richWinEffect:getAnimation():play(Lhdz_Res.ANI_OF_TOPWINEFFECT.ANILIST.RICHNORMAL.NAME, -1, 0)
+    self.m_richWinEffect:getAnimation():play(Lhdz_Res.ANI_OF_TOPWINEFFECT.ANILIST.RICHNORMAL.NAME, -1, 0)]]
 
     for i = 1, Lhdz_Const.TABEL_USER_COUNT do
         local userInfoP = self.m_pNodeShowPlayer[i]:getChildByName("Button_userInfo")
@@ -2611,7 +2771,7 @@ function GameViewLayer:showWinAreaAnim()
     end
     self.m_pSpWinArea[areaType]:setVisible(true)
     self.m_pSpWinArea[areaType]:runAction(cc.Repeat:create(cc.Sequence:create(cc.FadeIn:create(0.5), cc.FadeOut:create(0.5)), 5))
-
+    self.m_trendView:updateTrend()
     --todo
     local soundPath = Lhdz_Res.vecSound.SOUND_OF_ANIDRAGONWIN
     local strEfc = "Animation1"
@@ -2670,10 +2830,10 @@ function GameViewLayer:showCountDownAnim(val)
     local aniscaletime = 0.3
     local fadetotime = 0.3
     local lb1 = cc.Label:createWithBMFont(fntstr, string.format("%d", val))
-                :setPosition(cc.p( self.m_pLbCountTime:getPosition()))
-                :setAnchorPoint(0.5, 0.5)
+                --:setPosition(cc.p( self.m_pLbCountTime:getPosition()))
+                :setAnchorPoint(0, 0)
                 :setOpacity(0)
-                :addTo(self.m_pSpCountTime)
+                :addTo(self.m_pLbCountTime)
 
     local seq1 = cc.Sequence:create(cc.Spawn:create(cc.FadeTo:create(fadetotime, 70),
                                                     cc.ScaleTo:create(fadetotime, aniscale)),
@@ -2784,19 +2944,12 @@ end
 
 --筹码光效动画
 function GameViewLayer:initChipEffect()
-    self.m_chipEffect = cc.Sprite:createWithSpriteFrameName(Lhdz_Res.PNG_OF_CHIP_EFFECT)
+    self.m_chipEffect = cc.Sprite:create(Lhdz_Res.PNG_OF_CHIP_EFFECT)
     self.m_chipEffect:setAnchorPoint(0.5, 0.5)
     self.m_chipEffect:addTo(self.m_pNodeJetton)
     self.m_chipEffect:setVisible(false)
     self.m_chipEffect:setBlendFunc(cc.blendFunc(GL_ONE, GL_ONE))
-    self.m_chipEffect:runAction(
-        cc.RepeatForever:create(
-            cc.Sequence:create(
-                cc.FadeTo:create(0.5, 100),
-                cc.FadeTo:create(0.5, 255)
-            )
-        )
-    )
+    self.m_chipEffect:runAction(cc.RepeatForever:create(cc.RotateBy:create(1.5, 360)))
 end
 
 --头像获取筹码动画
@@ -2816,7 +2969,7 @@ end
 
 --初始化大富豪和神算子获胜特效
 function GameViewLayer:initTopWinEffect()
-    --神算子
+--[[    --神算子
     
     ParticalPool.getInstance():createLuckyWinEffect()
     self.m_luckyWinEffect = ParticalPool.getInstance():getLuckyWinEffect()
@@ -2828,7 +2981,7 @@ function GameViewLayer:initTopWinEffect()
     ParticalPool.getInstance():createRichWinEffect()
     self.m_richWinEffect = ParticalPool.getInstance():getRichWinEffect()
     self.m_richWinEffect:setPosition(cc.p(59.5, 110))
-    self.m_richWinEffect:addTo(self.m_pNodeShowPlayer[2]:getChildByName("Button_userInfo"))
+    self.m_richWinEffect:addTo(self.m_pNodeShowPlayer[2]:getChildByName("Button_userInfo"))]]
 end
 
 --初始化获胜区域动画
@@ -2981,11 +3134,12 @@ end
 --region 辅助方法
 function GameViewLayer:tryLayoutforIphoneX()
     if LuaUtils.isIphoneXDesignResolution() then
-        local offset = 80
-        self.m_pBtnExit:setPositionX(self.m_pBtnExit:getPositionX() - offset)
-        self.m_pBtnMenuPush:setPositionX(self.m_pBtnMenuPush:getPositionX() + offset)
-        self.m_pBtnMenuPop:setPositionX(self.m_pBtnMenuPop:getPositionX() + offset)
-        self.m_pClippingMenu:setPositionX(self.m_pClippingMenu:getPositionX() + offset - 20)
+        local offset = 200
+        --self.m_pBtnExit:setPositionX(self.m_pBtnExit:getPositionX() - offset)
+        --self.m_pBtnMenuPush:setPositionX(self.m_pBtnMenuPush:getPositionX() + offset)
+        --self.m_pBtnMenuPop:setPositionX(self.m_pBtnMenuPop:getPositionX() + offset)
+        --self.m_pClippingMenu:setPositionX(self.m_pClippingMenu:getPositionX() + offset - 20)
+        self.m_pSpMenuBg:setPositionX(self.m_pSpMenuBg:getPositionX() - offset)
     end
 end
 function GameViewLayer:showRecharge()
@@ -3023,14 +3177,13 @@ function GameViewLayer:getScoreViewPos(index, scoreWidth)
 
     local retAnchor = 0.5
     local retX = 0
-    if scoreWidth > Lhdz_Const.SCOREWIDTH.MAXWIDTH then
-        retAnchor = isLeft and 0 or 1
-        retX = isLeft and -78 or 75
-    end
+    --if scoreWidth > Lhdz_Const.SCOREWIDTH.MAXWIDTH then
+    --    retAnchor = isLeft and 0 or 1
+    --    retX = isLeft and -78 or 75
+    --end
 
     return retAnchor, retX
 end
-
 --endregion
 
 --飞星星贝塞尔测试按钮
@@ -3082,6 +3235,34 @@ function GameViewLayer:addTestBtn()
             self.m_p2 = cc.p(posMove.x - 145, posMove.y)
         end
     end)
+end
+----------------------------------------------------------------
+function _:playTimelineAction(path, actionName, root, repeat_)
+    if repeat_ == nil then
+        repeat_ = true
+    end
+
+    local ac2 = cc.CSLoader:createTimeline(path)
+    if ac2:IsAnimationInfoExists(actionName) == true then
+        ac2:play(actionName, repeat_)
+    end
+    root:runAction(ac2)
+end
+
+function _:setBtnEnabled(btn, enabled)
+    btn:setEnabled(enabled)
+    btn:setTouchEnabled(enabled)
+    btn:setBright(enabled)
+end
+
+
+
+-- 防止频繁点击
+function _:disableQuickClick(btn)
+    _:setBtnEnabled(btn, false)
+    performWithDelay(btn, function()
+        _:setBtnEnabled(btn, true)
+    end, 0.5)
 end
 
 return GameViewLayer

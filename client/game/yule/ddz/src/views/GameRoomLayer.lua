@@ -102,6 +102,9 @@ function GameRoomLayer:initCSB()
     self.m_pNodeTable        = self.m_pNodeRootUI:getChildByName("IMG_listBg")
     self.m_pBtnQuickStart    = self.m_pNodeRootUI:getChildByName("Button_quickStart")
     self.m_pBtnQuickStart:setPositionX(display.size.width/2)
+    if LuaUtils.isIphoneXDesignResolution() then
+         self.m_pBtnQuickStart:setPositionX(display.size.width/2-145)
+    end
     --self.m_pQuickStartArm    = self.m_pBtnQuickStart:getChildByName("Arm_quickStart")
     --self.m_pBtnRule          = self.m_pNodeTop:getChildByName("BTN_Rule")
 
@@ -209,6 +212,12 @@ function GameRoomLayer:createScrollRoomList()
     local centerX = (display.size.width)/2+145
     local commonY = display.size.height/2-170
     local nOffX = 160 -- 偏移
+
+    if LuaUtils.isIphoneXDesignResolution() then
+        centerX = (display.size.width)/2
+        nOffX = 180 -- 偏移
+    end
+
     local pos = {ccp(centerX-nOffX*3,commonY),ccp(centerX-nOffX,commonY),ccp(centerX+nOffX,commonY),ccp(centerX+nOffX*3,commonY)}
     local btnSize = cc.size(330, 448) -- 按纽大小
 

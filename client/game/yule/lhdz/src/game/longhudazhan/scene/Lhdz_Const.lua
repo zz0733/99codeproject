@@ -84,6 +84,7 @@ Lhdz_Const.TABEL_USER_COUNT         = 6         -- 上桌玩家
 Lhdz_Const.GAME_DOWN_COUNT          = 3         -- 下注区域数
 Lhdz_Const.FLYPARTICAL_COUNT        = 2         -- 飞行粒子数量
 Lhdz_Const.JETTON_ITEM_COUNT        = 6         -- 筹码数
+Lhdz_Const.JETTON_ITEM_USE_COUNT    = 5         -- 使用筹码数
 Lhdz_Const.CARD_COUNT               = 2         -- 牌数
 Lhdz_Const.MAX_BANKER_COUNT         = 20        -- 上庄列表玩家
 Lhdz_Const.MAX_HISTORY_COUNT        = 20        -- 历史开奖记录

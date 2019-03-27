@@ -234,8 +234,22 @@ function ChipFlyManager:createJettonSprite(wJettonIndex)
 ----    elseif score == 100 then score = 50000
 ----    elseif score == 500 then score = 100000
 --    end
-    local pSpJetton = cc.Sprite:createWithSpriteFrameName(string.format(Lhdz_Res.PNG_OF_JETTON, score))
+    local strFile = Lhdz_Res.PNG_OF_JETTON
+
+
+    local pSpJetton = cc.Sprite:create(string.format(strFile, wJettonIndex))
     if not pSpJetton then return end
+    local txtnum = "";
+    txtnum = score
+    if score >= 10000 then
+        txtnum = tostring(score/10000).."万"
+    end
+    local label = ccui.Text:create(txtnum,"fonts/round_body.ttf",26)
+    label:setColor(cc.c3b(21,21,21))
+    --label:enableOutline(cc.c4b(0,0,0,255), 1)
+    label:enableShadow(cc.c3b(110,110,110), cc.size(0,-2), 1)  --阴影
+    label:setPosition(cc.p(52,57))
+    pSpJetton:addChild(label)
     pSpJetton:setScale(CHIP_SCALE_TABLEVIEW)
     self.m_chipNode:addChild(pSpJetton,1)
 

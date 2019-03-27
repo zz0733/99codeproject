@@ -98,6 +98,12 @@ function UserCenterLayer:init(scene)
     --系统设置按钮
     self.m_pBtnSysUserinfo      = self.m_pNodeRoot:getChildByName("button_cardTypeBtn")
     self.m_pBtnSysSetting       = self.m_pNodeRoot:getChildByName("button_desBtn")
+
+    self.Userinfobtn_select = self.m_pBtnSysUserinfo:getChildByName("image_select")
+    self.Userinfobtn_normal = self.m_pBtnSysUserinfo:getChildByName("image_normal")
+
+    self.Settingbtn_select = self.m_pBtnSysSetting:getChildByName("image_desSelect")
+    self.Settingbtn_normal = self.m_pBtnSysSetting:getChildByName("image_desNormal")
     --切换账号按钮
     self.m_pBtnLogout           = self.m_pPanelSetting:getChildByName("button_exit")
     --用户昵称
@@ -516,7 +522,7 @@ function UserCenterLayer:onClickedSetting()
     ExternalFun.playClickEffect()
     self.m_pPanelSetting:setVisible(true)
     self.m_userInfo:setVisible(false)
-
+    self:changebtnView(2)
 --    if self:getChildByName("SettingView") then
 --        self:getChildByName("SettingView"):setVisible(true)
 --        return
@@ -526,12 +532,27 @@ function UserCenterLayer:onClickedSetting()
 --    pSettingView:setName("SettingView")
 --    self:addChild(pSettingView, 10)
 end
+
+function UserCenterLayer:changebtnView(tag)
+    if tag == 1 then
+       self.Userinfobtn_select:setVisible(true)
+       self.Userinfobtn_normal:setVisible(false)
+       self.Settingbtn_select:setVisible(false) 
+       self.Settingbtn_normal:setVisible(true)
+    else
+       self.Userinfobtn_select:setVisible(false)
+       self.Userinfobtn_normal:setVisible(true)
+       self.Settingbtn_select:setVisible(true) 
+       self.Settingbtn_normal:setVisible(false)
+    end
+end
+
 --系统设置
 function UserCenterLayer:onClickedUserinfo()
     ExternalFun.playClickEffect()
     self.m_pPanelSetting:setVisible(false)
     self.m_userInfo:setVisible(true)
-
+    self:changebtnView(1)
 end
 
 --切换账号

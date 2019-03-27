@@ -25,7 +25,7 @@ RedVsBlackDataManager.E_GAME_CHIPSTATUE =
 }
 
 local DOWN_COUNT_HOX = 3
-local JETTON_ITEM_COUNT = 6
+local JETTON_ITEM_COUNT = 5
 
 function RedVsBlackDataManager.getInstance()
     if not RedVsBlackDataManager.g_instance then
@@ -40,7 +40,7 @@ end
 
 
 function RedVsBlackDataManager:ctor()
-    self.m_llJettonValue = {1,5,10,50,100,500}
+    self.m_llJettonValue = {1,5,10,50,100}
     self:clear()
 end
 

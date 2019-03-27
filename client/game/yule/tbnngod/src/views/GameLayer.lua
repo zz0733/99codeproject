@@ -303,7 +303,24 @@ function GameLayer:sendChangeTable()
     local strvalue = cjson.encode(msgdata)
     self._gameFrame:sendSocketData(strvalue)
 end
-
+-- 发送换桌(先发)
+function GameLayer:sendChangedesk()
+    local msgdata = {}
+    msgdata["type"] = "seatmatch"
+    msgdata["tag"] = "changedesk"
+    msgdata["body"] = {0,-1}
+    local strvalue = cjson.encode(msgdata)
+    self._gameFrame:sendSocketData(strvalue)
+end
+-- 发送继续  换桌/继续游戏(后发)
+function GameLayer:sendContinue()
+    local msgdata = {}
+    msgdata["type"] = "game"
+    msgdata["tag"] = "continue"
+    msgdata["body"] = GlobalUserItem.tabAccountInfo.userid
+    local strvalue = cjson.encode(msgdata)
+    self._gameFrame:sendSocketData(strvalue)
+end
 -- 发送叫分
 function GameLayer:sendCallScore( score )
     self:KillGameClock()

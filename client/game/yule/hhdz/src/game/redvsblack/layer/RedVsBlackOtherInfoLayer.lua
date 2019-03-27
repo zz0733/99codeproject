@@ -47,137 +47,67 @@ function RedVsBlackOtherInfoLayer:initCSB()
     self.m_pathUI       = cc.CSLoader:createNode(RedVsBlackRes.CSB_GAME_USERINFO)
     self.m_pathUI:addTo(self.m_rootUI)
     self.m_rootNode     = self.m_pathUI:getChildByName("Panel_1")
-    self.m_pBtnClose    = self.m_pathUI:getChildByName("BTN_close")
+    self.m_pBg          = self.m_pathUI:getChildByName("image_bg")
+    self.m_pBtnClose    = self.m_pBg:getChildByName("button_close")
     self.m_pBtnClose:addClickEventListener(handler(self, self.onReturnClicked))
+    self.m_pTxtNum      = self.m_pBg:getChildByName("text_left__"):getChildByName("text_num")
+    self.m_pTxtNum:setString(table.nums(self.m_vecOtherInfo))
+    self.m_plistView    = self.m_pBg:getChildByName("listView_list")
+    self.m_plistView:setScrollBarEnabled(false)
+    self.m_NodeItem     = self.m_pathUI:getChildByName("panel_itemModelLine")
 
-    if display.size.width == 1624 then
-        self.m_rootNode:setPosition(cc.p(-75,0))
-    else
-        self.m_rootNode:setPosition(cc.p(0,0))
-    end
 end
 
 function RedVsBlackOtherInfoLayer:initView()
-    self:initTableView()
-    self:initSlider()
-    if #self.m_vecOtherInfo < 5 then
-        local slider = tolua.cast(self.m_rootNode:getChildByTag(100), "cc.ControlSlider")
-        if slider then slider:setVisible(false) end
+    
+    local numplayer = table.nums(self.m_vecOtherInfo)
+    local num = self:getIntValue( table.nums(self.m_vecOtherInfo)/3 )
+    local lastnum = 0
+    if (table.nums(self.m_vecOtherInfo)%3) ~= 0 then
+        num = num + 1
+        lastnum = (table.nums(self.m_vecOtherInfo)%3)
     end
-end
+    for i = 1, num do
+        local item = self.m_NodeItem:clone();
+        for j = 1, 3 do
+            local player = item:getChildByName(string.format("panel_player_%d",j))
+            local icon = player:getChildByName("image_avatar")
+            local name = player:getChildByName("text_name")
+            local money = player:getChildByName("image_coinIcon"):getChildByName("text_coin")
+            if numplayer >= (3*(i -1) + j) then
+                local head = HeadSprite:createClipHead({userid = self.m_vecOtherInfo[3*(i -1) + j][1], nickname = self.m_vecOtherInfo[3*(i -1) + j][2], avatar_no = self.m_vecOtherInfo[3*(i -1) + j][3]},129)
+                head:setAnchorPoint(cc.p(0,0))
+                icon:addChild(head)
 
-function RedVsBlackOtherInfoLayer:initSlider()
-    local spBg = cc.Sprite:createWithSpriteFrameName(RedVsBlackRes.IMG_SCROLL_BG)
-    -- //添加一个滑动条的背景
-    local spBg0 = cc.Sprite:createWithSpriteFrameName(RedVsBlackRes.IMG_SCROLL_BG)
-    spBg0:setAnchorPoint(cc.p(0, 0))
-    spBg:addChild(spBg0, 20)
-    
-    local pgSp = cc.Sprite:createWithSpriteFrameName(RedVsBlackRes.IMG_NULL)
-    pgSp:setOpacity(0)
-    local spTub = cc.Sprite:createWithSpriteFrameName(RedVsBlackRes.IMG_SCROLL_BUTTON)
-    local spTub1 = cc.Sprite:createWithSpriteFrameName(RedVsBlackRes.IMG_SCROLL_BUTTON)
-    local slider = cc.ControlSlider:create(spBg, pgSp, spTub, spTub1)
-    if not slider then
-        return false
+                name:setString(self.m_vecOtherInfo[3*(i -1) + j][2])
+                money:setString(self.m_vecOtherInfo[3*(i -1) + j][6])
+            end
+            if i == num then
+                if lastnum == 1 then
+                    if j == 3 or j == 2 then
+                        player:setVisible(false)
+                    end
+                elseif lastnum == 2 then
+                    if j == 3 then
+                        player:setVisible(false)
+                    end
+                end
+            end
+        end   
+
+        self.m_plistView:addChild(item)
     end
-    
-    slider:setAnchorPoint(cc.p(0.5, 0.5))
-    slider:setMinimumValue(0)
-    slider:setMaximumValue(130)
-    slider:setPosition(cc.p(446 , 371))
-    slider:setRotation(90)
-    slider:setValue(12)
-    slider:setTag(100)
-    slider:setScaleX(1.26)
-    slider:setEnabled(false)
-    self.m_rootNode:addChild(slider, 50)
+
 end
 
 function RedVsBlackOtherInfoLayer:onReturnClicked()
---    AudioManager.getInstance():playSound(RedVsBlackRes.SOUND_OF_CLOSE)
     self:removeFromParent()
 end
 
-function RedVsBlackOtherInfoLayer:initTableView()
-     if self.m_pTableView == nil then
-        self.m_pTableView = cc.TableView:create(cc.size(335,438))
-        self.m_pTableView:setAnchorPoint(cc.p(0,0))
-        self.m_pTableView:setPosition(cc.p(120,152))
---        self.m_pTableView:setIgnoreAnchorPointForPosition(false)
-        self.m_pTableView:setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN)
-        self.m_pTableView:setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL)
-        self.m_pTableView:setDelegate()
-        self.m_pTableView:registerScriptHandler(handler(self,self.scrollViewDidScroll), CCTableView.kTableViewScroll)
-        self.m_pTableView:registerScriptHandler(handler(self,self.cellSizeForTable), CCTableView.kTableCellSizeForIndex)
-        self.m_pTableView:registerScriptHandler(handler(self,self.tableCellAtIndex), CCTableView.kTableCellSizeAtIndex)
-        self.m_pTableView:registerScriptHandler(handler(self,self.numberOfCellsInTableView), CCTableView.kNumberOfCellsInTableView)
-        self.m_pTableView:registerScriptHandler(handler(self,self.tableCellTouched), CCTableView.kTableCellTouched)
-        self.m_pTableView:reloadData()
-        self.m_rootNode:addChild(self.m_pTableView)
-    else
-        self.m_pTableView:reloadData()
-    end
+--得到整数部分
+function RedVsBlackOtherInfoLayer:getIntValue(num)
+    local tt = 0
+    num,tt = math.modf(num/1);
+    return num
 end
-
-function RedVsBlackOtherInfoLayer:initTableViewCell(cell, idx)
-    local userinfo = self.m_vecOtherInfo[idx+1]
-    if not userinfo then return end
-    local node = cc.CSLoader:createNode(RedVsBlackRes.CSB_GAME_USERINFO_NODE)
-    node:setPosition(cc.p(5,0))
-    cell:addChild(node)
-
-    local name = node:getChildByName("Text_name")
-    local strName = LuaUtils.getDisplayNickNameInGame(userinfo[2])
-    name:setString(strName)
-
-    local gold = node:getChildByName("Text_gold")
-    gold:setString(LuaUtils.getFormatGoldAndNumber(userinfo[6] or "0"))
-
---    local wFaceID = userinfo[1] or 0
---    local strHeadIcon = string.format("gui-icon-head-%02d.png", wFaceID % G_CONSTANTS.FACE_NUM + 1)
---    local icon = node:getChildByName("Image_icon")
---    icon:loadTexture(strHeadIcon,ccui.TextureResType.localType)
-
-    local pImgAvatar = node:getChildByName("Image_icon")
-    local head = HeadSprite:createClipHead({userid = self.m_vecOtherInfo[idx+1][1], nickname = self.m_vecOtherInfo[idx+1][2], avatar_no = self.m_vecOtherInfo[idx+1][3]},75)
-    head:setAnchorPoint(cc.p(0.5,0.5))
-    pImgAvatar:addChild(head)
-
-end
-
-function RedVsBlackOtherInfoLayer:cellSizeForTable(table, idx)
-    return 320,107
-end
-
-function RedVsBlackOtherInfoLayer:tableCellAtIndex(table, idx)
-    local cell = table:dequeueCell()
-    if not cell then
-        cell = cc.TableViewCell:new()
-    else
-        cell:removeAllChildren()
-    end
-    self:initTableViewCell(cell, idx)
-    return cell
-end
-
-function RedVsBlackOtherInfoLayer:numberOfCellsInTableView(table)
-    return #self.m_vecOtherInfo
-end
-
-function RedVsBlackOtherInfoLayer:tableCellTouched(table, cell)
-end
-
-function RedVsBlackOtherInfoLayer:scrollViewDidScroll(pView)
-    local slider = tolua.cast(self.m_rootNode:getChildByTag(100), "cc.ControlSlider")
-    if not slider then
-        return
-    end
-    local max = (#self.m_vecOtherInfo) * 107 - 438
-    local value = 106 + (math.floor(pView:getContentOffset().y * 106 / max) + 12)
-    value = value < 12 and 12 or value
-    value = value > 118 and 118 or value
-    slider:setValue(value)
-end
-
 return RedVsBlackOtherInfoLayer

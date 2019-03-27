@@ -819,7 +819,7 @@ end
 
 -- 还原设计分辨率 1334 * 750
 function LuaUtils.resetDesignResolution()
-    display.setAutoScale({width = 1134, height = 750, autoscale = "SHOW_ALL"})
+    display.setAutoScale({width = 1334, height = 750, autoscale = "SHOW_ALL"})
 end
 
 --识别全面屏
@@ -831,6 +831,12 @@ function LuaUtils.isIphoneXDesignResolution()
     --iphoneX适配
     if cc.PLATFORM_OS_IPHONE == cc.Application:getInstance():getTargetPlatform() then
         if frameSize.width == 2436 and frameSize.height == 1125 then
+            return true
+        end
+    end
+
+   if cc.PLATFORM_OS_WINDOWS == cc.Application:getInstance():getTargetPlatform() then
+        if frameSize.width / frameSize.height >= 1.8 then
             return true
         end
     end

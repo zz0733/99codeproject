@@ -72,6 +72,8 @@ function LhdzDataMgr:clear()
     self.m_vecTempHistoryList = {}
 
     self.m_vecTrendList = {}
+
+    self.m_vecTrendListTmp = {}
     --游戏状态
     self.m_nGameStatus = 1
     --自己各区域下注的值
@@ -99,6 +101,8 @@ function LhdzDataMgr:clear()
     self.m_bIsContinued = false
     --是否还有更多玩家
     self.m_bIsMoreUser = false
+    --结果
+    self.m_result = {}
 end
 
 --自己是否是庄家
@@ -200,6 +204,7 @@ end
 
 -- 走势
 function LhdzDataMgr:addTrendToList(cbHistorys)
+    table.insert( self.m_vecTrendListTmp,cbHistorys )
     local trendListSize = self:getTrendListSize()--==0 and 1 or self:getTrendListSize()
     if trendListSize == 0 then
         self:initTrendListByIndex(1)
@@ -253,6 +258,7 @@ end
 --清除本地缓存的路子记录
 function LhdzDataMgr:clearTrendList()
     self.m_vecTrendList = {}
+    self.m_vecTrendListTmp = {}
 end
 
 function LhdzDataMgr:getTrendListSize()
@@ -261,6 +267,23 @@ end
 
 function LhdzDataMgr:getTrendListByIndex(index)
     return self.m_vecTrendList[index]
+end
+
+function LhdzDataMgr:getTrendListRecord()
+    local tb = {}
+    for _, v in pairs(self.m_vecTrendListTmp) do
+        local cbAreaType = v.cbAreaType
+        local record = nil
+        if cbAreaType == Lhdz_Const.AREA.DRAGON then
+            record = 0
+        elseif cbAreaType == Lhdz_Const.AREA.TIGER then
+            record = 2
+        else
+            record = 1
+        end
+        table.insert(tb,{record = record})
+    end
+    return tb
 end
 
 -- 龙虎胜利场数
@@ -841,6 +864,18 @@ end
 
 function LhdzDataMgr:setTableUserIdLast(idx, userid)
     self.m_vecTableUserIdLast[idx] = userid
+end
+
+function LhdzDataMgr:setResult(result)
+    self.m_result = result
+end
+
+function LhdzDataMgr:getResult()
+    return self.m_result
+end
+
+function LhdzDataMgr:clearResult()
+    self.m_result = {}
 end
 
 return LhdzDataMgr

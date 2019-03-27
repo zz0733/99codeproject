@@ -174,7 +174,7 @@ function GameFrameEngine:onSocketError(pData)
 		    curTag = self._scene._sceneLayer:getCurrentTag()
 	    end
 	    if curTag == yl.SCENE_GAME  then
-            self._scene:dismissPopWait()
+            self._scene:dismissReConnect()
 	        self:removeNetQuery()
             if errorcode == 11 then
                 self._scene:showReConnect()
