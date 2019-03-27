@@ -712,11 +712,11 @@ function GameViewLayer:onEventEnterGame(bufferdate)
             self.m_pLbUsrGold:setString(player_[6])
             self.myIntoMoney = player_[6]
             --设置自己头像
-            loadHeadMiddleSprite(self.m_pSelfHead,player_[3], player_[5])
+            loadHeadMiddleSprite(self.m_pSelfHead,player_[5], player_[3] )
             createStencilAvatar(self.m_pSelfHead)
         end
         if player_[1] == self.bankerUid then   --庄家信息
-            loadHeadMiddleSprite(self.m_pLbZhuangHead,player_[3], player_[5])
+            loadHeadMiddleSprite(self.m_pLbZhuangHead, player_[5], player_[3])
             createStencilAvatar(self.m_pLbZhuangHead)
             self.m_pNodeTopInfo:getChildByName("TXT_zhuang_name"):setString(player_[2])
             self.m_pLbZhuangGold:setString(player_[6])
@@ -2620,7 +2620,6 @@ function GameViewLayer:playTongEffect()
     end
 
     local csbPath = string.format('game/handredcattle/HandredcattleResutl%d.csb', tongType)
-    local animNode = cc.Sprite:create('game/handredcattle/image/empty.png')
     local animNode = cc.CSLoader:createNode(csbPath)
     if animNode == nil then
         print('invalid tong anim node type:')
@@ -2629,7 +2628,6 @@ function GameViewLayer:playTongEffect()
 
     animNode:setPosition(0,0)
     animNode:addTo(self.m_pNodeDlg, 100)
-    --animNode:setScale(100)
 
     animNode:setVisible(true)
     _:playTimelineAction(csbPath, 'animation0', animNode, false)
@@ -2650,7 +2648,7 @@ function GameViewLayer:setBankerHeadByUid()
     end
 
     if bankerInfo then
-        loadHeadMiddleSprite(self.m_pLbZhuangHead,bankerInfo[3], bankerInfo[5])
+        loadHeadMiddleSprite(self.m_pLbZhuangHead,bankerInfo[5], bankerInfo[3])
         createStencilAvatar(self.m_pLbZhuangHead)
     end
 end
