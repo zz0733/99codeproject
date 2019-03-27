@@ -2633,7 +2633,7 @@ function GameViewLayer:playTongEffect()
 
     animNode:setVisible(true)
     _:playTimelineAction(csbPath, 'animation0', animNode, false)
-    ExternalFun.playSoundEffect(string.format('game/handredcattle/sound/tong_%d.mp3', tonumber(tongType)), false)
+    ExternalFun.playSoundEffect(string.format('sound_res/sound_tong_%d.mp3', tonumber(tongType)), false)
     Define:performWithDelay(animNode, function()
         animNode:removeFromParent()
     end, 1.2)
