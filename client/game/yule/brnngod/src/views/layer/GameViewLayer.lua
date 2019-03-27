@@ -1201,7 +1201,7 @@ function GameViewLayer:onDealerClicked()
     else--显示申请列表
         local layer = appdf.req(module_pre .. ".views.layer.DealerQueueView")
         local dealerQueueView = layer:create(self,self.min_dealermoney)
-        dealerQueueView:addTo(self)
+        dealerQueueView:addTo(self.m_pNodeDlg)
         dealerQueueView:showPopup()
         self.m_layerDealerQueue = dealerQueueView
     end
@@ -2628,7 +2628,7 @@ function GameViewLayer:playTongEffect()
     end
 
     animNode:setPosition(0,0)
-    animNode:addTo(self.m_pathUI, 100)
+    animNode:addTo(self.m_pNodeDlg, 100)
     --animNode:setScale(100)
 
     animNode:setVisible(true)
