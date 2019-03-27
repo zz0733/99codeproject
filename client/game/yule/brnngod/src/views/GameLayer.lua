@@ -591,75 +591,58 @@ function GameLayer:onEventGameMessage(sub,dataBuffer)   --接收消息通知
     if sub ~= "bet" then
         print(sub.."--------------------------------")
     end
-    
-  
+
 --    dump(dataBuffer,"***************************")
     if nil == self._gameView then
         return
     end
     if sub == "enter" then      --自身玩家进入房间    
         self._gameView:onEventEnterGame(dataBuffer)
-
     elseif sub == "bet" then    --下注
         self._gameView:onEventBet(dataBuffer)
-
     elseif sub == "mybet" then    -- 'body':{下注钱数, 下注区域, 该区域最新钱数}--自身玩家下注成功
-        
         self._gameView:onEventMybet(dataBuffer)
-
     elseif sub == "badbet" then    --下注失败
         dump(dataBuffer)
         self._gameView:onEventBadbet(dataBuffer)
-
     elseif sub == "waitplayerbet" then   --等待玩家下注
         print("等待玩家下注:"..tostring(os.date()))
         self._gameView:onEventWaitPlayerBet(dataBuffer)
-
     elseif sub == "freetime" then    --空闲时间
         self._gameView:onEventFreeTime(dataBuffer)
-
     elseif sub == "seatinfo" then    --更新座位信息
         self._gameView:onEventGetSeatInfo(dataBuffer)
-
     elseif sub == "downdealer" then   --下庄
         print("下庄__________________________________")
         dump(dataBuffer)
         self._gameView:onEventDownDealers(dataBuffer)
-
     elseif sub == "waitupdealer" then   --等待玩家上庄
         print("等待玩家上庄__________________________________")
         dump(dataBuffer)
         self._gameView:onEventWaitUpDealer(dataBuffer)
-
     elseif sub == "updealer" then       --加入上庄列表
         print("加入上庄列表__________________________________")
         dump(dataBuffer)
         self._gameView:onEventUpDealer(dataBuffer)
-
     elseif sub == "update_dealers" then   --换庄
         print("换庄__________________________________")
         dump(dataBuffer)
         self._gameView:onEventUpdateDealers(dataBuffer)
-
     elseif sub == "come" then       --有玩家进入房间
         self._gameView:onEventPlayerCome(dataBuffer)
-
     elseif sub == "leave" then      --id为uid的玩家退出房间
         self._gameView:onEventPlayerLeave(dataBuffer)
-
     elseif sub == "update_intomoney" then   --更新自身背包   
         self._gameView:onEventUpdateIntoMoney(dataBuffer)
-
     elseif sub == "gameover" then    
         self._gameView:onEventGameOver(dataBuffer)
-
     elseif sub == "updealer_fail_nomoney" then    
         self._gameView:onEventUpdealer_fail_nomoney(dataBuffer)
-
+    elseif sub == 'pong' then
+        ---dump(dataBuffer)
+    else
+        print('未知消息'..sub)
     end
-
-
-
 end
 
 -- 文本聊天

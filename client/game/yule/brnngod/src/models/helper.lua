@@ -419,7 +419,7 @@ function loadHeadMiddleSprite(sprite, sex, index)
 
     local faceid = index%11 == 0 and 1 or index%11
     local str = ""
-    if sex == 0 then
+    if sex ~= 0 then
         str = string.format("head_mman_%02d.png", faceid)
     else
         str = string.format("head_mwoman_%02d.png", faceid)
