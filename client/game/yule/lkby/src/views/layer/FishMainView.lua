@@ -150,7 +150,7 @@ function FishMainView:initCSB()
         cc.p(self.m_pSettingButton:getPosition()),
     }
     self.m_posClose = cc.p(self.m_pShowButton:getPosition())
-    --self.m_pNodeFunction:setPositionX(145 -(1624-display.width))
+    self.m_pNodeFunction:setPositionX((290 - (1624-display.width))/2)
     self.m_menuOriginalX = 1341
 
     --显示
@@ -556,11 +556,12 @@ function FishMainView:onFunctionClicked()
     --    self.m_nIsShowFuncton = true
     --end
 
+    local duration = 0.2
     --点击显示
     if self.m_pShowButton:isVisible() then 
 
         local X = self.m_menuOriginalX - 111
-        local move = cc.MoveTo:create(0.5, cc.p(X, 375))
+        local move = cc.MoveTo:create(duration, cc.p(X, 375))
         local seq = cc.Sequence:create(cc.DelayTime:create(0.1), cc.Show:create())
         local call = cc.CallFunc:create(function()
 
@@ -578,7 +579,7 @@ function FishMainView:onFunctionClicked()
     --点击隐藏
     else
         local X = self.m_menuOriginalX
-        local move = cc.MoveTo:create(0.5, cc.p(X, 375))
+        local move = cc.MoveTo:create(duration, cc.p(X, 375))
         local seq = cc.Sequence:create(
                 cc.DelayTime:create(0.1),
                 cc.Show:create())
