@@ -1,0 +1,48 @@
+
+bar.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BG2
+  rotate: false
+  xy: 298, 25
+  size: 101, 99
+  orig: 101, 99
+  offset: 0, 0
+  index: -1
+bg
+  rotate: false
+  xy: 163, 104
+  size: 133, 146
+  orig: 133, 146
+  offset: 0, 0
+  index: -1
+guang
+  rotate: false
+  xy: 2, 91
+  size: 159, 159
+  orig: 159, 159
+  offset: 0, 0
+  index: -1
+qian
+  rotate: false
+  xy: 426, 232
+  size: 27, 18
+  orig: 27, 18
+  offset: 0, 0
+  index: -1
+xingxin_a
+  rotate: false
+  xy: 2, 2
+  size: 87, 87
+  orig: 87, 87
+  offset: 0, 0
+  index: -1
+zhuan
+  rotate: false
+  xy: 298, 126
+  size: 126, 124
+  orig: 126, 124
+  offset: 0, 0
+  index: -1

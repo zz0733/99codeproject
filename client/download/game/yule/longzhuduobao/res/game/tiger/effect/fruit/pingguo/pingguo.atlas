@@ -1,0 +1,20 @@
+
+pingguo.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+faguang
+  rotate: true
+  xy: 147, 11
+  size: 127, 140
+  orig: 127, 140
+  offset: 0, 0
+  index: -1
+gui-tiger-icon-17
+  rotate: false
+  xy: 2, 2
+  size: 143, 136
+  orig: 143, 143
+  offset: 0, 4
+  index: -1

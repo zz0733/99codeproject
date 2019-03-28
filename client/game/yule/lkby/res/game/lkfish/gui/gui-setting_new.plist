@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>lkfish/gui-setting_new/arrow.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,458},{47,65}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{47,65}</string>
+			</dict>
+			<key>lkfish/gui-setting_new/btn_cz.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,130},{82,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{82,82}</string>
+			</dict>
+			<key>lkfish/gui-setting_new/btn_more.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{130,130}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{130,130}</string>
+			</dict>
+			<key>lkfish/gui-setting_new/btn_sz.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,212},{82,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{82,82}</string>
+			</dict>
+			<key>lkfish/gui-setting_new/btn_tc.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,294},{82,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{82,82}</string>
+			</dict>
+			<key>lkfish/gui-setting_new/btn_yz.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,376},{82,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{82,82}</string>
+			</dict>
+			<key>lkfish/gui-setting_new/nine_rank.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,523},{44,44}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{44,44}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>gui-setting_new.png</string>
+			<key>realTextureFileName</key>
+			<string>gui-setting_new.png</string>
+			<key>size</key>
+			<string>{256,1024}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>256</integer>
+			<key>height</key>
+			<integer>1024</integer>
+		</dict>
+	</dict>
+</plist>

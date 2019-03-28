@@ -1,0 +1,41 @@
+
+yingtao.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bazi'
+  rotate: false
+  xy: 170, 130
+  size: 14, 14
+  orig: 14, 17
+  offset: 0, 3
+  index: -1
+guang1
+  rotate: false
+  xy: 2, 111
+  size: 166, 142
+  orig: 166, 142
+  offset: 0, 0
+  index: -1
+yezi
+  rotate: false
+  xy: 78, 56
+  size: 83, 53
+  orig: 83, 53
+  offset: 0, 0
+  index: -1
+yingtai
+  rotate: false
+  xy: 2, 2
+  size: 74, 107
+  orig: 74, 107
+  offset: 0, 0
+  index: -1
+yingtao
+  rotate: false
+  xy: 170, 146
+  size: 66, 107
+  orig: 66, 107
+  offset: 0, 0
+  index: -1

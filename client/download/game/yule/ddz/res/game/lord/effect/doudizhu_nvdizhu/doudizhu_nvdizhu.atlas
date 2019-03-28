@@ -1,0 +1,69 @@
+
+doudizhu_nvdizhu.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+doudizhu4_nvbiyan
+  rotate: false
+  xy: 2, 2
+  size: 91, 42
+  orig: 91, 42
+  offset: 0, 0
+  index: -1
+doudizhu4_nvdaiji
+  rotate: false
+  xy: 198, 103
+  size: 207, 191
+  orig: 207, 191
+  offset: 0, 0
+  index: -1
+doudizhu4_nvku
+  rotate: true
+  xy: 2, 46
+  size: 208, 192
+  orig: 208, 192
+  offset: 0, 0
+  index: -1
+doudizhu4_nvshanzi
+  rotate: true
+  xy: 407, 383
+  size: 105, 65
+  orig: 105, 65
+  offset: 0, 0
+  index: -1
+doudizhu4_nvshenti
+  rotate: false
+  xy: 2, 256
+  size: 194, 232
+  orig: 194, 232
+  offset: 0, 0
+  index: -1
+doudizhu4_nvshoubi
+  rotate: false
+  xy: 407, 106
+  size: 65, 88
+  orig: 65, 88
+  offset: 0, 0
+  index: -1
+doudizhu4_nvxiao
+  rotate: false
+  xy: 198, 296
+  size: 207, 192
+  orig: 207, 192
+  offset: 0, 0
+  index: -1
+doudizhu4_nvyoushou
+  rotate: false
+  xy: 407, 287
+  size: 76, 94
+  orig: 76, 94
+  offset: 0, 0
+  index: -1
+doudizhu4_nvzuoshou
+  rotate: true
+  xy: 407, 196
+  size: 89, 70
+  orig: 89, 70
+  offset: 0, 0
+  index: -1

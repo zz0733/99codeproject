@@ -1,0 +1,27 @@
+
+777.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+777
+  rotate: false
+  xy: 2, 108
+  size: 186, 146
+  orig: 186, 146
+  offset: 0, 0
+  index: -1
+777_2
+  rotate: true
+  xy: 2, 2
+  size: 104, 106
+  orig: 104, 106
+  offset: 0, 0
+  index: -1
+xingxin_a
+  rotate: false
+  xy: 110, 19
+  size: 87, 87
+  orig: 87, 87
+  offset: 0, 0
+  index: -1

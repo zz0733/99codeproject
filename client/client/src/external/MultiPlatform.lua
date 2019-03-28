@@ -154,9 +154,9 @@ function MultiPlatform:thirdPartyLogin(thirdparty, callback)
 		local msg = "unknow platform ==> " .. plat
 		print(msg)
 		callback(cjson.encode({
---            openid = "zlefd9a6e00b56939a7177cba25edcesc123",
---			unionid = "zlefd9a6e00b56939a7177cba25edcesc",
---			screen_name = "大神A",
+            openid = "WBCasdasd4ABC45BC45ABC45ABC45ABC45ER",
+			unionid = "WBCasdasd4ABC45BC45ABC45ABC45ABC45ER",
+			screen_name = "大神dasfsad",
 --			unionid = "Bbfd9a6e00b56939a7177cba25edcesb",
 --			screen_name = "大神B",
 --			unionid = "Cefd9a6e00b56939a7177cba25edcesa",
@@ -173,8 +173,8 @@ function MultiPlatform:thirdPartyLogin(thirdparty, callback)
 --			screen_name = "大神C",
 --			unionid = "EeC4ABC45BC45ABC45ABC45ABC45ER",
 --			screen_name = "大神K",
-			openid = "o9ZMqwg7kYlwSSyqakebmnEYiiUE",
-			screen_name = "大神ccK",
+			--openid = "o9ZMqwg7kYlwSSyqakebmnEYiiUE",
+			--screen_name = "大神ccK",
 --			 unionid = "LBC4ABC45BC45ABC45ABC45ABC45ER",
 --			 screen_name = "大神L",
 			-- unionid = "MBC4ABC45BC45ABC45ABC45ABC45ER",

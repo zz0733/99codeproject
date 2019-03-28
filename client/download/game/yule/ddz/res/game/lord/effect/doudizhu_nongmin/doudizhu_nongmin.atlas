@@ -1,0 +1,76 @@
+
+doudizhu_nongmin.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+doudizhu4_nm_beilou
+  rotate: false
+  xy: 2, 106
+  size: 146, 173
+  orig: 146, 173
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_biyan
+  rotate: false
+  xy: 2, 33
+  size: 123, 71
+  orig: 123, 71
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_daiji
+  rotate: false
+  xy: 186, 359
+  size: 171, 144
+  orig: 171, 144
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_hua1
+  rotate: false
+  xy: 359, 250
+  size: 84, 80
+  orig: 84, 80
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_hua2
+  rotate: false
+  xy: 359, 203
+  size: 59, 45
+  orig: 59, 45
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_kaixin
+  rotate: true
+  xy: 359, 332
+  size: 171, 144
+  orig: 171, 144
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_ku
+  rotate: false
+  xy: 186, 213
+  size: 171, 144
+  orig: 171, 144
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_shenti
+  rotate: false
+  xy: 2, 281
+  size: 182, 222
+  orig: 182, 222
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_youshou
+  rotate: true
+  xy: 445, 253
+  size: 77, 47
+  orig: 77, 47
+  offset: 0, 0
+  index: -1
+doudizhu4_nm_zuoshou
+  rotate: false
+  xy: 420, 203
+  size: 42, 45
+  orig: 42, 45
+  offset: 0, 0
+  index: -1

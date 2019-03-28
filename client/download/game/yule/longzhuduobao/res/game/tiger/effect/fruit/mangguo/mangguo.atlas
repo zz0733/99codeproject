@@ -1,0 +1,20 @@
+
+mangguo.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+guang
+  rotate: false
+  xy: 2, 101
+  size: 142, 125
+  orig: 144, 140
+  offset: 1, 8
+  index: -1
+mangguo
+  rotate: false
+  xy: 2, 2
+  size: 114, 97
+  orig: 114, 111
+  offset: 0, 7
+  index: -1

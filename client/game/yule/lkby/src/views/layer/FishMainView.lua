@@ -126,9 +126,10 @@ function FishMainView:initCSB()
     self.m_pNodeFunction  = self.m_pFishMainView:getChildByName("m_pNodeFunction")
     self.m_pShowButton    = self.m_pNodeFunction:getChildByName("m_pShowButton")
     self.m_pHideButton    = self.m_pNodeFunction:getChildByName("m_pHideButton")
-    self.m_pExitButton    = self.m_pNodeFunction:getChildByName("m_pExitButton")
-    self.m_pRuleButton    = self.m_pNodeFunction:getChildByName("m_pRuleButton")
-    self.m_pSettingButton = self.m_pNodeFunction:getChildByName("m_pSettingButton")
+    self.m_pSettingPanel  = self.m_pNodeFunction:getChildByName("m_pSettingPanel")
+    self.m_pExitButton    = self.m_pSettingPanel:getChildByName("m_pExitButton")
+    self.m_pRuleButton    = self.m_pSettingPanel:getChildByName("m_pRuleButton")
+    self.m_pSettingButton = self.m_pSettingPanel:getChildByName("m_pSettingButton")
 
     --绑定按钮
     self.m_pShowButton:addClickEventListener(handler(self, self.onFunctionClicked))
@@ -149,16 +150,18 @@ function FishMainView:initCSB()
         cc.p(self.m_pSettingButton:getPosition()),
     }
     self.m_posClose = cc.p(self.m_pShowButton:getPosition())
+    --self.m_pNodeFunction:setPositionX(145 -(1624-display.width))
+    self.m_menuOriginalX = 1341
 
     --显示
     self.m_pShowButton:setVisible(true)
     self.m_pHideButton:setVisible(false)
-    self.m_pExitButton:setVisible(false)
-    self.m_pRuleButton:setVisible(false)
-    self.m_pSettingButton:setVisible(false)
-    self.m_pExitButton:setPosition(self.m_posClose)
-    self.m_pRuleButton:setPosition(self.m_posClose)
-    self.m_pSettingButton:setPosition(self.m_posClose)
+    --self.m_pExitButton:setVisible(false)
+    --self.m_pRuleButton:setVisible(false)
+    --self.m_pSettingButton:setVisible(false)
+    --self.m_pExitButton:setPosition(self.m_posClose)
+    --self.m_pRuleButton:setPosition(self.m_posClose)
+    --self.m_pSettingButton:setPosition(self.m_posClose)
 
     self.m_pBG:setVisible(true)
     self.m_pNewBG:setVisible(false)
@@ -178,9 +181,9 @@ function FishMainView:initLayer()
     self.m_pNodeFunction:setLocalZOrder(100) --100
 
     --宽屏
-    if LuaUtils.isIphoneXDesignResolution() then
-        self.m_pNodeFunction:setPositionX(self.m_pNodeFunction:getPositionX() - 85)
-    end
+    ---if LuaUtils.isIphoneXDesignResolution() then
+    ---    self.m_pNodeFunction:setPositionX(self.m_pNodeFunction:getPositionX() - 85)
+    ---end
 end
 
 function FishMainView:initGameEvent()
@@ -547,66 +550,53 @@ end
 function FishMainView:onFunctionClicked()
     ExternalFun.playGameEffect(FishRes.SOUND_OF_BUTTON)
 
-    if self.m_nIsShowFuncton then
-        return
-    else
-        self.m_nIsShowFuncton = true
-    end
+    --if self.m_nIsShowFuncton then
+    --    return
+    --else
+    --    self.m_nIsShowFuncton = true
+    --end
 
+    --点击显示
     if self.m_pShowButton:isVisible() then 
-        
-        self.m_pShowButton:setVisible(false)
-        self.m_pHideButton:setVisible(true)
 
-        for i = 1, 3 do --展开
-            local spawn = cc.Spawn:create(
-                cc.EaseBackInOut:create(cc.MoveTo:create(0.2, self.m_posOpen[i])),
-                cc.ScaleTo:create(0.2, 1))
-            local seq = cc.Sequence:create(
+        local X = self.m_menuOriginalX - 111
+        local move = cc.MoveTo:create(0.5, cc.p(X, 375))
+        local seq = cc.Sequence:create(cc.DelayTime:create(0.1), cc.Show:create())
+        local call = cc.CallFunc:create(function()
+
+            self.m_nIsShowFuncton = false
+            self.m_pShowButton:setVisible(false)
+            self.m_pHideButton:setPosition(self.m_pShowButton:getPosition())
+            self.m_pHideButton:setVisible(true)
+        end)
+
+        local action = cc.Sequence:create(cc.DelayTime:create(0.1 ), cc.Spawn:create(seq, move), call)
+
+        self.m_pShowButton:runAction(action:clone())
+        self.m_pSettingPanel:runAction(action)
+
+    --点击隐藏
+    else
+        local X = self.m_menuOriginalX
+        local move = cc.MoveTo:create(0.5, cc.p(X, 375))
+        local seq = cc.Sequence:create(
                 cc.DelayTime:create(0.1),
                 cc.Show:create())
-            local action = cc.Sequence:create(
-                cc.DelayTime:create(0.1 * i),
-                cc.Spawn:create(seq, spawn))
-            self.m_vecButton[i]:runAction(action)
-        end
-        
-        local delay = cc.DelayTime:create(0.5)
-        local call = cc.CallFunc:create(function()
-            for i = 1, 3 do
-                self.m_vecButton[i]:setPosition(self.m_posOpen[i])
-            end
-            self.m_nIsShowFuncton = false
-        end)
-        local seq = cc.Sequence:create(delay, call)
-        self.m_pNodeFunction:runAction(seq)
 
-    else
-        self.m_pShowButton:setVisible(true)
-        self.m_pHideButton:setVisible(false)
-
-        for i = 1, 3 do --收合
-            local spawn = cc.Spawn:create(
-                cc.EaseBackInOut:create(cc.MoveTo:create(0.2, self.m_posClose)),
-                cc.ScaleTo:create(0.2, 1))
-            local seq = cc.Sequence:create(
-                cc.DelayTime:create(0.1),
-                cc.Hide:create())
-            local action = cc.Sequence:create(
-                cc.DelayTime:create(0.1 * i),
-                cc.Spawn:create(seq, spawn))
-            self.m_vecButton[i]:runAction(action)
-        end
-        
-        local delay = cc.DelayTime:create(0.5)
         local call = cc.CallFunc:create(function()
-            for i = 1, 3 do
-                self.m_vecButton[i]:setPosition(self.m_posClose)
-            end
-            self.m_nIsShowFuncton = false
+            self.m_nIsShowFuncton = true
+            self.m_pHideButton:setVisible(false)
+            self.m_pShowButton:setPosition(self.m_pHideButton:getPosition())
+            self.m_pShowButton:setVisible(true)
         end)
-        local seq = cc.Sequence:create(delay, call)
-        self.m_pNodeFunction:runAction(seq)
+
+        local action = cc.Sequence:create(
+                cc.DelayTime:create(0.1 ),
+                cc.Spawn:create(seq, move),
+                call)
+
+        self.m_pHideButton:runAction(action:clone())
+        self.m_pSettingPanel:runAction(action)
     end
 end 
 
