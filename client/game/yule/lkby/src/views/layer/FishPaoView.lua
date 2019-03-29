@@ -176,10 +176,12 @@ function FishPaoView:initCCB()
 
     self.m_paoViewPanel = self.m_pathUI
 
-    self.m_pAIButton = self.m_pathUI:getChildByName("m_pAIButton")
+    local spriteUIBottom = self.m_pathUI:getChildByName("Sprite_ui_bottom")
+    spriteUIBottom:setLocalZOrder(100)
+    self.m_pAIButton = spriteUIBottom:getChildByName("m_pAIButton")
     self.m_pImageAI_on = self.m_pAIButton:getChildByName("m_pImageAI_on")
     self.m_pImageAI_off = self.m_pAIButton:getChildByName("m_pImageAI_off")
-    self.m_pLockButton = self.m_pathUI:getChildByName("m_pLockButton")
+    self.m_pLockButton = spriteUIBottom:getChildByName("m_pLockButton")
     self.m_pImageLock_on = self.m_pLockButton:getChildByName("m_pImageLock_on")
     self.m_pImageLock_off = self.m_pLockButton:getChildByName("m_pImageLock_off")
     self.m_pPaoButtonNode = self.m_pathUI:getChildByName("m_pPaoButton")
