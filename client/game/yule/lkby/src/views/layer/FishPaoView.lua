@@ -66,7 +66,7 @@ function FishPaoView:ctor()
     self.m_nPointDisatnce = 50
     self.m_nPointCount = 30
     self.m_nPointOffest = 15 --初始化偏移
-    self.m_seatOffPos = { cc.p(210, 30), cc.p(210, 30), cc.p(-60, 10), cc.p(-60, 10), }
+    self.m_seatOffPos = { cc.p(-340, 30), cc.p(175, 30), cc.p(175, 10), cc.p(-340, 10), }
 
     self.m_pNewBG = nil
     self.m_pPaoButtonNode = nil
@@ -176,7 +176,11 @@ function FishPaoView:initCCB()
     self.m_paoViewPanel = self.m_pathUI
 
     self.m_pAIButton = self.m_pathUI:getChildByName("m_pAIButton")
+    self.m_pImageAI_on = self.m_pAIButton:getChildByName("m_pImageAI_on")
+    self.m_pImageAI_off = self.m_pAIButton:getChildByName("m_pImageAI_off")
     self.m_pLockButton = self.m_pathUI:getChildByName("m_pLockButton")
+    self.m_pImageLock_on = self.m_pLockButton:getChildByName("m_pImageLock_on")
+    self.m_pImageLock_off = self.m_pLockButton:getChildByName("m_pImageLock_off")
     self.m_pPaoButtonNode = self.m_pathUI:getChildByName("m_pPaoButton")
     self.m_pAddButton = self.m_pPaoButtonNode:getChildByName("Button_4")
     self.m_pSubButton = self.m_pPaoButtonNode:getChildByName("Button_3")
@@ -194,10 +198,10 @@ function FishPaoView:initCCB()
     self.m_pAddButton:addClickEventListener(handler(self, self.onPaoAddClicked))
     self.m_pSubButton:addClickEventListener(handler(self, self.onPaoMinusClicked))
 
-    if LuaUtils.isIphoneXDesignResolution() then
-        self.m_pAIButton:setPositionX(self.m_pAIButton:getPositionX() + 110)
-        self.m_pLockButton:setPositionX(self.m_pLockButton:getPositionX() + 110)
-    end
+    --if LuaUtils.isIphoneXDesignResolution() then
+    --    self.m_pAIButton:setPositionX(self.m_pAIButton:getPositionX() + 110)
+    --    self.m_pLockButton:setPositionX(self.m_pLockButton:getPositionX() + 110)
+    --end
 end
 
 function FishPaoView:onEnter()
@@ -627,22 +631,26 @@ function FishPaoView:onAIClicked() --自动按钮
 
     if self.m_nAutoFire == false then --自动发炮开启
         self.m_nAutoFire = true
-        self.m_pAIButton:loadTextureNormal("gui-fish-btn-mul.png", ccui.TextureResType.plistType)
+        --self.m_pAIButton:loadTextureNormal("gui-fish-btn-mul.png", ccui.TextureResType.plistType)
         CMsgFish.getInstance():FireContinuously(202, GlobalUserItem.tabAccountInfo.userid, true)
     elseif self.m_nAutoFire == true then --自动发炮关闭
         self.m_nAutoFire = false
-        self.m_pAIButton:loadTextureNormal("gui-fish-btn-auto.png", ccui.TextureResType.plistType)
+        --self.m_pAIButton:loadTextureNormal("gui-fish-btn-auto.png", ccui.TextureResType.plistType)
         CMsgFish.getInstance():FireContinuously(202, GlobalUserItem.tabAccountInfo.userid, false)
     end
+
+    self.m_pImageAI_on:setVisible(self.m_nAutoFire)
+    self.m_pImageAI_off:setVisible(not self.m_nAutoFire)
 end 
 
 function FishPaoView:onLockClicked() --锁定按钮
     ExternalFun.playGameEffect(FishRes.SOUND_OF_BUTTON)
     print("FishPaoView:onLockClicked")
 
-    if FishDataMgr:getInstance():getLock() then --锁定关闭
+    local islock = FishDataMgr:getInstance():getLock()
+    if islock then --锁定关闭
         FishDataMgr:getInstance():setLock(false)
-        self.m_pLockButton:loadTextureNormal("gui-fish-btn-lock.png", ccui.TextureResType.plistType)
+        ---self.m_pLockButton:loadTextureNormal("gui-fish-btn-lock.png", ccui.TextureResType.plistType)
 
         --取消锁定鱼
         local nChaidId = FishDataMgr:getInstance():getMeChairID()
@@ -653,7 +661,7 @@ function FishPaoView:onLockClicked() --锁定按钮
         self.m_nLockFish = -1
     else --锁定开启
         FishDataMgr:getInstance():setLock(true)
-        self.m_pLockButton:loadTextureNormal("gui-fish-btn-cancel-lock.png", ccui.TextureResType.plistType)
+        ---self.m_pLockButton:loadTextureNormal("gui-fish-btn-cancel-lock.png", ccui.TextureResType.plistType)
 
         --开启锁定鱼
         local nChaidId = FishDataMgr:getInstance():getMeChairID()
@@ -670,7 +678,10 @@ function FishPaoView:onLockClicked() --锁定按钮
         end
     end
 
-     CMsgFish.getInstance():FireContinuously(201, GlobalUserItem.tabAccountInfo.userid,self.m_nLockFish)
+    self.m_pImageLock_on:setVisible(not islock)
+    self.m_pImageLock_off:setVisible(islock)
+
+    CMsgFish.getInstance():FireContinuously(201, GlobalUserItem.tabAccountInfo.userid,self.m_nLockFish)
 end
 
 function FishPaoView:_lockFish(fishID)
@@ -1006,13 +1017,14 @@ function FishPaoView:changeMulriple(chairID)
         pMulripleBg = display.newSprite("#gui-fish-fh-bt.png")
         self.m_pPaoNode[viewChairID+1]:addChild(pMulripleBg)
         pMulripleBg:setTag(6)
-        local x = 80
-        if nChairId == chairID then
-           x = 20
-        end
+        --local x = 80
+        local x = 0
+        --if nChairId == chairID then
+        --   x = 20
+        --end
         local y = 30
         if viewChairID >= GAME_PLAYER_FISH / 2 then
-            x = 295
+            ---x = 295
             y = 45
         end
         pMulripleBg:setPosition(cc.p(x,y))
@@ -1077,10 +1089,10 @@ function FishPaoView:showLabelAction(pLabel)
 end
 
 FishPaoView.vecGoldPos = {
-    cc.p(450, 92 - 10), 
-    cc.p(1105, 92 - 10), 
-    cc.p(780, 663 + 5), 
-    cc.p(120, 663 + 5),
+    cc.p(45 , 82),
+    cc.p(1105 , 82),
+    cc.p(1105, 668),
+    cc.p(45, 668),
 }
 
 function FishPaoView:showGoldIcon2(chairid, iScore)
@@ -1094,12 +1106,12 @@ function FishPaoView:showGoldIcon2(chairid, iScore)
         pGoldNode:setPosition(beginPosion)
         pGoldNode:addTo(self.m_pathUI, 100+100)
         self.m_pGoldNode[viewChairID+1] = pGoldNode
-        --下方位置偏移
-        if 0 <= viewChairID and viewChairID <= 1 then
-            if chairid ~= self.m_nChairID then
-                pGoldNode:setPositionX(pGoldNode:getPositionX() - 60)
-            end
-        end
+        --下方位置偏移 现版本自己和其他玩家一直,去掉自己特殊判断
+        --if 0 <= viewChairID and viewChairID <= 1 then
+        --    if chairid ~= self.m_nChairID then
+        --        pGoldNode:setPositionX(pGoldNode:getPositionX() - 60)
+        --    end
+        --end
     end
 
     --动作node
@@ -1669,28 +1681,34 @@ function FishPaoView:getDefinePostion(eType, nSeatIndex)
     if eType == ePositionType.ETYPE_PAO then
 
         if nSeatIndex < GAME_PLAYER_FISH / 2 then
-            x = 233 + 655 * nSeatIndex
+            --x = 233 + 655 * nSeatIndex
             y = 0
         else
-            x = 456 + (3 - nSeatIndex) * 645
+            --x = 456 + (3 - nSeatIndex) * 645
             y = 750
         end
+        x = self.m_pPaoTai[nSeatIndex+1]:getPositionX()
 
-    elseif eType == ePositionType.ETYPE_PAO_BTN then
+    elseif eType == ePositionType.ETYPE_PAO_BTN then        -- 炮加减按钮
 
-        if nSeatIndex < GAME_PLAYER_FISH / 2 then
-            x = 655 * nSeatIndex
-            y = 0
-        end                                                        
+        ------if nSeatIndex < GAME_PLAYER_FISH / 2 then
+        ------    x = 655 * nSeatIndex
+        ------    y = 0
+        ------end
 
+        x, y = self.m_pPaoTai[nSeatIndex%2+1]:getPosition()
     elseif eType == ePositionType.ETYPE_BUFF then
 
         if nSeatIndex < GAME_PLAYER_FISH / 2 then
             x = 360 + 640 * nSeatIndex
             y = 100
+
+            x = self.m_pPaoTai[nSeatIndex+1]:getPosition() + 130
         else
             x = 340 +(3 - nSeatIndex) * 660
             y = 620
+
+            x = self.m_pPaoTai[nSeatIndex+1]:getPosition() - 130
         end
 
     elseif eType == ePositionType.ETYPE_PAO_INFO then
@@ -1703,9 +1721,12 @@ function FishPaoView:getDefinePostion(eType, nSeatIndex)
                 x = 150 + 653 * nSeatIndex
                 y = -10
             end
+            x = self.m_pPaoTai[nSeatIndex+1]:getPositionX()
         else
             x = 155 +(3 - nSeatIndex) * 653
             y = 685
+
+            x = self.m_pPaoTai[nSeatIndex+1]:getPositionX()
         end
     end
 
@@ -2703,10 +2724,11 @@ function FishPaoView:showJiShaDaYuAnimation(_fishKind, _nSeatIndex, _llScore)
 
     local pos = self:getDefinePostion(ePositionType.ETYPE_PAO, _nSeatIndex)
 
+    local space_x = (_nSeatIndex == 0 or _nSeatIndex == 3) and -220 or 175
     if _nSeatIndex >= GAME_PLAYER_FISH / 2 then
-        pos = cc.p(pos.x - 175, pos.y - 190)
+        pos = cc.p(pos.x + space_x, pos.y - 190)
     else
-        pos = cc.p(pos.x + 175, pos.y + 190)
+        pos = cc.p(pos.x + space_x, pos.y + 190)
     end
     local item = JiShaDaYuItem.create(_fishKind, _llScore, _nSeatIndex)    
     item:setTag(TAG_JI_SHA_DA_YU_ZHUAN_PAN)
@@ -2933,10 +2955,11 @@ function FishPaoView:onMsgBombEffect(event)
         item:setPosition(pos)
     else 
         local pos = self:getDefinePostion(ePositionType.ETYPE_PAO, viewChairID)
+        local space_x = (viewChairID == 0 or viewChairID == 3) and -175 or 175
         if viewChairID >= GAME_PLAYER_FISH / 2 then
-            pos = cc.p(pos.x - 175, pos.y - 190)
+            pos = cc.p(pos.x + space_x, pos.y - 190)
         else
-            pos = cc.p(pos.x + 175, pos.y + 190)
+            pos = cc.p(pos.x + space_x, pos.y + 190)
         end
         item:setPosition(pos)
     end
@@ -3107,6 +3130,7 @@ function FishPaoView:updateLockIcon(nSeatIndex, lock_fish_id)
         if #strIcon == 0 then
             return
         end
+        local pos = {{101 , 170},{-101, 170},{ -151, -20 },{151, -20 }}
         local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame(strIcon)
         if frame then
             local pIcon = display.newSprite("#" .. strIcon)
@@ -3114,8 +3138,11 @@ function FishPaoView:updateLockIcon(nSeatIndex, lock_fish_id)
                 local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(FishDataMgr:getInstance():getMeChairID())
                 local isPlayer = (myViewChairID+1 == nSeatIndex)
                 local isSeatUp = nSeatIndex > 2 --1/2下-3/4上
-                local x = isSeatUp and 365 or (isPlayer and -100 or -20)
-                local y = isSeatUp and -70 or 130
+                --local x = isSeatUp and 365 or (isPlayer and -100 or -20)
+                --local x = isSeatUp and 365 or -20
+                --local y = isSeatUp and -70 or 130
+                local x = pos[nSeatIndex][1]
+                local y = pos[nSeatIndex][2]
                 pIcon:setPosition(cc.p(x, y))
                 pIcon:setTag(10000)
                 pIcon:addTo(self.m_pPaoNode[nSeatIndex])

@@ -27,12 +27,17 @@ function CMsgFish:onGameMsg(sub,dataBuffer)
         local deskinfo = dataBuffer["deskinfo"]
         self:loadGameSceneData(deskinfo)
         local memberinfos =  dataBuffer["memberinfos"]
+
+
         for k,v in pairs(memberinfos) do
             FishDataMgr:getInstance():onUserEnter(v.uid, v)
         end
+
+
     elseif sub == "newfish" then
        self:onDistributeFish(dataBuffer)
     elseif sub == "leave" then
+
          local chairid = FishDataMgr:getInstance():getChairIDByGuid(dataBuffer)
          FishDataMgr:getInstance():onUserLeave(dataBuffer)
          local _event = chairid

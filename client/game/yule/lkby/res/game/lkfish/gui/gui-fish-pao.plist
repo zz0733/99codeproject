@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>game/lkfish/gui-fish-pao/bag_10301.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/bag_10301_e.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,116},{116,116}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{116,116}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/bag_10307.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,406},{114,114}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{114,114}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/bag_skill_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{116,0},{102,102}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{102,102}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/bag_10307_e.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{76,232},{114,114}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{114,114}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/btnoff_suoding.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{116,102},{84,28}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{84,28}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/btnoff_zidong.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{116,186},{84,28}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{84,28}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/btnon_suoding.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{144,102},{84,28}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{84,28}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/btnon_zidong.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{172,102},{84,28}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{84,28}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/gunBase0.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,232},{174,76}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{174,76}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/lock_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{76,346},{104,36}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{104,36}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>gui-fish-pao.png</string>
+			<key>realTextureFileName</key>
+			<string>gui-fish-pao.png</string>
+			<key>size</key>
+			<string>{256,1024}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>256</integer>
+			<key>height</key>
+			<integer>1024</integer>
+		</dict>
+	</dict>
+</plist>
