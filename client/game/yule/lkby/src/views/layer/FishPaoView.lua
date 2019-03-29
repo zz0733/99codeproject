@@ -73,6 +73,7 @@ function FishPaoView:ctor()
     self.m_pAIButton = nil
     self.m_pLockButton = nil
     self.m_pActionHailang = nil
+    self.m_pLayerMark = nil
     
     self.m_pPaoNode = {}
     self.m_pPaoTai = {}
@@ -819,11 +820,17 @@ function FishPaoView:showTipMyPosition(paoPosition)
     end 
     self.m_bHasShowTipMyPosition = true 
 
+    --半透明遮掩图
+    self.m_pLayerMark = cc.LayerColor:create(cc.c4b(0,0,0,125), 2800, 1720)
+    self.m_pLayerMark:setPosition(-667, -375)
+    self.m_pLayerMark:addTo(self, 999)
+
     local pTipMyPositionAnimation = ccs.Armature:create("ruchangtixing_likpiyu")
     pTipMyPositionAnimation:getAnimation():play("Animation2")
     self:addChild(pTipMyPositionAnimation,1000)
     pTipMyPositionAnimation:setPosition(cc.p(paoPosition.x, paoPosition.y + 80))
     local callFunc = cc.CallFunc:create( function()
+        self:hideLayerMark()
         pTipMyPositionAnimation:removeFromParent()
     end )
     self:runAction(cc.Sequence:create(cc.DelayTime:create(5), callFunc))
@@ -3247,6 +3254,14 @@ end
 function FishPaoView:setBg(bg, bgUp)
     self.m_pBg = bg
     self.m_pNewBG = bgUp
+end
+
+--隐藏遮掩层
+function FishPaoView:hideLayerMark()
+    if self.m_pLayerMark then
+        self.m_pLayerMark:removeFromParent()
+        self.m_pLayerMark = nil
+    end
 end
 
 --function FishPaoView:otherPaoMove(guid, pos)

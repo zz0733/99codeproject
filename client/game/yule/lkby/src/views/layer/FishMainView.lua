@@ -558,7 +558,10 @@ function FishMainView:onFunctionClicked()
 
     local duration = 0.2
     --点击显示
-    if self.m_pShowButton:isVisible() then 
+    if self.m_pShowButton:isVisible() then
+
+        --隐藏遮罩层
+        self.m_pFishPaoView:hideLayerMark()
 
         local X = self.m_menuOriginalX - 111
         local move = cc.MoveTo:create(duration, cc.p(X, 375))
@@ -754,6 +757,10 @@ function FishMainView:onTouchBegan(touch, event)
     if LuaUtils.IphoneXDesignResolution then
         self.m_nTargetPoint.x = self.m_nTargetPoint.x - LuaUtils.screenDiffX
     end
+
+    --隐藏遮罩层
+    self.m_pFishPaoView:hideLayerMark()
+
     if FishDataMgr:getInstance():getLock() then --锁定时
 
         --找鱼
