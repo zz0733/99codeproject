@@ -55,7 +55,7 @@ function FishMainView:ctor(scene)
     self.m_bIsPresssDown = false
     self.m_bIsShowExitTips = false
     self.m_nTargetPoint = cc.p(0, 0)
-    self.m_nIsShowFuncton = false
+    self.m_nIsFunctonActionRunning = false
     self.m_pQiPaoArm = {}
     for i = 1, 5 do
         self.m_pQiPaoArm[i] = nil
@@ -550,11 +550,11 @@ end
 function FishMainView:onFunctionClicked()
     ExternalFun.playGameEffect(FishRes.SOUND_OF_BUTTON)
 
-    --if self.m_nIsShowFuncton then
-    --    return
-    --else
-    --    self.m_nIsShowFuncton = true
-    --end
+    if self.m_nIsFunctonActionRunning then
+        return
+    else
+        self.m_nIsFunctonActionRunning = true
+    end
 
     local duration = 0.2
     --点击显示
@@ -568,7 +568,7 @@ function FishMainView:onFunctionClicked()
         local seq = cc.Sequence:create(cc.DelayTime:create(0.1), cc.Show:create())
         local call = cc.CallFunc:create(function()
 
-            self.m_nIsShowFuncton = false
+            self.m_nIsFunctonActionRunning = false
             self.m_pShowButton:setVisible(false)
             self.m_pHideButton:setPosition(self.m_pShowButton:getPosition())
             self.m_pHideButton:setVisible(true)
@@ -588,7 +588,7 @@ function FishMainView:onFunctionClicked()
                 cc.Show:create())
 
         local call = cc.CallFunc:create(function()
-            self.m_nIsShowFuncton = true
+            self.m_nIsFunctonActionRunning = false
             self.m_pHideButton:setVisible(false)
             self.m_pShowButton:setPosition(self.m_pHideButton:getPosition())
             self.m_pShowButton:setVisible(true)

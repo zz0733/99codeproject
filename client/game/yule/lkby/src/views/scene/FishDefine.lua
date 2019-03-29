@@ -65,23 +65,23 @@ cc.exports.FishKind = {                   --金蝉捕鱼         --李逵捕鱼 
     FISH_DAYANYU = 3,          --大眼鱼
     FISH_HUANGBIANYU = 7,      --黄边鱼
     FISH_XIAOCHOUYU = 9,       --小丑鱼
-    FISH_XIAOCIYU = 17,         --小刺鱼
-    FISH_LANYU = 15,            --蓝鱼
     FISH_DENGLONGYU = 14,       --灯笼鱼
+    FISH_LANYU = 15,            --蓝鱼
     FISH_HAIGUI = 16,           --海龟
+    FISH_XIAOCIYU = 17,         --小刺鱼
     FISH_HUABANYU = 19,        --花斑鱼                          --没有
     FISH_HUDIEYU = 21,         --蝴蝶鱼                          --没有
     FISH_KONGQUEYU = 23,       --孔雀鱼
+    FISH_XIAOYINLONG = 25,     --小银龙
     FISH_JIANYU = 26,          --剑鱼
     FISH_BIANFUYU = 27,        --蝙蝠鱼
     FISH_YINSHA = 28,          --银鲨
     FISH_JINSHA = 29,          --金鲨
     FISH_BAWANGJING = 30,      --霸王鲸           --霸王鲸       --没有
+    FISH_XIAOJINLONG = 33,     --小金龙
     FISH_JINCHAN = 34,         --金蝉             --李逵         --没有
     FISH_SHENXIANCHUAN = 101,   --神仙船
     FISH_MEIRENYU = 104,        --美人鱼
-    FISH_XIAOYINLONG = 25,     --小银龙
-    FISH_XIAOJINLONG = 33,     --小金龙
     
     --相同value+不相同key--------------------------------------------
     FISH_XIAOQINGLONG = 100,    --没有             --没有         --没有
