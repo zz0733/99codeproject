@@ -52,6 +52,7 @@ Fish._in_screen_down = 0 - 120
 Fish._in_screen_up = display.height + 120
 
 Fish.m_dequeArmatureSleep = {}
+Fish._drawImpactBody = false
 
 function Fish:ctor(fish_kind, fish_id, fish_multiple, fish_speed, bounding_box_width, bounding_box_height, hit_radius, fish_tag)
 
@@ -212,7 +213,14 @@ function Fish:initData(fish_kind, fish_id, fish_multiple, fish_speed, bounding_b
     self.bounding_box_height_ = bounding_box_height
     self.hit_radius_ = hit_radius
     self.fish_Tag_ = fish_tag
-    
+
+    if Fish._drawImpactBody == true then
+        local color = cc.c4b(255,0,0,255)
+        local layer  = cc.LayerColor:create(color, bounding_box_width * 2, bounding_box_height * 2)
+        layer:setPosition(-bounding_box_width, -bounding_box_height)
+        layer:addTo(self,10000)
+    end
+
     self.m_bIsAccelerate = false --是否加速
     self.m_bIsSceneTraceFish = false --标志是不是属于鱼阵类型的鱼
     self.m_bIsSceneTraceFishShowFinish = false --标识鱼阵的鱼是否展示完毕

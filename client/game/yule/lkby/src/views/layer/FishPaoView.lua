@@ -2724,7 +2724,7 @@ function FishPaoView:showJiShaDaYuAnimation(_fishKind, _nSeatIndex, _llScore)
 
     local pos = self:getDefinePostion(ePositionType.ETYPE_PAO, _nSeatIndex)
 
-    local space_x = (_nSeatIndex == 0 or _nSeatIndex == 3) and -220 or 175
+    local space_x = (_nSeatIndex == 0 or _nSeatIndex == 3) and -230 or 175
     if _nSeatIndex >= GAME_PLAYER_FISH / 2 then
         pos = cc.p(pos.x + space_x, pos.y - 190)
     else
