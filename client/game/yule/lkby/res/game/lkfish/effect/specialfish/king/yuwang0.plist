@@ -7,13 +7,13 @@
 			<key>kingpan.png</key>
 			<dict>
 				<key>width</key>
-				<integer>120</integer>
+				<integer>224</integer>
 				<key>height</key>
-				<integer>120</integer>
+				<integer>224</integer>
 				<key>originalWidth</key>
-				<integer>120</integer>
+				<integer>224</integer>
 				<key>originalHeight</key>
-				<integer>120</integer>
+				<integer>224</integer>
 				<key>x</key>
 				<integer>0</integer>
 				<key>y</key>
