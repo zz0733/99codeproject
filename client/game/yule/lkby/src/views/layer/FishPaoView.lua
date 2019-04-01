@@ -835,15 +835,45 @@ function FishPaoView:showTipMyPosition(paoPosition)
     self.m_pLayerMark:setPosition(-667, -375)
     self.m_pLayerMark:addTo(self, 999)
 
-    local pTipMyPositionAnimation = ccs.Armature:create("ruchangtixing_likpiyu")
-    pTipMyPositionAnimation:getAnimation():play("Animation2")
-    self:addChild(pTipMyPositionAnimation,1000)
-    pTipMyPositionAnimation:setPosition(cc.p(paoPosition.x, paoPosition.y + 80))
-    local callFunc = cc.CallFunc:create( function()
+    --您的位置动画
+    local spritePos = cc.Sprite:createWithSpriteFrameName("game/lkfish/gui-fish-pao/bugp_ui_pos.png")
+    spritePos:addTo(self, 1001)
+    spritePos:setPosition(cc.p(paoPosition.x, paoPosition.y + 180))
+    local actionMove1 = cc.MoveBy:create(0.3, cc.p(0, 30))
+    local actionMove = cc.RepeatForever:create(cc.Sequence:create(actionMove1,actionMove1:reverse()))
+    spritePos:runAction(actionMove)
+
+    local nodePath = "game/lkfish/csb/fish-Location.csb"
+    local node = cc.CSLoader:createNode(nodePath)
+    local function playAction( path,actionName,root )
+        -- body
+        print(path , actionName)
+        local ac2 = cc.CSLoader:createTimeline(path)
+        if ac2:IsAnimationInfoExists(actionName) == true then
+            ac2:play(actionName, true)
+        end
+        root:runAction(ac2)
+    end
+    --self.coinPanel:addChild(node)
+    node:addTo(self, 1000)
+    node:setPosition(cc.p(paoPosition.x, paoPosition.y + 80))
+    playAction(nodePath, "Location", node)
+    performWithDelay(self, function()
+        node:removeFromParent()
+        spritePos:removeFromParent()
         self:hideLayerMark()
-        pTipMyPositionAnimation:removeFromParent()
-    end )
-    self:runAction(cc.Sequence:create(cc.DelayTime:create(5), callFunc))
+    end, 2)
+
+    
+    --local pTipMyPositionAnimation = ccs.Armature:create("ruchangtixing_likpiyu")
+    --pTipMyPositionAnimation:getAnimation():play("Animation2")
+    --self:addChild(pTipMyPositionAnimation,1000)
+    --pTipMyPositionAnimation:setPosition(cc.p(paoPosition.x, paoPosition.y + 80))
+    --local callFunc = cc.CallFunc:create( function()
+    --    self:hideLayerMark()
+    --    pTipMyPositionAnimation:removeFromParent()
+    --end )
+    --self:runAction(cc.Sequence:create(cc.DelayTime:create(2), callFunc))
 end
 
 function FishPaoView:_showPao(usChairID)

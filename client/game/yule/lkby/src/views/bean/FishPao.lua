@@ -117,6 +117,10 @@ end
 
 function FishPao:addPaoBuff()
 
+    if Pao_new == true then
+        return
+    end
+
     -- 设置炮的类型
     local nType = self.m_nPaoType
     --local kind = getBulletKindByIndex(nType + 3)
