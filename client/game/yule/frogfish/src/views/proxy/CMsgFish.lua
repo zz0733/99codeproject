@@ -23,16 +23,16 @@ end
 
 --游戏消息
 function CMsgFish:onGameMsg(sub,dataBuffer)
-    if sub == "enter" then
+    if sub == "enter" then                                  --自己进入
         local deskinfo = dataBuffer["deskinfo"]
         self:loadGameSceneData(deskinfo)
         local memberinfos =  dataBuffer["memberinfos"]
         for k,v in pairs(memberinfos) do
             FishDataMgr:getInstance():onUserEnter(v.uid, v)
         end
-    elseif sub == "newfish" then
+    elseif sub == "newfish" then                            --新鱼
        self:onDistributeFish(dataBuffer)
-    elseif sub == "leave" then
+    elseif sub == "leave" then                              --玩家离开
          local chairid = FishDataMgr:getInstance():getChairIDByGuid(dataBuffer)
          FishDataMgr:getInstance():onUserLeave(dataBuffer)
          local _event = chairid

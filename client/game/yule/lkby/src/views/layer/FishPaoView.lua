@@ -255,7 +255,7 @@ function FishPaoView:onEnter()
 	CMsgFish.getInstance():FireContinuously(201,playerKey,-1)
 	CMsgFish.getInstance():FireContinuously(202,playerKey,false)
 	CMsgFish.getInstance():FireContinuously(203,playerKey,cmd.firingIntervalEnum.normal)
-	CMsgFish.getInstance():FireContinuously(204,playerKey,false) 
+	CMsgFish.getInstance():FireContinuously(204,playerKey,false)
 
     self:onNodeLoaded()
     self:onMsgPaoFresh()
@@ -631,6 +631,8 @@ end
 function FishPaoView:onAIClicked() --自动按钮
     ExternalFun.playGameEffect(FishRes.SOUND_OF_BUTTON)
     print("FishPaoView:onAIClicked")
+    --隐藏遮罩层
+    self:hideLayerMark()
 
     if self.m_nAutoFire == false then --自动发炮开启
         self.m_nAutoFire = true
@@ -649,6 +651,8 @@ end
 function FishPaoView:onLockClicked() --锁定按钮
     ExternalFun.playGameEffect(FishRes.SOUND_OF_BUTTON)
     print("FishPaoView:onLockClicked")
+    --隐藏遮罩层
+    self:hideLayerMark()
 
     local islock = FishDataMgr:getInstance():getLock()
     if islock then --锁定关闭
@@ -728,6 +732,8 @@ end
 function FishPaoView:onPaoAddClicked()
     ExternalFun.playGameEffect(FishRes.SOUND_OF_BUTTON)
     print("FishPaoView:onPaoAddClicked")
+    --隐藏遮罩层
+    self:hideLayerMark()
 
     local myChairID = FishDataMgr:getInstance():getMeChairID()
     local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(myChairID)
@@ -769,6 +775,8 @@ end
 function FishPaoView:onPaoMinusClicked()
     ExternalFun.playGameEffect(FishRes.SOUND_OF_BUTTON)
     print("FishPaoView:onPaoMinusClicked")
+    --隐藏遮罩层
+    self:hideLayerMark()
 
     local myChairID =  FishDataMgr:getInstance():getMeChairID()
     local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(myChairID)
@@ -3128,6 +3136,7 @@ function FishPaoView:updateLockIcon(nSeatIndex, lock_fish_id)
 --    end
 
     local fish = FishDataMgr:getInstance():getFishByID(lock_fish_id)
+
     if fish then
 
         local strIcon = ""
@@ -3257,6 +3266,7 @@ function FishPaoView:setBg(bg, bgUp)
     self.m_pBg = bg
     self.m_pNewBG = bgUp
 end
+-----
 
 --隐藏遮掩层
 function FishPaoView:hideLayerMark()
@@ -3266,6 +3276,9 @@ function FishPaoView:hideLayerMark()
     end
 end
 
+
+
+------
 --function FishPaoView:otherPaoMove(guid, pos)
 --    local chairid = FishDataMgr:getInstance():getChairIDByGuid(guid)
 --    if chairid~=INVALID_CHAIR then

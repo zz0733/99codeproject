@@ -89,6 +89,9 @@ local FishRes =
     vecReleasePlist = {
         {resPathBase .. "gui/gui-fish.plist", resPathBase .. "gui/gui-fish.png", },
         {resPathBase .. "gui/gui-setting.plist", resPathBase .. "gui/gui-setting.png", },
+        {resPathBase .. "gui/gui-fish-pao.plist", resPathBase .. "gui/gui-fish-pao.png", },
+        {resPathBase .. "gui/fishres_pbullet.plist", resPathBase .. "gui/fishres_pbullet.png", },
+
     },
 
     vecReleaseImg = {

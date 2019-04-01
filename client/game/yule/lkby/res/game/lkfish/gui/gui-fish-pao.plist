@@ -7,7 +7,7 @@
 			<key>game/lkfish/gui-fish-pao/bag_10301.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,0},{116,116}}</string>
+				<string>{{316,0},{116,116}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -18,7 +18,7 @@
 			<key>game/lkfish/gui-fish-pao/bag_10301_e.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,116},{116,116}}</string>
+				<string>{{432,0},{116,116}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -29,7 +29,7 @@
 			<key>game/lkfish/gui-fish-pao/bag_10307.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,406},{114,114}}</string>
+				<string>{{722,0},{114,114}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -40,7 +40,7 @@
 			<key>game/lkfish/gui-fish-pao/bag_skill_bg.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{116,0},{102,102}}</string>
+				<string>{{836,0},{102,102}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -51,7 +51,7 @@
 			<key>game/lkfish/gui-fish-pao/bag_10307_e.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{76,232},{114,114}}</string>
+				<string>{{548,76},{114,114}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -62,18 +62,18 @@
 			<key>game/lkfish/gui-fish-pao/btnoff_suoding.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{116,202},{84,28}}</string>
+				<string>{{804,114},{84,28}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<false />
+				<true />
 				<key>sourceSize</key>
 				<string>{84,28}</string>
 			</dict>
 			<key>game/lkfish/gui-fish-pao/btnoff_zidong.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{200,202},{84,28}}</string>
+				<string>{{832,179},{84,28}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -84,7 +84,7 @@
 			<key>game/lkfish/gui-fish-pao/btnon_suoding.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{201,138},{84,28}}</string>
+				<string>{{916,200},{84,28}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -95,7 +95,7 @@
 			<key>game/lkfish/gui-fish-pao/btnon_zidong.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{201,166},{84,28}}</string>
+				<string>{{700,150},{84,28}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -106,18 +106,18 @@
 			<key>game/lkfish/gui-fish-pao/gunBase0.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,232},{174,76}}</string>
+				<string>{{548,0},{174,76}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{174,76}</string>
 			</dict>
 			<key>game/lkfish/gui-fish-pao/lock_bg.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{201,102},{104,36}}</string>
+				<string>{{700,114},{104,36}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -128,7 +128,7 @@
 			<key>game/lkfish/gui-fish-pao/jia.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{116,102},{100,85}}</string>
+				<string>{{938,0},{100,85}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -139,7 +139,7 @@
 			<key>game/lkfish/gui-fish-pao/jian.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{190,230},{100,85}}</string>
+				<string>{{938,100},{100,85}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -150,13 +150,46 @@
 			<key>game/lkfish/gui-fish-pao/bugp_ui_bottom.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{76,346},{256,38}}</string>
+				<string>{{662,76},{256,38}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{256,38}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/f_cannon_0_0.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{836,102},{77,94}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{77,94}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/f_cannon_1_0.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{158,0},{158,118}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
 				<false />
 				<key>sourceSize</key>
-				<string>{256,38}</string>
+				<string>{158,118}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/f_cannon_2_0.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{158,144}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{158,144}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>
@@ -168,14 +201,14 @@
 			<key>realTextureFileName</key>
 			<string>gui-fish-pao.png</string>
 			<key>size</key>
-			<string>{512,1024}</string>
+			<string>{1024,512}</string>
 		</dict>
 		<key>texture</key>
 		<dict>
 			<key>width</key>
-			<integer>512</integer>
-			<key>height</key>
 			<integer>1024</integer>
+			<key>height</key>
+			<integer>512</integer>
 		</dict>
 	</dict>
 </plist>

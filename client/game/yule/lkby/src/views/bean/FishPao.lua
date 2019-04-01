@@ -6,7 +6,9 @@ local module_pre = "game.yule.lkby.src"
 local FishDataMgr = require(module_pre..".views.manager.FishDataMgr")
 local FishRes     = require(module_pre..".views.scene.FishSceneRes")
 local ExternalFun = appdf.req(appdf.EXTERNAL_SRC .. "ExternalFun")
+local _ = {}
 
+local Pao_new = true            --是否使用新的炮动画
 local FishPao = class("FishPao", cc.Node)
 
 function FishPao:ctor()
@@ -38,12 +40,27 @@ function FishPao:init(bulletKind, chairID, bChange)
         self.m_pPaoArmture:removeFromParent()
         self.m_pPaoArmture = nil
     end
-    local strArmature = string.format("pao%d_buyu", nIndex)
-    self.m_pPaoArmture = ccs.Armature:create(strArmature)
-    self.m_pPaoArmture:setAnchorPoint(cc.p(0.5, 0.5))
-    self.m_pPaoArmture:setPosition(cc.p(50, 50))
-    self.m_pPaoArmture:setTag(nIndex)
-    self.m_pPaoArmture:addTo(self, 20)
+
+    if Pao_new == true then
+
+        local strSprite = string.format("game/lkfish/gui-fish-pao/f_cannon_%d_0.png", nIndex)
+        self.m_pPaoArmture = cc.Sprite:createWithSpriteFrameName(strSprite)
+        self.m_pPaoArmture:setAnchorPoint(cc.p(0.5, 0.5))
+        self.m_pPaoArmture:setPosition(cc.p(50, 50))
+        self.m_pPaoArmture:setTag(nIndex)
+        self.m_pPaoArmture:addTo(self, 20)
+
+    else
+        local strArmature = string.format("pao%d_buyu", nIndex)
+        self.m_pPaoArmture = ccs.Armature:create(strArmature)
+        self.m_pPaoArmture:setAnchorPoint(cc.p(0.5, 0.5))
+        self.m_pPaoArmture:setPosition(cc.p(50, 50))
+        self.m_pPaoArmture:setTag(nIndex)
+        self.m_pPaoArmture:addTo(self, 20)
+        self.m_pPaoArmture:setVisible(false)
+    end
+
+
 
     if self:isPaoBuff() then
         self:createBuff(nIndex)
@@ -76,6 +93,7 @@ function FishPao:createBuff(nBuffIndex)
     self.m_pPaoArmtureBuff:setAnchorPoint(cc.p(0.5, 0.5))
     self.m_pPaoArmtureBuff:setPosition(cc.p(50, 50))
     self.m_pPaoArmtureBuff:addTo(self, 40)
+
 end 
 
 function FishPao:changePao(bulletKind)
@@ -139,8 +157,13 @@ function FishPao:fireAnimation(playSound)
         end
         ExternalFun.playGameEffect(strSoundPath)
     end
-    -- 开炮动画
-    self.m_pPaoArmture:getAnimation():play("Animation1")
+
+    if Pao_new == true then
+        _:playFireAnimation(self.m_pPaoArmture)
+    else
+        -- 开炮动画
+        self.m_pPaoArmture:getAnimation():play("Animation1")
+    end
 end 
 
 function FishPao:rotatePao(angle)
@@ -165,7 +188,34 @@ end
 function FishPao:isPaoBuff()
 
     return self.m_nPaoType >= BulletKind.BULLET_KIND_1_ION
-end 
+end
+
+------
+function _:playFireAnimation(cannonNode)
+    cannonNode:runAction(cc.Sequence:create(
+            cc.MoveBy:create(0.05, cc.p(0, -10)),
+            cc.MoveBy:create(0.05, cc.p(0, 10))
+    )
+    )
+
+    --发射火焰动画
+    local effect = cc.Sprite:create()
+    effect:setPosition(cc.p(cannonNode:getPositionX(), cannonNode:getPositionY() + 70))
+    cannonNode:getParent():addChild(effect)
+    local aniArray = display.newFrames("by_effect_1_%d.png", 0, 10)
+    effect:setSpriteFrame(aniArray[1])
+
+    local netAni = cc.Animation:createWithSpriteFrames(aniArray, 0.05)
+    effect:runAction(cc.Animate:create(netAni))
+    --self._callTool:
+    --performDelay(effect, 0.05*#aniArray, handler(self, self.nodeFinishCallback))
+    performWithDelay(effect, function()
+        --self.m_FileNodeStartEnd:setVisible(false)
+        effect:removeFromParent()
+    end, 0.05 * #aniArray)
+end
+
+------
 
 return FishPao
 
