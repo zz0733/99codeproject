@@ -46,7 +46,12 @@ function SimpleFish:init( fish_kind, mainFishId)
     self.m_pFishArmture:setAnchorPoint(cc.p(0.5,0.5))
     self.m_pFishArmture:setPosition(cc.p(0, 0))
     self:addChild(self.m_pFishArmture, 20)
-    
+
+    --新加鱼资源需要翻转
+    if FishDataMgr:getInstance():IsAnimationRationByFishKind(fish_kind) == true then
+        self.m_pFishArmture:setRotation(180)
+    end
+
     --蓝鱼
     if fish_kind == FishKind.FISH_LANYU then
         local fScale = FishDataMgr:getInstance():getFishScale(fish_kind)

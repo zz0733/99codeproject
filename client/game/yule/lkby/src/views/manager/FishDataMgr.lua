@@ -1197,10 +1197,23 @@ FishDataMgr.FISH_OF_ArmatureLiveName = {
     [FishKind.FISH_PIECE]  = "fivepanmove",
     [FishKind.FISH_CHAIN]  = "",
 }
+
 yl.setDefault(FishDataMgr.FISH_OF_ArmatureLiveName, "Animation1")
+
+FishDataMgr.FISH_OF_IsRation = {
+    [FishKind.FISH_HAIGUI]      = true,
+    [FishKind.FISH_XIAOCHOUYU]  = true,
+    [FishKind.FISH_BIANFUYU]    = true,
+}
+
+yl.setDefault(FishDataMgr.FISH_OF_IsRation, false)
 
 function FishDataMgr:getAnimationLiveNameByFishKind(_fishKind)
     return FishDataMgr.FISH_OF_ArmatureLiveName[_fishKind]
+end
+
+function FishDataMgr:IsAnimationRationByFishKind(_fishKind)
+    return FishDataMgr.FISH_OF_IsRation[_fishKind]
 end
 
 function FishDataMgr:getAnimationDieNameByFishKind(_fishKind)

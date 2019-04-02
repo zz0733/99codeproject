@@ -74,6 +74,7 @@ function JiShaDaYuItem:init(_fishKind, _llScore, _nSeatIndex)
     else
         local armature = ccs.Armature:create("bingo")
         armature:getAnimation():play("Animation1")
+
         local function animationEvent(armature,moveMentType,moveMentId)
             if moveMentType == ccs.MovementEventType.complete or moveMentType == ccs.MovementEventType.loopComplete then 
                 if moveMentId == "Animation1" then 
@@ -81,6 +82,7 @@ function JiShaDaYuItem:init(_fishKind, _llScore, _nSeatIndex)
                 end 
             end 
         end
+
         armature:getAnimation():setMovementEventCallFunc(animationEvent)
 
         local x = armature:getContentSize().width/2+10
@@ -90,7 +92,7 @@ function JiShaDaYuItem:init(_fishKind, _llScore, _nSeatIndex)
         lb:setScale(0.72)
         lb:setPosition(cc.p(x - 100, 0)) --位置左移一点
         lb:setRotation(-20)
-        local squence = cc.Sequence:create(cc.RotateTo:create(0.5, 40), cc.RotateTo:create(0.5, -40))
+        local squence = cc.Sequence:create(cc.RotateTo:create(0.2, 40), cc.RotateTo:create(0.5, -40))
         lb:runAction(cc.RepeatForever:create(squence))
 
         -- 播放音效

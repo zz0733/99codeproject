@@ -108,7 +108,13 @@ function JiShaBombEffect:init(_fishKind, _llScore, _nSeatIndex)
             strLive = FishDataMgr.getInstance():getAnimationLiveNameByFishKind(_fishKind)
         end
         self.fishArmture = ccs.Armature:create(strPan)
-        if self.fishArmture ~= nil then            
+        if self.fishArmture ~= nil then
+
+            --新加鱼资源需要翻转
+            if FishDataMgr:getInstance():IsAnimationRationByFishKind(_fishKind) == true then
+                armature:setRotation(180)
+            end
+
             self.fishArmture:getAnimation():play(strLive)
             self.fishArmture:setAnchorPoint(cc.p(0.5, 0.5))
             local fScale = FishDataMgr.getInstance():getFishScale( _fishKind )

@@ -307,6 +307,7 @@ end
 
 -- 特殊组合鱼
 function Fish:initForSpecial()
+
     if self.m_pFishArmture ~= nil then
         self.m_pFishArmture:removeFromParent()
         self.m_pFishArmture = nil
@@ -343,16 +344,19 @@ function Fish:initForSpecial()
     local strAnimationName = {}  --动作名
     local pArmScale = {}         --动画缩放
     local pArmOffset = {}        --动画偏移
+    local pKindid = {}
 
     local tConfig = self:getSpecialConfig(self.fish_kind_, self.fish_Tag_)
     for i, nFishKind in ipairs(tConfig.TAG) do
         strArmName[i] = FishDataMgr:getInstance():getArmatureNameByFishKind(nFishKind)
+        pKindid[i] = nFishKind
         strAnimationName[i] = FishDataMgr:getInstance():getAnimationLiveNameByFishKind(nFishKind)
         pArmScale[i] = FishDataMgr:getInstance():getFishScale(nFishKind)
 
         local offset1 = FishDataMgr:getInstance():getFishOffset(nFishKind)
         local offset2 = tConfig.OFFSET[i]
         pArmOffset[i] = cc.pAdd(offset1, offset2)
+
     end
 
     for i = 1, #strArmName do
@@ -362,6 +366,11 @@ function Fish:initForSpecial()
         armature:setPosition(pArmOffset[i])
         armature:setAnchorPoint(0.5, 0.5)
         armature:addTo(self.m_pFishArmture, 20 + 1)
+
+        --新加鱼资源需要翻转
+        if FishDataMgr:getInstance():IsAnimationRationByFishKind(pKindid[i]) == true then
+            armature:setRotation(180)
+        end
     end
 
     self.m_pBoneShadow = self.m_pFishArmture:getBone("shadow")
@@ -393,12 +402,17 @@ function Fish:init(bRepeatUse)
     end
     
     --鱼动画
-    print('鱼动画'..strArmName)
+    print('鱼动画'..strArmName..'动画线名字:'..strAnimationLive)
     self.m_pFishArmture = ccs.Armature:create(strArmName)
     self.m_pFishArmture:getAnimation():play(strAnimationLive)
     self.m_pFishArmture:setAnchorPoint(cc.p(0.5, 0.5))
     self.m_pFishArmture:setPosition(cc.p(0,0))
     self.m_pFishArmture:addTo(self, 20)
+
+    --新加鱼资源需要翻转
+    if FishDataMgr:getInstance():IsAnimationRationByFishKind(kindId) == true then
+        self.m_pFishArmture:setRotation(180)
+    end
 
     --鱼大小
     local fScale = FishDataMgr.getInstance():getFishScale(kindId)

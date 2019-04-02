@@ -77,6 +77,7 @@ function FishPaoView:ctor()
     
     self.m_pPaoNode = {}
     self.m_pPaoTai = {}
+    self.m_pWaitTip = {}        --等待加入提示
     self.m_arrPaoPos = {}
     self.m_pGoldNode = {}
     self.m_arrTimeGoldNodeReFresh = {}
@@ -187,9 +188,12 @@ function FishPaoView:initCCB()
     self.m_pPaoButtonNode = self.m_pathUI:getChildByName("m_pPaoButton")
     self.m_pAddButton = self.m_pPaoButtonNode:getChildByName("Button_4")
     self.m_pSubButton = self.m_pPaoButtonNode:getChildByName("Button_3")
-    
+
+    local nodeWaitTip = self.m_pathUI:getChildByName("Node_WaitTip")
+
     for i = 1, GAME_PLAYER_FISH do
         self.m_pPaoTai[i] = self.m_pathUI:getChildByName("m_pPaoTai" .. (i - 1))
+        self.m_pWaitTip[i] = nodeWaitTip:getChildByName("m_pWaitTip"..(i-1))
         self.m_pPaoNode[i] = self.m_pathUI:getChildByName("m_pPaoNode" .. (i - 1)) 
         self.m_pUsrGoldBg[i] = self.m_pPaoNode[i]:getChildByName("Text")
         self.m_pUsrGold[i] = self.m_pPaoNode[i]:getChildByName("Bitmap")
@@ -864,7 +868,7 @@ function FishPaoView:showTipMyPosition(paoPosition)
         self:hideLayerMark()
     end, 2)
 
-    
+
     --local pTipMyPositionAnimation = ccs.Armature:create("ruchangtixing_likpiyu")
     --pTipMyPositionAnimation:getAnimation():play("Animation2")
     --self:addChild(pTipMyPositionAnimation,1000)
@@ -888,10 +892,12 @@ function FishPaoView:_showPao(usChairID)
         self:delPao(viewChairID)
         self.m_pPaoNode[viewChairID+1]:setVisible(false)
         self.m_pPaoTai[viewChairID+1]:setVisible(false)
+        self.m_pWaitTip[viewChairID+1]:setVisible(true)
         return
     else
         self.m_pPaoNode[viewChairID+1]:setVisible(true)
         self.m_pPaoTai[viewChairID+1]:setVisible(true)
+        self.m_pWaitTip[viewChairID+1]:setVisible(false)
     end
     if usChairID == FishDataMgr:getInstance():getMeChairID() then
 
