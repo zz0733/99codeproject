@@ -1597,7 +1597,8 @@ function GameViewLayer:showFanPaiAniByIndex(idx)
 --                                end
 --                            end
 --                        end
-                        self:playImageEffect(idx)
+                        --self:playImageEffect(idx)
+                        self:playImageEffect2(idx)
                         local call = function() self:showFanPaiAniByIndex(idx + 1) end
                         self.m_pNodeCard:runAction(cc.Sequence:create(cc.DelayTime:create(0.6), cc.CallFunc:create(call)))
                     end)
@@ -1634,6 +1635,21 @@ function GameViewLayer:showFanPaiAniByIndex(idx)
         end
         self.Pokers[openCardOrder[idx]][j]:runAction(seq)
     end
+end
+--没有动画的结果
+function GameViewLayer:playImageEffect2(target)
+
+    if not target then return end
+    local index = openCardOrder[target]
+    self:playCardTypeSound(index)
+
+    local nDealerValue = self.pokerData[index][2]
+    local strFrame = string.format("game/handredcattle/image/brnn_game_result_%d.png", nDealerValue)
+    local spriteFrame = display.newSprite(strFrame)
+    spriteFrame:setPosition(Handredcattle_Const.resultPos[index])
+    self.m_pNodeCard:addChild(spriteFrame)
+
+    table.insert( self.cardTypeAni, spriteFrame)
 end
 function GameViewLayer:playImageEffect(target)
     
