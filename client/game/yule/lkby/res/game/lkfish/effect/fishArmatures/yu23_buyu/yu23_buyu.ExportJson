@@ -1,1 +1,288 @@
-{"content_scale":1.0,"armature_data":[{"strVersion":"1.6.0.0","version":1.6,"name":"yu23_buyu","bone_data":[{"name":"Layer1","parent":"","dI":0,"x":0.0,"y":0.0,"z":2,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"arrow_x":0.0,"arrow_y":0.0,"effectbyskeleton":false,"bl":0,"display_data":[{"name":"huanglong_01.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_02.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_03.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_04.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_05.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_06.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]}]},{"name":"shadow","parent":"","dI":0,"x":0.0,"y":0.0,"z":1,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"arrow_x":0.0,"arrow_y":0.0,"effectbyskeleton":false,"bl":0,"display_data":[{"name":"huanglong_01.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_02.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_03.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_04.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_05.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"huanglong_06.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]}]}]}],"animation_data":[{"name":"yu23_buyu","mov_data":[{"name":"Animation1","dr":51,"lp":true,"to":0,"drTW":0,"twE":0,"sc":1.0,"mov_bone_data":[{"name":"Layer1","dl":0.0,"frame_data":[{"dI":0,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":0,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":1,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":10,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":2,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":20,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":3,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":30,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":4,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":40,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":5,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":50,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771}]},{"name":"shadow","dl":0.0,"frame_data":[{"dI":0,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":0,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":1,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":10,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":2,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":20,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":3,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":30,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":4,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":40,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":5,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":50,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771}]}]}]}],"texture_data":[{"name":"huanglong_01","width":0.0,"height":0.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"huanglong_02","width":332.0,"height":147.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"huanglong_03","width":332.0,"height":147.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"huanglong_04","width":332.0,"height":147.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"huanglong_05","width":332.0,"height":147.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"huanglong_06","width":332.0,"height":147.0,"pX":0.5,"pY":0.5,"plistFile":""}],"config_file_path":["yu23_buyu0.plist"],"config_png_path":["yu23_buyu0.png"]}
+{
+  "content_scale": 1.0,
+  "armature_data": [
+    {
+      "strVersion": "1.6.0.0",
+      "version": 1.6,
+      "name": "yu23_buyu",
+      "bone_data": [
+        {
+          "name": "Layer44",
+          "parent": "",
+          "dI": 0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": 0.0,
+          "kY": 0.0,
+          "arrow_x": -1.7821788787841797E-05,
+          "arrow_y": 5.66572998650372E-06,
+          "effectbyskeleton": true,
+          "bl": 0,
+          "display_data": [
+            {
+              "name": "fishres_fish32/fish_32_0.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 1.52587891E-05,
+                  "y": -1.363678,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish32/fish_32_1.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 1.52587891E-05,
+                  "y": -1.363678,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish32/fish_32_2.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 1.52587891E-05,
+                  "y": -1.363678,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish32/fish_32_3.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 1.52587891E-05,
+                  "y": -1.363678,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish32/fish_32_4.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 1.52587891E-05,
+                  "y": -1.363678,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish32/fish_32_5.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 1.52587891E-05,
+                  "y": -1.363678,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animation_data": [
+    {
+      "name": "yu23_buyu",
+      "mov_data": [
+        {
+          "name": "Animation1",
+          "dr": 6,
+          "lp": true,
+          "to": 0,
+          "drTW": 0,
+          "twE": 0,
+          "sc": 0.0833333358,
+          "mov_bone_data": [
+            {
+              "name": "Layer44",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 1,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 1,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 2,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 2,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 3,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 3,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 4,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 4,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 5,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 5,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "texture_data": [
+    {
+      "name": "fishres_fish32/fish_32_0",
+      "width": 244.0,
+      "height": 248.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish32/fish_32_1",
+      "width": 242.0,
+      "height": 224.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish32/fish_32_2",
+      "width": 250.0,
+      "height": 240.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish32/fish_32_3",
+      "width": 256.0,
+      "height": 320.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish32/fish_32_4",
+      "width": 0.0,
+      "height": 0.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish32/fish_32_5",
+      "width": 244.0,
+      "height": 294.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    }
+  ],
+  "config_file_path": [
+    "fishres_fish320.plist",
+    "fishres_fish321.plist",
+    "fishres_fish322.plist"
+  ],
+  "config_png_path": [
+    "fishres_fish320.png",
+    "fishres_fish321.png",
+    "fishres_fish322.png"
+  ]
+}

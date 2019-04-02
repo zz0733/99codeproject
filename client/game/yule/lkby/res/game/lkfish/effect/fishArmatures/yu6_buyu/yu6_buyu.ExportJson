@@ -1,1 +1,284 @@
-{"content_scale":0.7,"armature_data":[{"strVersion":"1.6.0.0","version":1.6,"name":"yu6_buyu","bone_data":[{"name":"Layer1","parent":"","dI":1,"x":0.0,"y":0.0,"z":2,"cX":0.9,"cY":0.9,"kX":0.0,"kY":0.0,"arrow_x":0.0,"arrow_y":0.0,"effectbyskeleton":false,"bl":0,"display_data":[{"name":"fish_xiaociyu_walking_012.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_000.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_002.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_004.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_006.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_008.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_010.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_011.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_001.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_003.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_005.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_007.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_009.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]}]},{"name":"shadow","parent":"","dI":1,"x":0.0,"y":0.0,"z":1,"cX":0.9,"cY":0.9,"kX":0.0,"kY":0.0,"arrow_x":0.0,"arrow_y":0.0,"effectbyskeleton":false,"bl":0,"display_data":[{"name":"fish_xiaociyu_walking_012.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_000.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_002.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_004.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_006.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_008.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_010.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_011.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_001.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_003.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_005.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_007.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]},{"name":"fish_xiaociyu_walking_009.png","displayType":0,"skin_data":[{"x":0.0,"y":0.0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0}]}]}]}],"animation_data":[{"name":"yu6_buyu","mov_data":[{"name":"Animation1","dr":50,"lp":true,"to":0,"drTW":0,"twE":0,"sc":1.0,"mov_bone_data":[{"name":"Layer1","dl":0.0,"frame_data":[{"dI":1,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":0,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":2,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":7,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":3,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":14,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":4,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":21,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":5,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":28,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":6,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":35,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":7,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":42,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771},{"dI":1,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":49,"twE":0,"tweenFrame":true,"bd_src":1,"bd_dst":771}]},{"name":"shadow","dl":0.0,"frame_data":[{"dI":1,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":0,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":2,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":7,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":3,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":14,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":4,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":21,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":5,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":28,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":6,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":35,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":7,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":42,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771},{"dI":0,"x":0.0,"y":0.0,"z":0,"cX":1.0,"cY":1.0,"kX":0.0,"kY":0.0,"fi":49,"twE":0,"tweenFrame":true,"color":{"a":255,"r":0,"g":0,"b":0},"bd_src":1,"bd_dst":771}]}]}]}],"texture_data":[{"name":"fish_xiaociyu_walking_000","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_001","width":0.0,"height":0.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_002","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_003","width":0.0,"height":0.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_004","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_005","width":0.0,"height":0.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_006","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_007","width":0.0,"height":0.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_008","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_009","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_010","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_011","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""},{"name":"fish_xiaociyu_walking_012","width":120.0,"height":57.0,"pX":0.5,"pY":0.5,"plistFile":""}],"config_file_path":["yu6_buyu0.plist"],"config_png_path":["yu6_buyu0.png"]}
+{
+  "content_scale": 1.0,
+  "armature_data": [
+    {
+      "strVersion": "1.6.0.0",
+      "version": 1.6,
+      "name": "yu6_buyu",
+      "bone_data": [
+        {
+          "name": "Layer86",
+          "parent": "",
+          "dI": 0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1,
+          "cX": 1.0,
+          "cY": 1.0,
+          "kX": 0.0,
+          "kY": 0.0,
+          "arrow_x": 3.1232833862304688E-05,
+          "arrow_y": 2.526742173358798E-05,
+          "effectbyskeleton": true,
+          "bl": 0,
+          "display_data": [
+            {
+              "name": "fishres_fish82/fish_82_0.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.1556549,
+                  "y": 0.506839752,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish82/fish_82_1.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.1556549,
+                  "y": 0.506839752,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish82/fish_82_2.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.1556549,
+                  "y": 0.506839752,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish82/fish_82_3.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.1556549,
+                  "y": 0.506839752,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish82/fish_82_4.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.1556549,
+                  "y": 0.506839752,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish82/fish_82_5.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.1556549,
+                  "y": 0.506839752,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animation_data": [
+    {
+      "name": "yu6_buyu",
+      "mov_data": [
+        {
+          "name": "Animation1",
+          "dr": 6,
+          "lp": true,
+          "to": 0,
+          "drTW": 0,
+          "twE": 0,
+          "sc": 0.0833333358,
+          "mov_bone_data": [
+            {
+              "name": "Layer86",
+              "dl": 0.0,
+              "frame_data": [
+                {
+                  "dI": 0,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 0,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 1,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 1,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 2,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 2,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 3,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 3,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 4,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 4,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                },
+                {
+                  "dI": 5,
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0,
+                  "fi": 5,
+                  "twE": 0,
+                  "tweenFrame": true,
+                  "bd_src": 1,
+                  "bd_dst": 771
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "texture_data": [
+    {
+      "name": "fishres_fish82/fish_82_0",
+      "width": 72.0,
+      "height": 68.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish82/fish_82_1",
+      "width": 72.0,
+      "height": 64.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish82/fish_82_2",
+      "width": 72.0,
+      "height": 70.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish82/fish_82_3",
+      "width": 70.0,
+      "height": 64.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish82/fish_82_4",
+      "width": 70.0,
+      "height": 68.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    },
+    {
+      "name": "fishres_fish82/fish_82_5",
+      "width": 70.0,
+      "height": 62.0,
+      "pX": 0.5,
+      "pY": 0.5,
+      "plistFile": ""
+    }
+  ],
+  "config_file_path": [
+    "fishres_fish820.plist"
+  ],
+  "config_png_path": [
+    "fishres_fish820.png"
+  ]
+}

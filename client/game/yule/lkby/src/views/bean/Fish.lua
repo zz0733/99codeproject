@@ -175,6 +175,8 @@ function Fish.create(paoView, fish_kind, fish_id, fish_multiple, fish_speed, bou
     elseif fish_kind == FishKind.FISH_BGLU  then
         -- 水浒传(局部炸弹)
         pFish:initForSpecialBomb()
+    elseif fish_kind == FishKind.FISH_FOSHOU then
+        pFish:initForAllScreenBomb()
     else
         pFish:init(bRepeatUse)
     end
@@ -276,12 +278,12 @@ function Fish:initForSpecialBomb()
 
     local nFishTag = self:getFishTag()
     local strArmNames = {
-        [0] = "bomb_zhongyitang", -- 定/忠义堂
-        [1] = "bomb-shuihuzhuan", -- 局部炸弹/水浒传
+        [0] = "yu26_buyu", -- 定/忠义堂
+        [1] = "yu25_buyu", -- 局部炸弹/水浒传
     }
     local strAnimationLives = {
-        [0] = "move",       -- 定/忠义堂
-        [1] = "Animation1", -- 局部炸弹/水浒传
+        [0] = "Animation1",   -- 定/忠义堂
+        [1] = "Animation1",   -- 局部炸弹/水浒传
     }
     local strArmName = strArmNames[nFishTag]
     local strAnimation = strAnimationLives[nFishTag]
@@ -294,14 +296,36 @@ function Fish:initForSpecialBomb()
     self.m_pFishArmture:getAnimation():play(strAnimation)
     self.m_pFishArmture:setAnchorPoint(cc.p(0.5, 0.5))
     self.m_pFishArmture:setPosition(cc.p(0, 0))
+    self.m_pFishArmture:setRotation(180)
     self.m_pFishArmture:addTo(self, 20)
 
     --影子
-    self.m_pBoneShadow = self.m_pFishArmture:getBone("shadow")
-    if self.m_pBoneShadow then
-        self.m_pBoneShadow:setOpacity(120)
+    self:addFishShadow(strArmName, strAnimation)
+
+    return true
+end
+
+function Fish:initForAllScreenBomb()
+    if self.m_pFishArmture ~= nil then
+        self.m_pFishArmture:removeFromParent()
+        self.m_pFishArmture = nil
     end
 
+    local action = cc.RepeatForever:create(cc.RotateBy:create(0.2,90))
+    local name = "#game/lkfish/gui-fish-pao/fish_53_0.png"
+
+    self.m_pFishArmture = display.newSprite(name)
+    self.m_pFishArmture:runAction(action)
+    self.m_pFishArmture:setPosition(cc.p(self, 0))
+    self.m_pFishArmture:setAnchorPoint(cc.p(0.5, 0.5))
+    self.m_pFishArmture:addTo(self, 20)
+
+    --影子
+    self.m_pBoneShadow = display.newSprite(name)
+    self.m_pBoneShadow:runAction(action:clone())
+    self.m_pBoneShadow:setColor(cc.c4b(0,0,0,128))
+    self.m_pBoneShadow:setOpacity(120)
+    self.m_pBoneShadow:addTo(self, -1)
     return true
 end
 
@@ -373,10 +397,7 @@ function Fish:initForSpecial()
         end
     end
 
-    self.m_pBoneShadow = self.m_pFishArmture:getBone("shadow")
-    if self.m_pBoneShadow then
-        self.m_pBoneShadow:setOpacity(120)
-    end
+    self:addFishShadow(strPan, strLive)
     return true
 end 
 
@@ -436,10 +457,8 @@ function Fish:init(bRepeatUse)
     end
 
     --影子
-    self.m_pBoneShadow = self.m_pFishArmture:getBone("shadow")
-    if self.m_pBoneShadow then
-        self.m_pBoneShadow:setOpacity(120)
-    end
+    self:addFishShadow(strArmName, strAnimationLive)
+
     return true
 end 
 
@@ -521,7 +540,7 @@ function Fish:initPosition( pathstep, pathIdx )
     self.lastposY = posy
     self.lastAngle = initAngle
 
-    self:setFilpY()
+    --self:setFilpY()
 end
 
 function Fish:setFilpY()
@@ -1696,6 +1715,35 @@ function Fish:getSpecialConfig(kind, tag) -- 盘盘鱼配置
         }
     end
     return tConfig
+end
+
+function Fish:addFishShadow(strArmName, strAnimationLive)
+
+    if not self.m_pFishArmture then
+        return
+    end
+
+    --if self.m_pBoneShadow ~= nil then
+    --    self.m_pBoneShadow:removeFromParent()
+    --    self.m_pBoneShadow = nil
+    --end
+
+    --影子
+    self.m_pBoneShadow = self.m_pFishArmture:getBone("shadow")
+    if self.m_pBoneShadow then
+        self.m_pBoneShadow:setOpacity(120)
+    else
+        self.m_pBoneShadow = ccs.Armature:create(strArmName)
+        self.m_pBoneShadow:getAnimation():play(strAnimationLive)
+        self.m_pBoneShadow:setAnchorPoint(cc.p(0.5, 0.5))
+        self.m_pBoneShadow:setPosition(cc.p(0,0))
+        self.m_pBoneShadow:setRotation(180)
+        self.m_pBoneShadow:addTo(self, -1)
+        self.m_pBoneShadow:setColor(cc.c4b(0,0,0,128))
+        self.m_pBoneShadow:setOpacity(120)
+    end
+
+
 end
 
 return Fish

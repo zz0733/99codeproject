@@ -60,6 +60,9 @@ local FishRes =
         resPathBase .. "effect/fishArmatures/yu19_buyu/yu19_buyu.ExportJson",
         resPathBase .. "effect/fishArmatures/yu22_buyu/yu22_buyu.ExportJson",
         resPathBase .. "effect/fishArmatures/yu23_buyu/yu23_buyu.ExportJson",
+        resPathBase .. "effect/fishArmatures/yu24_buyu/yu24_buyu.ExportJson",
+        resPathBase .. "effect/fishArmatures/yu25_buyu/yu25_buyu.ExportJson",
+        resPathBase .. "effect/fishArmatures/yu26_buyu/yu26_buyu.ExportJson",
         -- BOSS
         resPathBase .. "effect/fishArmatures/likui/likui.ExportJson",
         -- 全屏炸弹

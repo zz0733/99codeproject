@@ -1201,9 +1201,29 @@ FishDataMgr.FISH_OF_ArmatureLiveName = {
 yl.setDefault(FishDataMgr.FISH_OF_ArmatureLiveName, "Animation1")
 
 FishDataMgr.FISH_OF_IsRation = {
-    [FishKind.FISH_HAIGUI]      = true,
-    [FishKind.FISH_XIAOCHOUYU]  = true,
-    [FishKind.FISH_BIANFUYU]    = true,
+    [FishKind.FISH_WONIUYU]         = true,     -- 0 小黄鱼
+    [FishKind.FISH_LVCAOYU]         = true,     -- 1 小草鱼
+    [FishKind.FISH_HUANGCAOYU]      = true,     -- 2 黄草鱼
+    [FishKind.FISH_DAYANYU]         = true,     -- 3 大眼鱼
+    [FishKind.FISH_HUANGBIANYU]     = true,     -- 4 黄边鱼 乌贼
+    [FishKind.FISH_XIAOCHOUYU]      = true,     -- 5 小丑鱼
+    [FishKind.FISH_XIAOCIYU]        = true,     -- 6 小刺鱼
+    [FishKind.FISH_LANYU]           = true,     -- 7 蓝鱼 蓝水母
+    [FishKind.FISH_DENGLONGYU]      = true,     -- 8 蓝色食人鱼
+    [FishKind.FISH_HAIGUI]          = true,     -- 9 海龟
+    [FishKind.FISH_HUABANYU]        = true,     -- 10 花斑鱼
+    [FishKind.FISH_HUDIEYU]         = true,     -- 11 蝴蝶鱼
+    [FishKind.FISH_KONGQUEYU]       = true,     -- 12 孔雀鱼
+    [FishKind.FISH_JIANYU]          = true,     -- 13 剑鱼
+    [FishKind.FISH_BIANFUYU]        = true,     -- 14 蝙蝠鱼
+    [FishKind.FISH_HAIDAN]          = true,     -- 15 海胆 蓝色长尾鱼
+    [FishKind.FISH_YINSHA]          = true,     -- 16 银鲨 蓝鲨
+    [FishKind.FISH_JINSHA]          = true,     -- 17 金鲨 金鲨
+    [FishKind.FISH_BAWANGJING]      = true,     -- 18 霸王鲸 金鲸鱼
+    [FishKind.FISH_SHUANGTOUQIE]    = true,     -- 19 企鹅 海马
+    [FishKind.FISH_XIAOYINLONG]     = true,     -- 22 小银龙
+    [FishKind.FISH_XIAOJINLONG]     = true,     -- 23 小金龙  金龟
+    [FishKind.FISH_JINCHAN]         = true,     -- 24 李逵 海盗船长
 }
 
 yl.setDefault(FishDataMgr.FISH_OF_IsRation, false)
@@ -1243,7 +1263,8 @@ FishDataMgr.FISH_OF_Armature = {                    -- 注释是对前边的键�
     [FishKind.FISH_SHUANGTOUQIE]  = "yu19_buyu",    -- 24 企鹅 
     [FishKind.FISH_XIAOYINLONG]   = "yu22_buyu",    -- 22 小银龙
     [FishKind.FISH_XIAOJINLONG]   = "yu23_buyu",    -- 23 小金龙
-    [FishKind.FISH_JINCHAN]       = "likui",        -- 18 李逵
+    --[FishKind.FISH_JINCHAN]       = "likui",        -- 18 李逵
+    [FishKind.FISH_JINCHAN]       = "yu24_buyu",    -- 18 李逵
     [FishKind.FISH_FOSHOU]        = "allscreenbomb",-- 26 七星剑
     [FishKind.FISH_DNTG]          = "yuwang",       -- 28 大闹天宫
     [FishKind.FISH_PIECE]         = "yuwang",       -- 31 金玉满堂
