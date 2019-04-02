@@ -311,7 +311,7 @@ function Fish:initForAllScreenBomb()
         self.m_pFishArmture = nil
     end
 
-    local action = cc.RepeatForever:create(cc.RotateBy:create(0.2,90))
+    local action = cc.RepeatForever:create(cc.RotateBy:create(0.5,90))
     local name = "#game/lkfish/gui-fish-pao/fish_53_0.png"
 
     self.m_pFishArmture = display.newSprite(name)
