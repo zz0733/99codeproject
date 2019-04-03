@@ -7,7 +7,7 @@
       "name": "yu15_buyu",
       "bone_data": [
         {
-          "name": "Layer14",
+          "name": "Layer2",
           "parent": "",
           "dI": 0,
           "x": 0.0,
@@ -17,32 +17,18 @@
           "cY": 1.0,
           "kX": 0.0,
           "kY": 0.0,
-          "arrow_x": -2.6524066925048828E-06,
-          "arrow_y": -1.694702950771898E-05,
+          "arrow_x": -5.817413330078125E-05,
+          "arrow_y": 2.9515649657696486E-06,
           "effectbyskeleton": true,
           "bl": 0,
           "display_data": [
             {
-              "name": "fishres_fish15/fish_15_0.png",
+              "name": "fishres_fish3/fish_3_0.png",
               "displayType": 0,
               "skin_data": [
                 {
-                  "x": 0.76789856,
-                  "y": -0.2857666,
-                  "cX": 1.0,
-                  "cY": 1.0,
-                  "kX": 0.0,
-                  "kY": 1.1920929E-07
-                }
-              ]
-            },
-            {
-              "name": "fishres_fish15/fish_15_1.png",
-              "displayType": 0,
-              "skin_data": [
-                {
-                  "x": 0.76789856,
-                  "y": -0.2857666,
+                  "x": 0.428570747,
+                  "y": -2.28570843,
                   "cX": 1.0,
                   "cY": 1.0,
                   "kX": 0.0,
@@ -51,12 +37,12 @@
               ]
             },
             {
-              "name": "fishres_fish15/fish_15_2.png",
+              "name": "fishres_fish3/fish_3_1.png",
               "displayType": 0,
               "skin_data": [
                 {
-                  "x": 0.76789856,
-                  "y": -0.2857666,
+                  "x": 0.428570747,
+                  "y": -2.28570843,
                   "cX": 1.0,
                   "cY": 1.0,
                   "kX": 0.0,
@@ -65,12 +51,12 @@
               ]
             },
             {
-              "name": "fishres_fish15/fish_15_3.png",
+              "name": "fishres_fish3/fish_3_2.png",
               "displayType": 0,
               "skin_data": [
                 {
-                  "x": 0.76789856,
-                  "y": -0.2857666,
+                  "x": 0.428570747,
+                  "y": -2.28570843,
                   "cX": 1.0,
                   "cY": 1.0,
                   "kX": 0.0,
@@ -79,12 +65,12 @@
               ]
             },
             {
-              "name": "fishres_fish15/fish_15_4.png",
+              "name": "fishres_fish3/fish_3_3.png",
               "displayType": 0,
               "skin_data": [
                 {
-                  "x": 0.76789856,
-                  "y": -0.2857666,
+                  "x": 0.428570747,
+                  "y": -2.28570843,
                   "cX": 1.0,
                   "cY": 1.0,
                   "kX": 0.0,
@@ -93,12 +79,26 @@
               ]
             },
             {
-              "name": "fishres_fish15/fish_15_5.png",
+              "name": "fishres_fish3/fish_3_4.png",
               "displayType": 0,
               "skin_data": [
                 {
-                  "x": 0.76789856,
-                  "y": -0.2857666,
+                  "x": 0.428570747,
+                  "y": -2.28570843,
+                  "cX": 1.0,
+                  "cY": 1.0,
+                  "kX": 0.0,
+                  "kY": 0.0
+                }
+              ]
+            },
+            {
+              "name": "fishres_fish3/fish_3_5.png",
+              "displayType": 0,
+              "skin_data": [
+                {
+                  "x": 0.428570747,
+                  "y": -2.28570843,
                   "cX": 1.0,
                   "cY": 1.0,
                   "kX": 0.0,
@@ -125,7 +125,7 @@
           "sc": 0.0833333358,
           "mov_bone_data": [
             {
-              "name": "Layer14",
+              "name": "Layer2",
               "dl": 0.0,
               "frame_data": [
                 {
@@ -227,39 +227,39 @@
   ],
   "texture_data": [
     {
-      "name": "fishres_fish15/fish_15_0",
-      "width": 177.0,
-      "height": 97.0,
+      "name": "fishres_fish3/fish_3_0",
+      "width": 500.0,
+      "height": 344.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": ""
     },
     {
-      "name": "fishres_fish15/fish_15_1",
-      "width": 175.0,
-      "height": 95.0,
+      "name": "fishres_fish3/fish_3_1",
+      "width": 500.0,
+      "height": 390.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": ""
     },
     {
-      "name": "fishres_fish15/fish_15_2",
-      "width": 177.0,
-      "height": 95.0,
+      "name": "fishres_fish3/fish_3_2",
+      "width": 500.0,
+      "height": 346.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": ""
     },
     {
-      "name": "fishres_fish15/fish_15_3",
-      "width": 177.0,
-      "height": 95.0,
+      "name": "fishres_fish3/fish_3_3",
+      "width": 492.0,
+      "height": 364.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": ""
     },
     {
-      "name": "fishres_fish15/fish_15_4",
+      "name": "fishres_fish3/fish_3_4",
       "width": 0.0,
       "height": 0.0,
       "pX": 0.5,
@@ -267,18 +267,28 @@
       "plistFile": ""
     },
     {
-      "name": "fishres_fish15/fish_15_5",
-      "width": 0.0,
-      "height": 0.0,
+      "name": "fishres_fish3/fish_3_5",
+      "width": 496.0,
+      "height": 362.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": ""
     }
   ],
   "config_file_path": [
-    "fishres_fish150.plist"
+    "fishres_fish30.plist",
+    "fishres_fish31.plist",
+    "fishres_fish32.plist",
+    "fishres_fish33.plist",
+    "fishres_fish34.plist",
+    "fishres_fish35.plist"
   ],
   "config_png_path": [
-    "fishres_fish150.png"
+    "fishres_fish30.png",
+    "fishres_fish31.png",
+    "fishres_fish32.png",
+    "fishres_fish33.png",
+    "fishres_fish34.png",
+    "fishres_fish35.png"
   ]
 }
