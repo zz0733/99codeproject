@@ -69,8 +69,6 @@ function FishLoadingView:init()
     --提示文字(在游戏设置中自定义设置选项，会让您获得更佳的游戏体验。)
     self.m_pTextHelp = self.m_pathUI:getChildByName("TextHelp")
 
-    local pArmature = self.m_pathUI:getChildByName("Armature")
-
     --重设文字
 --    local kind = 362
 --    local word = Localization_cn["Loading_" .. kind]
