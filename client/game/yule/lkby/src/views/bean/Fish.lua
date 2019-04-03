@@ -296,7 +296,7 @@ function Fish:initForSpecialBomb()
     self.m_pFishArmture:getAnimation():play(strAnimation)
     self.m_pFishArmture:setAnchorPoint(cc.p(0.5, 0.5))
     self.m_pFishArmture:setPosition(cc.p(0, 0))
-    self.m_pFishArmture:setRotation(180)
+    self:flipYFish(self.m_pFishArmture)
     self.m_pFishArmture:addTo(self, 20)
 
     --影子
@@ -320,12 +320,16 @@ function Fish:initForAllScreenBomb()
     self.m_pFishArmture:setAnchorPoint(cc.p(0.5, 0.5))
     self.m_pFishArmture:addTo(self, 20)
 
+    if self:getChildByTag(188) then
+        self:removeChildByTag(188)
+    end
+
     --影子
     self.m_pBoneShadow = display.newSprite(name)
     self.m_pBoneShadow:runAction(action:clone())
     self.m_pBoneShadow:setColor(cc.c4b(0,0,0,128))
     self.m_pBoneShadow:setOpacity(120)
-    self.m_pBoneShadow:addTo(self, -1)
+    self.m_pBoneShadow:addTo(self, -1, 188)
     return true
 end
 
@@ -393,7 +397,7 @@ function Fish:initForSpecial()
 
         --新加鱼资源需要翻转
         if FishDataMgr:getInstance():IsAnimationRationByFishKind(pKindid[i]) == true then
-            armature:setRotation(180)
+            self:flipYFish(armature)
         end
     end
 
@@ -432,7 +436,7 @@ function Fish:init(bRepeatUse)
 
     --新加鱼资源需要翻转
     if FishDataMgr:getInstance():IsAnimationRationByFishKind(kindId) == true then
-        self.m_pFishArmture:setRotation(180)
+        self:flipYFish(self.m_pFishArmture)
     end
 
     --鱼大小
@@ -540,6 +544,7 @@ function Fish:initPosition( pathstep, pathIdx )
     self.lastposY = posy
     self.lastAngle = initAngle
 
+    --屏蔽Y轴翻转
     --self:setFilpY()
 end
 
@@ -1717,16 +1722,22 @@ function Fish:getSpecialConfig(kind, tag) -- 盘盘鱼配置
     return tConfig
 end
 
+function Fish:flipYFish(pArmture)
+    if pArmture then
+        self.m_pFishArmture:setRotation(180)
+        --self.m_bFilpY = true
+    end
+end
+
 function Fish:addFishShadow(strArmName, strAnimationLive)
 
     if not self.m_pFishArmture then
         return
     end
 
-    --if self.m_pBoneShadow ~= nil then
-    --    self.m_pBoneShadow:removeFromParent()
-    --    self.m_pBoneShadow = nil
-    --end
+    if self:getChildByTag(188) then
+        self:removeChildByTag(188)
+    end
 
     --影子
     self.m_pBoneShadow = self.m_pFishArmture:getBone("shadow")
@@ -1738,11 +1749,11 @@ function Fish:addFishShadow(strArmName, strAnimationLive)
         self.m_pBoneShadow:setAnchorPoint(cc.p(0.5, 0.5))
         self.m_pBoneShadow:setPosition(cc.p(0,0))
         self.m_pBoneShadow:setRotation(180)
-        self.m_pBoneShadow:addTo(self, -1)
+        self.m_pBoneShadow:addTo(self, -1, 188)
+        --self.m_pBoneShadow:addTo(self.m_pFishArmture, -1)
         self.m_pBoneShadow:setColor(cc.c4b(0,0,0,128))
         self.m_pBoneShadow:setOpacity(120)
     end
-
 
 end
 

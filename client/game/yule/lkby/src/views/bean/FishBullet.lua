@@ -44,7 +44,7 @@ function FishBullet:create(bulletId, bulletTempId, bulletKind, chairID, bulletSc
     if pFishBullet == nil then
         pFishBullet = FishBullet.new()
 
-        local spriteName = string.format("#gui-fish-bullet%d.png", bulletTypeIndex)
+        local spriteName = string.format("#game/lkfish/gui-fish-pao/fish-bullet_%d.png", bulletTypeIndex)
         pFishBullet.m_pBulletSprite = display.newSprite(spriteName)
         pFishBullet.m_pBulletSprite:setAnchorPoint(cc.p(0.5, 0.5))
         pFishBullet.m_pBulletSprite:setScale(0.9) --缩小到0.9倍

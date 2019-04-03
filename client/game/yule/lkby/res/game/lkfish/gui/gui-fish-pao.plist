@@ -161,11 +161,11 @@
 			<key>game/lkfish/gui-fish-pao/f_cannon_0_0.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,735},{77,94}}</string>
+				<string>{{0,908},{77,94}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
-				<true />
+				<false />
 				<key>sourceSize</key>
 				<string>{77,94}</string>
 			</dict>
@@ -234,6 +234,28 @@
 				<true />
 				<key>sourceSize</key>
 				<string>{128,134}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/fish-bullet_0.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,735},{89,84}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{89,84}</string>
+			</dict>
+			<key>game/lkfish/gui-fish-pao/fish-bullet_1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,819},{89,84}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{89,84}</string>
 			</dict>
 		</dict>
 		<key>metadata</key>
