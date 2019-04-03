@@ -1871,6 +1871,8 @@ function FishPaoView:onMsgMewFish(userdata)
                     local radius = FishDataMgr:getInstance():getFishRadius(ret.fish_kind)
                     local speed = FishDataMgr:getInstance():getFishSpeed(ret.fish_kind)
 
+
+
                     local pFish = Fish.create(self, ret.fish_kind, ret.fish_id, ret.fish_mulriple, speed, width, hegith, radius, ret.tag)
                     if pFish ~= nil then 
                         --pFish:setTraceId(ret.path_index)
@@ -1885,6 +1887,10 @@ function FishPaoView:onMsgMewFish(userdata)
                                 pFish:setDelay(ret.delay - passCreateTime) 
                            end
                         else
+                            print('鱼1')
+                            print(ret.fish_kind)
+                            print(ret.tag)
+                            print(speed)
                             pFish:startMove(ret.createTime) 
                         end
 

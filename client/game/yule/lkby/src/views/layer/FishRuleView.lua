@@ -24,7 +24,7 @@ function FishRuleView:ctor()
 end
 
 function FishRuleView:onEnter()
-    onOpenLayer(self.m_pNodeRule, self.m_pNodeShadow, self)
+    --onOpenLayer(self.m_pNodeRule, self.m_pNodeShadow, self)
 end
 
 function FishRuleView:onExit()
@@ -37,48 +37,62 @@ function FishRuleView:init()
     self.m_rootUI:addTo(self)
 
     --csb
-    self.m_pathUI = cc.CSLoader:createNode("game/lkfish/csb/gui-fish-rule.csb")
+    --self.m_pathUI = cc.CSLoader:createNode("game/lkfish/csb/gui-fish-rule.csb")
+    self.m_pathUI = cc.CSLoader:createNode("game/lkfish/csb/gui-fish-rule-new.csb")
     self.m_pathUI:setPositionX((display.width - 1334) / 2)
     self.m_pathUI:setPositionY((display.height - 750) / 2)
     self.m_pathUI:addTo(self.m_rootUI)
 
-    self.m_pNodeRule = self.m_pathUI:getChildByName("NodeRule")
-    self.m_pNodeShadow = self.m_pathUI:getChildByName("NodeShadow")
+    local node1 = self.m_pathUI:getChildByName("Node_1")
+    local imageBG = node1:getChildByName("image_itemBg")
+    imageBG:getChildByName("panel_fishtype1"):setVisible(false)
+    imageBG:getChildByName("panel_fishtype2"):setVisible(false)
+    imageBG:getChildByName("panel_fishtype3"):setVisible(true)
+    imageBG:getChildByName("panel_fistype4"):setVisible(false)
+
+    --self.m_pNodeRule = self.m_pathUI:getChildByName("NodeRule")
+    --self.m_pNodeShadow = self.m_pathUI:getChildByName("NodeShadow")
     
     --关闭
-    self.m_pBtnClose = self.m_pNodeRule:getChildByName("ButtonClose")
+    --self.m_pBtnClose = self.m_pNodeRule:getChildByName("ButtonClose")
+    self.m_pBtnClose = imageBG:getChildByName("button_closeBtn")
 
     --按钮
-    local m_pNodeButton = self.m_pNodeRule:getChildByName("m_pNodeButton")
-    self.m_pBtnFish = m_pNodeButton:getChildByName("m_pBtnFish")
-    self.m_pBtnBoss = m_pNodeButton:getChildByName("m_pBtnBoss")
-    self.m_pBtnBomb = m_pNodeButton:getChildByName("m_pBtnBomb")
+    --local m_pNodeButton = self.m_pNodeRule:getChildByName("m_pNodeButton")
+    --self.m_pBtnFish = m_pNodeButton:getChildByName("m_pBtnFish")
+    --self.m_pBtnBoss = m_pNodeButton:getChildByName("m_pBtnBoss")
+    --self.m_pBtnBomb = m_pNodeButton:getChildByName("m_pBtnBomb")
+
+
 
     --规则
-    local m_pNodeRule = self.m_pNodeRule:getChildByName("m_pNodeTable")
-    self.m_pViewFish = m_pNodeRule:getChildByName("m_pViewFish")
-    self.m_pViewBoss = m_pNodeRule:getChildByName("m_pViewBoss")
-    self.m_pViewBomb = m_pNodeRule:getChildByName("m_pViewBomb")
+    --local m_pNodeRule = self.m_pNodeRule:getChildByName("m_pNodeTable")
+    --self.m_pViewFish = m_pNodeRule:getChildByName("m_pViewFish")
+    --self.m_pViewBoss = m_pNodeRule:getChildByName("m_pViewBoss")
+    --self.m_pViewBomb = m_pNodeRule:getChildByName("m_pViewBomb")
 
     --绑定按钮
     self.m_pBtnClose:addClickEventListener(handler(self, self.onCloseClicked))
-    self.m_pBtnFish:setTag(RULE_FISH)
-    self.m_pBtnFish:addClickEventListener(handler(self, self.onTypeClicked))
-    self.m_pBtnBoss:setTag(RULE_BOSS)
-    self.m_pBtnBoss:addClickEventListener(handler(self, self.onTypeClicked))
-    self.m_pBtnBomb:setTag(RULE_BOMB)
-    self.m_pBtnBomb:addClickEventListener(handler(self, self.onTypeClicked))
-
-    self.m_pBtnRule = { self.m_pBtnFish, self.m_pBtnBoss, self.m_pBtnBomb, }
-    self.m_pViewRule = { self.m_pViewFish, self.m_pViewBoss, self.m_pViewBomb, }
-
-    self:onUpdateType(RULE_FISH)
+    --self.m_pBtnFish:setTag(RULE_FISH)
+    --self.m_pBtnFish:addClickEventListener(handler(self, self.onTypeClicked))
+    --self.m_pBtnBoss:setTag(RULE_BOSS)
+    --self.m_pBtnBoss:addClickEventListener(handler(self, self.onTypeClicked))
+    --self.m_pBtnBomb:setTag(RULE_BOMB)
+    --self.m_pBtnBomb:addClickEventListener(handler(self, self.onTypeClicked))
+--
+    --self.m_pBtnRule = { self.m_pBtnFish, self.m_pBtnBoss, self.m_pBtnBomb, }
+    --self.m_pViewRule = { self.m_pViewFish, self.m_pViewBoss, self.m_pViewBomb, }
+--
+    --self:onUpdateType(RULE_FISH)
 end
 
 function FishRuleView:onCloseClicked()
     ExternalFun.playGameEffect(FishRes.SOUND_OF_CLOSE)
 
-    onCloseLayer(self.m_pNodeRule, self.m_pNodeShadow, self)
+    --onCloseLayer(self.m_pNodeRule, self.m_pNodeShadow, self)
+    performWithDelay(self, function()
+        self:removeFromParent()
+    end , 0.1)
 end
 
 function FishRuleView:onTypeClicked(pSender)

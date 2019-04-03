@@ -27,17 +27,12 @@ function CMsgFish:onGameMsg(sub,dataBuffer)
         local deskinfo = dataBuffer["deskinfo"]
         self:loadGameSceneData(deskinfo)
         local memberinfos =  dataBuffer["memberinfos"]
-
-
         for k,v in pairs(memberinfos) do
             FishDataMgr:getInstance():onUserEnter(v.uid, v)
         end
-
-
     elseif sub == "newfish" then
        self:onDistributeFish(dataBuffer)
     elseif sub == "leave" then
-
          local chairid = FishDataMgr:getInstance():getChairIDByGuid(dataBuffer)
          FishDataMgr:getInstance():onUserLeave(dataBuffer)
          local _event = chairid
@@ -103,7 +98,8 @@ end
 
 -- 游戏场景-100-101
 function CMsgFish:loadGameSceneData(pData)
-    
+    local str = cc.FileUtils:getInstance():getStringFromFile("config/fishConfig.json")
+    local jsonConfig = json.decode(str)
     --数据
     local pGameScene = {}
     pGameScene.is_special_scene = false
@@ -117,24 +113,24 @@ function CMsgFish:loadGameSceneData(pData)
     pGameScene.game_config.max_bullet_multiple =  pData.max_bullet_multiple
     pGameScene.game_config.fish_speed = {}
     for i = 1, FishKind.FISH_KIND_COUNT do 
-        pGameScene.game_config.fish_speed[i] = 40
+        pGameScene.game_config.fish_speed[i] = jsonConfig.game_config.fish_speed[i]
     end
     pGameScene.game_config.fish_bounding_radius = {}
     for i = 1, FishKind.FISH_KIND_COUNT do 
-        pGameScene.game_config.fish_bounding_radius[i] = 12
+        pGameScene.game_config.fish_bounding_radius[i] =  jsonConfig.game_config.fish_bounding_radius[i]
     end
     pGameScene.game_config.fish_bounding_count = {}
     for i = 1, FishKind.FISH_KIND_COUNT do 
-        pGameScene.game_config.fish_bounding_count[i] = 12
+        pGameScene.game_config.fish_bounding_count[i] = jsonConfig.game_config.fish_bounding_radius[i]
     end
     pGameScene.game_config.bullet_speed = {}
     for i = 1,BulletKind.BULLET_KIND_COUNT do 
-        pGameScene.game_config.bullet_speed[i] = 800
+        pGameScene.game_config.bullet_speed[i] = jsonConfig.game_config.bullet_speed[i]
     end 
     pGameScene.game_config.bullet_bounding_radius = {}
     for i = 1,BulletKind.BULLET_KIND_COUNT do 
-        pGameScene.game_config.bullet_bounding_radius[i] = 20
-    end 
+        pGameScene.game_config.bullet_bounding_radius[i] = jsonConfig.game_config.bullet_bounding_radius[i]
+    end  
     pGameScene.fish_score = {}
     for i = 1,GAME_PLAYER_FISH do          
         pGameScene.fish_score[i] = 60
@@ -158,7 +154,7 @@ end
 
 -- CMD_S_DistributeFrogFish   sizeof = 56
 function CMsgFish:onDistributeFish(pData) --200-105
-     
+
     --数据/保存
     local fishids = pData[1]
     local fishkind = pData[2]
@@ -209,6 +205,55 @@ function CMsgFish:onDistributeFish(pData) --200-105
     local ret = "" --string.format("新鱼[%d]", fishCount)
 
     return ret
+    --[[
+    --数据/保存
+    local fishids = pData[1]
+    local fishkind = pData[2]
+    local pathid = pData[3]
+    local mulriple = pData[4]
+    local fishCount = #fishids
+    local fishtag = 0
+    local newfishkind = FishDataMgr:getInstance():transfishkind(fishkind) or 0
+    if pathid >= 102 and pathid < 116 then  --场景鱼
+        self:getSwitchScene(pData)
+    else
+        --print("onDistributeFis================h fish count:",tostring(fishCount))
+        if fishkind == 20 then
+            fishtag = 0
+        end
+
+        if fishkind == 18 then
+            fishtag = 1
+        end
+
+        if fishkind < 13 and fishkind % 2 == 0 then
+            fishtag =  FishDataMgr:getInstance():transfishkind(fishkind - 1) or 0 
+        end
+        for i = 1, fishCount do
+            local pDistributeFish = {}
+            pDistributeFish.fish_kind = newfishkind
+            pDistributeFish.fish_id = fishids[i]
+            pDistributeFish.tag = fishtag
+            pDistributeFish.fish_mulriple = mulriple[i]
+            pDistributeFish.path_index = pathid
+            pDistributeFish.fOffestX = math.random(100, 200)
+            pDistributeFish.fOffestY = math.random(100, 200)
+            pDistributeFish.fDir = 0
+            pDistributeFish.fDelay = 0.1*(i-1)
+            pDistributeFish.dwServerTick = os.time()
+            pDistributeFish.FishSpeed = 60
+            pDistributeFish.FisType = newfishkind
+            pDistributeFish.nTroop = 0
+            pDistributeFish.nRefershID = 0
+
+            FishDataMgr:getInstance():onDistributeFish(pDistributeFish, false)
+        end
+    end
+
+    --日志
+    local ret = "" --string.format("新鱼[%d]", fishCount)
+
+    return ret]]--
 end 
 function CMsgFish:onReturnFishSync(pData)
     local datalen = pData:getReadableSize()
@@ -508,11 +553,23 @@ function CMsgFish:getSwitchScene(pData) --200-106
     --数据
     local fishids = pData[1]
     local pathid = pData[3]
+    local mulriple = pData[4]
+    local fishinfor = {}
+    for k,v in pairs(fishids) do
+        local fish = {}
+        fish.fishid = v
+        fish.mulriple = mulriple[k]
+        table.insert(fishinfor, fish)
+    end
+
+    table.sort(fishinfor, function(a, b)
+      return  a.mulriple > b.mulriple
+    end)
     local pswitchscene = {}
     pswitchscene.next_scene = pathid % 8
     pswitchscene.tick_count = os.time()
     pswitchscene.create_time = cc.exports.gettime()  --创建鱼阵的时间
-    pswitchscene.fishids = fishids
+    pswitchscene.fishids = fishinfor
     --保存
     FishDataMgr.getInstance():loadSwitchScene(pswitchscene)
 

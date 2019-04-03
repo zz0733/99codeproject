@@ -251,7 +251,7 @@ function FishDataMgr:getFishSpeed(frogFishKind)
 
         ret = self.fish_speed_[frogFishKind+1]
     end
-    return ret
+    return ret or 40
 end 
 
 function FishDataMgr:getFishBoxWidth(frogFishKind)
@@ -261,10 +261,12 @@ function FishDataMgr:getFishBoxWidth(frogFishKind)
 
     if frogFishKind <= FishKind.FISH_KIND_COUNT then
 
-        return self.fish_bounding_box_width_[frogFishKind+1]
-    else 
+        return self.fish_bounding_box_width_[frogFishKind+1] or 12
+    else
         return 12
     end
+
+
 --    if ret < 12 then
 --        return 12
 --    else
@@ -280,7 +282,7 @@ function FishDataMgr:getFishBoxheight(frogFishKind)
 --    end 
     if frogFishKind <= FishKind.FISH_KIND_COUNT then
 
-        return self.fish_bounding_box_height_[frogFishKind+1]
+        return self.fish_bounding_box_height_[frogFishKind+1] or 12
     else
         return 12
     end
@@ -296,7 +298,7 @@ function FishDataMgr:getFishRadius(frogFishKind)
     local ret = 10
     if frogFishKind <= FishKind.FISH_KIND_COUNT then
 
-        ret = self.fish_hit_radius_[frogFishKind+1]
+        ret = self.fish_hit_radius_[frogFishKind+1] or 10
     end
     return ret
 end 
@@ -306,7 +308,7 @@ function FishDataMgr:getFishMultiple(frogFishKind)
     local ret = 10
     if frogFishKind <= FishKind.FISH_KIND_COUNT then
 
-        ret = self.fish_multiple_[frogFishKind+1]
+        ret = self.fish_multiple_[frogFishKind+1] or 10
     end
     return ret
 end
@@ -1241,33 +1243,33 @@ function FishDataMgr:getAnimationDieNameByFishKind(_fishKind)
 end
 
 FishDataMgr.FISH_OF_Armature = {                    -- 注释是对前边的键值注释
-    [FishKind.FISH_WONIUYU]       = "yu0_buyu",     -- 0 小黄鱼
-    [FishKind.FISH_LVCAOYU]       = "yu1_buyu",     -- 1 小草鱼
-    [FishKind.FISH_HUANGCAOYU]    = "yu2_buyu",     -- 2 黄草鱼
+    [FishKind.FISH_WONIUYU]       = "yu0_buyu",     -- 1 小黄鱼
+    [FishKind.FISH_LVCAOYU]       = "yu1_buyu",     -- 5 小草鱼
+    [FishKind.FISH_HUANGCAOYU]    = "yu2_buyu",     -- 11 黄草鱼
     [FishKind.FISH_DAYANYU]       = "yu3_buyu",     -- 3 大眼鱼
-    [FishKind.FISH_HUANGBIANYU]   = "yu4_buyu",     -- 4 黄边鱼
-    [FishKind.FISH_XIAOCHOUYU]    = "yu5_buyu",     -- 5 小丑鱼
-    [FishKind.FISH_XIAOCIYU]      = "yu6_buyu",     -- 6 小刺鱼
-    [FishKind.FISH_LANYU]         = "yu7_buyu",     -- 7 蓝鱼
-    [FishKind.FISH_DENGLONGYU]    = "yu8_buyu",     -- 8 灯笼鱼
-    [FishKind.FISH_HAIGUI]        = "yu9_buyu",     -- 9 海龟
-    [FishKind.FISH_HUABANYU]      = "yu10_buyu",    -- 10 花斑鱼
-    [FishKind.FISH_HUDIEYU]       = "yu11_buyu",    -- 11 蝴蝶鱼
-    [FishKind.FISH_KONGQUEYU]     = "yu12_buyu",    -- 12 孔雀鱼
-    [FishKind.FISH_JIANYU]        = "yu13_buyu",    -- 13 剑鱼
-    [FishKind.FISH_BIANFUYU]      = "yu14_buyu",    -- 14 蝙蝠鱼
-    [FishKind.FISH_HAIDAN]        = "yu15_buyu",    -- 21 海胆
-    [FishKind.FISH_YINSHA]        = "yu16_buyu",    -- 15 银鲨
-    [FishKind.FISH_JINSHA]        = "yu17_buyu",    -- 16 金鲨
-    [FishKind.FISH_BAWANGJING]    = "yu18_buyu",    -- 17 霸王鲸
-    [FishKind.FISH_SHUANGTOUQIE]  = "yu19_buyu",    -- 24 企鹅 
-    [FishKind.FISH_XIAOYINLONG]   = "yu22_buyu",    -- 22 小银龙
-    [FishKind.FISH_XIAOJINLONG]   = "yu23_buyu",    -- 23 小金龙
+    [FishKind.FISH_HUANGBIANYU]   = "yu4_buyu",     -- 7 黄边鱼
+    [FishKind.FISH_XIAOCHOUYU]    = "yu5_buyu",     -- 9 小丑鱼
+    [FishKind.FISH_XIAOCIYU]      = "yu6_buyu",     -- 17 小刺鱼
+    [FishKind.FISH_LANYU]         = "yu7_buyu",     -- 15 蓝鱼
+    [FishKind.FISH_DENGLONGYU]    = "yu8_buyu",     -- 14 灯笼鱼
+    [FishKind.FISH_HAIGUI]        = "yu9_buyu",     -- 16 海龟
+    [FishKind.FISH_HUABANYU]      = "yu10_buyu",    -- 19 花斑鱼
+    [FishKind.FISH_HUDIEYU]       = "yu11_buyu",    -- 21 蝴蝶鱼
+    [FishKind.FISH_KONGQUEYU]     = "yu12_buyu",    -- 23 孔雀鱼
+    [FishKind.FISH_JIANYU]        = "yu13_buyu",    -- 26 剑鱼
+    [FishKind.FISH_BIANFUYU]      = "yu14_buyu",    -- 27 蝙蝠鱼
+    [FishKind.FISH_HAIDAN]        = "yu15_buyu",    -- 31 海胆
+    [FishKind.FISH_YINSHA]        = "yu16_buyu",    -- 28 银鲨
+    [FishKind.FISH_JINSHA]        = "yu17_buyu",    -- 29 金鲨
+    [FishKind.FISH_BAWANGJING]    = "yu18_buyu",    -- 30 霸王鲸
+    [FishKind.FISH_SHUANGTOUQIE]  = "yu19_buyu",    -- 32 企鹅
+    [FishKind.FISH_XIAOYINLONG]   = "yu22_buyu",    -- 25 小银龙
+    [FishKind.FISH_XIAOJINLONG]   = "yu23_buyu",    -- 33 小金龙
     --[FishKind.FISH_JINCHAN]       = "likui",        -- 18 李逵
-    [FishKind.FISH_JINCHAN]       = "yu24_buyu",    -- 18 李逵
-    [FishKind.FISH_FOSHOU]        = "allscreenbomb",-- 26 七星剑
-    [FishKind.FISH_DNTG]          = "yuwang",       -- 28 大闹天宫
-    [FishKind.FISH_PIECE]         = "yuwang",       -- 31 金玉满堂
+    [FishKind.FISH_JINCHAN]       = "yu24_buyu",    -- 34 李逵
+    [FishKind.FISH_FOSHOU]        = "allscreenbomb",-- 36 七星剑
+    [FishKind.FISH_DNTG]          = "yuwang",       -- 44 大闹天宫
+    [FishKind.FISH_PIECE]         = "yuwang",       -- 113 金玉满堂
 }
 yl.setDefault(FishDataMgr.FISH_OF_Armature, "")
 
@@ -1342,11 +1344,7 @@ end
 
 function FishDataMgr:getLockFish2()
 
-    -- 首先查找上一次锁定的鱼
-    local fish = self:getFishByID(self.m_nLastLockFish)
-    if fish ~= nil then
-        return fish:getID()
-    end
+    local tempfish = {}
     for k, fish in pairs(self.m_vecFish) do
         if  fish:getFishKind() >= FishKind.FISH_YINSHA
         and fish:getFishKind() ~= FishKind.FISH_HAIDAN
@@ -1354,11 +1352,17 @@ function FishDataMgr:getLockFish2()
         and not fish:isOutScreen()
         and not fish:getChainStatus()
         then
-            return fish:getID()
+            --return fish:getID()
+            table.insert(tempfish, fish:getID())
         end
     end
+
+    if #tempfish > 0 then
+        local index = math.random(#tempfish)
+        return tempfish[index]
+    end
     return -1
-end 
+end
 
 function FishDataMgr:getTargetPositionByAngle(begin, angle, distance)
 
@@ -1653,6 +1657,10 @@ function FishDataMgr:switch_cannon(body)
         body = body,
     }
     SLFacade:dispatchCustomEvent(FishEvent.MSG_FISH_SWITCH_CANNON, _event)
+end
+
+function FishDataMgr:transfishkind(kind)
+    return paireFishKind[kind]
 end
 
 return FishDataMgr

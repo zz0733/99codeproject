@@ -57,6 +57,42 @@ cc.exports.FISH_PAO_SCORE_2 = 100
 
 
 -- 捕鱼类 全局变量 ----------------------------------------------------------
+cc.exports.paireFishKind = {}
+cc.exports.paireFishKind[1] = 1
+cc.exports.paireFishKind[5] = 5
+cc.exports.paireFishKind[11] = 11
+cc.exports.paireFishKind[3] = 3
+cc.exports.paireFishKind[7] = 7
+cc.exports.paireFishKind[9] = 9
+cc.exports.paireFishKind[17] = 17
+cc.exports.paireFishKind[15] = 15
+cc.exports.paireFishKind[14] = 14
+cc.exports.paireFishKind[16] = 16
+cc.exports.paireFishKind[19] = 19
+cc.exports.paireFishKind[21] = 21
+cc.exports.paireFishKind[23] = 23
+
+cc.exports.paireFishKind[25] = 25
+cc.exports.paireFishKind[33] = 33
+cc.exports.paireFishKind[30] = 30
+cc.exports.paireFishKind[32] = 32
+cc.exports.paireFishKind[31] = 31
+cc.exports.paireFishKind[26] = 26
+cc.exports.paireFishKind[27] = 27
+cc.exports.paireFishKind[28] = 28
+cc.exports.paireFishKind[29] = 29
+
+cc.exports.paireFishKind[2] = 107
+cc.exports.paireFishKind[6] = 107
+cc.exports.paireFishKind[12] = 107
+cc.exports.paireFishKind[4] = 107
+cc.exports.paireFishKind[8] = 107
+cc.exports.paireFishKind[10] = 107
+
+cc.exports.paireFishKind[24] = 24
+cc.exports.paireFishKind[36] = 36
+cc.exports.paireFishKind[22] = 22
+cc.exports.paireFishKind[34] = 34
 
 cc.exports.FishKind = {                   --金蝉捕鱼         --李逵捕鱼     --大闹天宫
     FISH_WONIUYU = 1,          --小黄鱼           --小黄鱼       --蜗牛鱼
@@ -82,10 +118,10 @@ cc.exports.FishKind = {                   --金蝉捕鱼         --李逵捕鱼 
     FISH_JINCHAN = 34,         --金蝉             --李逵         --没有
     FISH_SHENXIANCHUAN = 101,   --神仙船
     FISH_MEIRENYU = 104,        --美人鱼
-    
+
     --相同value+不相同key--------------------------------------------
     FISH_XIAOQINGLONG = 100,    --没有             --没有         --没有
-    
+
     FISH_HAIDAN = 31,          --海胆             --有           --没有
 
     FISH_SWK = 102,             --没有             --没有         --孙悟空
@@ -111,6 +147,59 @@ cc.exports.FishKind = {                   --金蝉捕鱼         --李逵捕鱼 
 
     FISH_KIND_COUNT = 45,
 };
+--[[cc.exports.FishKind = {                   --金蝉捕鱼         --李逵捕鱼     --大闹天宫
+    FISH_WONIUYU = 0,          --小黄鱼           --小黄鱼       --蜗牛鱼
+    FISH_LVCAOYU = 1,          --小草鱼           --小草鱼       --绿草鱼
+    FISH_HUANGCAOYU = 2,       --黄草鱼
+    FISH_DAYANYU = 3,          --大眼鱼
+    FISH_HUANGBIANYU = 4,      --黄边鱼
+    FISH_XIAOCHOUYU = 5,       --小丑鱼
+    FISH_XIAOCIYU = 6,         --小刺鱼
+    FISH_LANYU = 7,            --蓝鱼
+    FISH_DENGLONGYU = 8,       --灯笼鱼
+    FISH_HAIGUI = 9,           --海龟
+    FISH_HUABANYU = 10,        --花斑鱼                          --没有
+    FISH_HUDIEYU = 11,         --蝴蝶鱼                          --没有
+    FISH_KONGQUEYU = 12,       --孔雀鱼
+    FISH_JIANYU = 13,          --剑鱼
+    FISH_BIANFUYU = 14,        --蝙蝠鱼
+    FISH_YINSHA = 15,          --银鲨
+    FISH_JINSHA = 16,          --金鲨
+    FISH_BAWANGJING = 17,      --霸王鲸           --霸王鲸       --没有
+    FISH_JINCHAN = 18,         --金蝉             --李逵         --没有
+    FISH_SHENXIANCHUAN = 19,   --神仙船
+    FISH_MEIRENYU = 20,        --美人鱼
+    FISH_XIAOYINLONG = 22,     --小银龙
+    FISH_XIAOJINLONG = 23,     --小金龙
+    
+    --相同value+不相同key--------------------------------------------
+    FISH_XIAOQINGLONG = 21,    --没有             --没有         --没有
+    
+    FISH_HAIDAN = 21,          --海胆             --有           --没有
+
+    FISH_SWK = 24,             --没有             --没有         --孙悟空
+
+    FISH_YUWANGDADI = 25,      --没有             --没有         --玉皇大帝
+
+    FISH_SHUANGTOUQIE = 24,    --企鹅             --有           --没有
+
+    FISH_HAITUN = 25,          --海豚             --没有         --没有
+
+    FISH_ZHANGYU = 32,         --章鱼             --没有         --没有
+
+    FISH_YUQUN = 32,           --鱼群             --没有         --没有
+    -----------------------------------------------------------------
+
+    FISH_FOSHOU = 26,          --佛手             --七星剑       --佛手
+    FISH_BGLU = 27,            --炼丹炉           --水浒传/忠义堂--炼丹炉
+    FISH_DNTG = 28,            --大闹天宫         --有           --有
+    FISH_YJSD = 29,            --一箭双雕         --没有         --有
+    FISH_YSSN = 30,            --一石三鸟         --没有         --有
+    FISH_PIECE = 31,           --金玉满堂         --有           --没有
+    FISH_CHAIN = 33,           --闪电鱼-连(0-8)
+
+    FISH_KIND_COUNT = 34,
+};]]--
 
 cc.exports.FISH_INVALID = 0
 cc.exports.FISH_ALIVE = 1
