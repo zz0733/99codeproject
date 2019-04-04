@@ -89,6 +89,7 @@ function FishPaoView:ctor()
     self.m_arrArmatureLock = {}
     self.m_deqGoldNode = {}
     self.m_arrLockPointNum = {}
+    self.m_pSpriteGunRage = {}
 
     for i = 1, GAME_PLAYER_FISH do
 
@@ -198,6 +199,15 @@ function FishPaoView:initCCB()
         self.m_pUsrGoldBg[i] = self.m_pPaoNode[i]:getChildByName("Text")
         self.m_pUsrGold[i] = self.m_pPaoNode[i]:getChildByName("Bitmap")
         self.m_pUsrGold[i]:setString("0")
+
+        local actionRotateBy = cc.RepeatForever:create(cc.RotateBy:create(0.5, 90))
+
+
+        self.m_pSpriteGunRage[i] = display.newSprite("#game/lkfish/gui-fish-pao/gun_rage.png")
+        self.m_pSpriteGunRage[i]:addTo(self, 100)
+        self.m_pSpriteGunRage[i]:setPosition(self.m_pPaoTai[i]:getPositionX() , i <=2 and self.m_pPaoTai[i]:getPositionY() + 40 or self.m_pPaoTai[i]:getPositionY() - 40)
+        self.m_pSpriteGunRage[i]:setVisible(false)
+        self.m_pSpriteGunRage[i]:runAction(actionRotateBy)
     end
 
     self.m_pAIButton:addClickEventListener(handler(self, self.onAIClicked))
@@ -532,32 +542,41 @@ end
 function FishPaoView:update(fvalue)
     
     --修改：锁定时，鱼不在了，锁定到下一鱼，每帧检查
+    local nChaidId = FishDataMgr:getInstance():getMeChairID()
+    local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(nChaidId)
     if FishDataMgr:getInstance():getLock() then
         if not FishDataMgr:getInstance():checkFishLock(self.m_nLockFish) then
-        
-            local nChaidId = FishDataMgr:getInstance():getMeChairID()
-            local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(nChaidId)
             self:deleteLockEffect(myViewChairID+1, self.m_nLockFish)
             self.m_nLockFish = FishDataMgr:getInstance():getLockFish2()
             self:createLockEffect(myViewChairID+1, self.m_nLockFish)
             FishDataMgr:getInstance():setLockFish(nChaidId, self.m_nLockFish)
             CMsgFish.getInstance():FireContinuously(201, GlobalUserItem.tabAccountInfo.userid,self.m_nLockFish)
         end
+        self.m_pSpriteGunRage[myViewChairID + 1]:setVisible(true)
+    else
+        self.m_pSpriteGunRage[myViewChairID + 1]:setVisible(false)
     end
 
     --机器人锁定鱼
     for k,v in pairs(FishDataMgr:getInstance():getUserList()) do
+        local chairid = FishDataMgr:getInstance():getChairIDByGuid(v.uid)
+        local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(chairid)
         if v.is_dummy and FishDataMgr:getInstance().isMaster and v.isLockfish then
-           local chairid = FishDataMgr:getInstance():getChairIDByGuid(v.uid)
+
            local lockfish = FishDataMgr:getInstance():getLockFish(chairid)
            if not FishDataMgr:getInstance():checkFishLock(lockfish) then
-                local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(chairid)
                 self:deleteLockEffect(myViewChairID+1, lockfish)
                 lockfish = FishDataMgr:getInstance():getLockFish2()
                 self:createLockEffect(myViewChairID+1, lockfish)
                 FishDataMgr:getInstance():setLockFish(chairid, lockfish)
                 CMsgFish.getInstance():FireContinuously(201, v.uid,lockfish)
             end
+        end
+
+        if v.isLockfish then
+            self.m_pSpriteGunRage[myViewChairID + 1]:setVisible(true)
+        elseif chairid ~= nChaidId then
+            self.m_pSpriteGunRage[myViewChairID + 1]:setVisible(false)
         end
     end
 
@@ -1887,10 +1906,6 @@ function FishPaoView:onMsgMewFish(userdata)
                                 pFish:setDelay(ret.delay - passCreateTime) 
                            end
                         else
-                            print('鱼1')
-                            print(ret.fish_kind)
-                            print(ret.tag)
-                            print(speed)
                             pFish:startMove(ret.createTime) 
                         end
 
@@ -2200,9 +2215,13 @@ function FishPaoView:onMsgSwitchScene(userdata)
         print("创建鱼阵 －－－－－－－")
         local switch_scene = FishDataMgr:getInstance():getSwtichSceneData()
         self.m_ptrSwitchScene = FishSceneMgr:getInstance():getFishScene(switch_scene.next_scene)
-        for  i = 1, #self.m_ptrSwitchScene.fishDataMap do
+        table.sort(self.m_ptrSwitchScene.fishDataMap, function(a, b)
+            return  a.fish_kind > b.fish_kind
+        end)
+        for  i = 0, #self.m_ptrSwitchScene.fishDataMap-1 do
             local fish = self.m_ptrSwitchScene.fishDataMap[i]
-            fish.fish_id = switch_scene.fishids[i] or 0
+            local fish_id = switch_scene.fishids[i+1] ~= nil and switch_scene.fishids[i+1].fishid or 0
+            fish.fish_id = fish_id or 0
         end
         self.m_bLoadSceneFish = true
         self.m_nCreateIndex = 0
