@@ -56,13 +56,13 @@ end
 function TigerRuleLayer:initCSB()
 
     --csb
-    local _pUiLayer = cc.CSLoader:createNode(Tiger_Res.CSB_OF_RULE)
+    local _pUiLayer = cc.CSLoader:createNode("fruitSuper/Fruit_HelpNew.csb")
     _pUiLayer:setAnchorPoint(cc.p(0.5,0.5))
     _pUiLayer:setPosition(cc.p(display.cx, 375 + (display.size.height - 750) / 2))
     self.m_rootUI:addChild(_pUiLayer, 100)
 
-    self.m_pBtnClose = _pUiLayer:getChildByName("Btn_close")
-    self.m_pLvRule = _pUiLayer:getChildByName("LV_rule")
+    self.m_pBtnClose =self:getChildByUIName(_pUiLayer,"button_close")
+    self.m_pLvRule = self:getChildByUIName(_pUiLayer,"scrollView_scroll")
 
     -- 关闭按纽
     self.m_pBtnClose:addClickEventListener(function()
@@ -72,7 +72,7 @@ function TigerRuleLayer:initCSB()
 end
 
 function TigerRuleLayer:initList()
-
+--[[
     -- 游戏规则
     local _RuleNode = ccui.Layout:create()
     local pRuleImg = cc.Sprite:create(Tiger_Res.PNG_OF_TXT_RULE)
@@ -87,6 +87,25 @@ function TigerRuleLayer:initList()
     self.m_pLvRule:setBounceEnabled(true)--回弹
     self.m_pLvRule:setDirection(ccui.ScrollViewDir.vertical)--垂直方向
     self.m_pLvRule:setScrollBarEnabled(true) -- 显示滚动条
+    --]]
+end
+
+function TigerRuleLayer:getChildByUIName(root,name)
+    if nil == root then
+        return nil
+    end
+    if root:getName() == name then
+        return root
+    end
+    local arrayRootChildren = root:getChildren()
+    for i,v in ipairs(arrayRootChildren) do
+        if nil~=v then
+            local res = self:getChildByUIName(v,name)
+            if res ~= nil then
+                return res
+            end
+        end
+    end
 end
 
 return TigerRuleLayer

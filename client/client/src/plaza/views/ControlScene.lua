@@ -143,19 +143,18 @@ end
 function ControlScene:downloadConfigFile()
     local function updateWork(datatable,response)
         if yl.isObject(self) == false then return end
+        if self.finishConfig == true then return end
         local filePath = device.writablePath..yl.CLIENTFILE
         if type(datatable) == "table" then
-           self._txtTips:setString("检测版本更新...")
-           if self.finishConfig == false then
-                self.finishConfig = true
-                cc.FileUtils:getInstance():writeStringToFile(response,filePath)
-            end
-
+            self.finishConfig = true
+            self._txtTips:setString("检测版本更新...")
+            cc.FileUtils:getInstance():writeStringToFile(response,filePath)
             self:httpNewVersion(datatable)
+            return
         end
         self.finishCount = self.finishCount+1
         --失败本地读取
-        if self.finishCount ==#yl.update_url and not self.finishConfig then
+        if self.finishCount ==#yl.update_url then
             if cc.FileUtils:getInstance():isFileExist(filePath) then
                 local data = cc.FileUtils:getInstance():getStringFromFile(filePath);
                 data = json.decode(data)
@@ -170,7 +169,9 @@ function ControlScene:downloadConfigFile()
     self.finishCount = 0
     self._txtTips:setString("获取游戏配置...")
     for i = 1, #yl.update_url do
-        appdf.onHttpJsionTable(yl.update_url[i],"get",nil,updateWork)
+        performWithDelay(self, function()
+            appdf.onHttpJsionTable(yl.update_url[i],"get",nil,updateWork)
+        end, 0.5* (i-1))
     end
 end
 
@@ -211,9 +212,10 @@ function ControlScene:getGameConfig()
    self.finishConfigCount = 0
    
    for i = 1, #yl.BASE_CONFIG do
-       appdf.onHttpJsionTable(yl.BASE_CONFIG[i],"get",nil,configcallback)
+         performWithDelay(self, function()
+           appdf.onHttpJsionTable(yl.BASE_CONFIG[i],"get",nil,configcallback)
+        end, 0.5* (i-1))
     end
-
 end
 
 function ControlScene:parseConfigUrl()

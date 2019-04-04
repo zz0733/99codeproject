@@ -1438,9 +1438,15 @@ function GameViewLayer:showStartBtnStyle(v)
        self.m_pBtnGSTextimg:loadTexture(normalTextlStrPath)
        self.m_pBtnGameStart:loadTextureNormal(normalbglStrPath)
     elseif v == "press" then
-       self.m_pBtnGSTextimg:loadTexture(pressTextStrPath)
-       self.m_pBtnGameStart:loadTextureNormal(pressbgStrPath)
-    end   
+        if not WaterMarginDataMgr.getInstance():getIsAuto() then
+           self.m_pBtnGSTextimg:loadTexture(pressTextStrPath)
+           self.m_pBtnGameStart:loadTextureNormal(pressbgStrPath) 
+        else
+           self.m_pBtnGSTextimg:loadTexture(normalTextlStrPath)
+           self.m_pBtnGameStart:loadTextureNormal(normalbglStrPath)
+        end
+    end
+ 
 end
 
 function GameViewLayer:showALlLineOfWin()

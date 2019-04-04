@@ -537,33 +537,32 @@ function GameLayer:onEventGameMessage(sub,dataBuffer)   --接收消息通知
     if nil == self._gameView then
         return
     end
---    CMsgBaccarat.getInstance():onGameMsg(sub,dataBuffer)
     if sub == "enter" then      --自身玩家进入房间    
 --        dump(dataBuffer)
         self._gameView:event_GameState(dataBuffer)
     elseif sub == "come" then   --有玩家进入房间
         print("有玩家进入房间")
-        self._gameView:updataPlayerPanpel(dataBuffer)
+        self._gameView:updataPlayerPanpel(dataBuffer,true)
     elseif sub == "leave" then     --该uid玩家离开房间
         print("该uid玩家离开房间")
-        self._gameView:onUserLeave(dataBuffer)
--------------------------------------------=== STEP 0 ===--------------------------------------------------------
+        self._gameView:updataPlayerPanpel(dataBuffer,false)
+---------------------------------------------=== STEP 0 ===--------------------------------------------------------
     elseif sub == "waitupdealer" then     --等待玩家上庄
         print("等待玩家上庄")
-        self._gameView:onPlayerShow(dataBuffer)    
+--        self._gameView:onPlayerShow(dataBuffer)    
     elseif sub == "updealer_fail_nomoney" then     --钱数不足xxx无法上庄
         print("钱数不足xxx无法上庄")
-        self._gameView:Nomoney(dataBuffer)
+--        self._gameView:Nomoney(dataBuffer)
     elseif sub == "updealer" then             -- 加入上庄列表
         print("加入上庄列表")
-        self._gameView:updealer(dataBuffer)
+--        self._gameView:updealer(dataBuffer)
     elseif sub == "downdealer" then           -- 下庄
         print("下庄")
-        self._gameView:downDealers(dataBuffer)
+--        self._gameView:downDealers(dataBuffer)
     elseif sub == "update_dealers" then       -- 换庄
         print("换庄")
-        self._gameView:updataDealers(dataBuffer)
-    --------------------------------------=== STEP 1 ===-----------------------------------------------------
+--        self._gameView:updataDealers(dataBuffer)
+--    --------------------------------------=== STEP 1 ===-----------------------------------------------------
     elseif sub == "waitplayerbet" then                     --等待玩家下注
         print("提示: 等待玩家下注")
         self._gameView:intoBetMoney(dataBuffer)
@@ -576,30 +575,28 @@ function GameLayer:onEventGameMessage(sub,dataBuffer)   --接收消息通知
     elseif sub == "bet" then                                 --其他人下注
         print("其他人下注")
         self._gameView:otherBetMoney(dataBuffer)
-    -------------------------------------=== STEP 2 ===---------------------------------------------------------
+--    -------------------------------------=== STEP 2 ===---------------------------------------------------------
 
 
     elseif sub == "gameover" then      --结算
         print("结算时间")
         self._gameView:onGameEnd(dataBuffer)
-    -------------------------------------=== STEP 3 ===---------------------------------------------------------
+--    -------------------------------------=== STEP 3 ===---------------------------------------------------------
     elseif sub == "freetime" then     -- 空闲时间
         print("空闲时间")
         self._gameView:onDeskOver(dataBuffer)
-
     elseif sub == "update_intomoney" then      --更新自身玩家的背包金额
         print("跟新玩家背包金额")
         self._gameView:updataMyMoney(dataBuffer)
     elseif sub == "situp" then                 --站起???????
         print("站起？？？？？？")
-    elseif sub == "error" then                 --错误???????
-        print("错误？？？？？？")
-    elseif sub == "login_failed_nousemoney" then
-        print("金币不足")
---        self._gameView:Nomoney()
+    elseif sub == "pong" then                 --错误???????
+        print("砰！")
+--    elseif sub == "login_failed_nousemoney" then
+--        print("金币不足")
+----        self._gameView:Nomoney()
     else
         print(sub)
-
     end
 end
 

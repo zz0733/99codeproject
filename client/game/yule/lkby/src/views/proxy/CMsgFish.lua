@@ -154,58 +154,6 @@ end
 
 -- CMD_S_DistributeFrogFish   sizeof = 56
 function CMsgFish:onDistributeFish(pData) --200-105
-
-    --数据/保存
-    local fishids = pData[1]
-    local fishkind = pData[2]
-    local pathid = pData[3]
-    local mulriple = pData[4]
-    local fishCount = #fishids
-    local fishtag = 0
-    if pathid >= 102 and pathid < 116 then  --场景鱼
-        self:getSwitchScene(pData)
-    else
-        --print("onDistributeFis================h fish count:",tostring(fishCount))
-        if fishkind == 22 then
-            fishtag = 1
-        end
-
-        if fishkind == 24 then
-            fishkind = 22
-            fishtag = 0
-        end
-
-        local bKingFish = false
-        if fishkind < 13 and fishkind % 2 == 0 then
-            bKingFish = true
-            fishtag = fishkind - 1
-        end
-        for i = 1, fishCount do
-            local pDistributeFish = {}
-            pDistributeFish.fish_kind = bKingFish == true and FishKind.FISH_DNTG or fishkind
-            pDistributeFish.fish_id = fishids[i]
-            pDistributeFish.tag = fishtag
-            pDistributeFish.fish_mulriple = mulriple
-            pDistributeFish.path_index = pathid
-            pDistributeFish.fOffestX = math.random(100, 200)
-            pDistributeFish.fOffestY = math.random(100, 200)
-            pDistributeFish.fDir = 0
-            pDistributeFish.fDelay = 0.1*(i-1)
-            pDistributeFish.dwServerTick = os.time()
-            pDistributeFish.FishSpeed = 60
-            pDistributeFish.FisType = fishkind
-            pDistributeFish.nTroop = 0
-            pDistributeFish.nRefershID = 0
-
-            FishDataMgr:getInstance():onDistributeFish(pDistributeFish, false)
-        end
-    end
-
-    --日志
-    local ret = "" --string.format("新鱼[%d]", fishCount)
-
-    return ret
-    --[[
     --数据/保存
     local fishids = pData[1]
     local fishkind = pData[2]
@@ -253,7 +201,7 @@ function CMsgFish:onDistributeFish(pData) --200-105
     --日志
     local ret = "" --string.format("新鱼[%d]", fishCount)
 
-    return ret]]--
+    return ret
 end 
 function CMsgFish:onReturnFishSync(pData)
     local datalen = pData:getReadableSize()

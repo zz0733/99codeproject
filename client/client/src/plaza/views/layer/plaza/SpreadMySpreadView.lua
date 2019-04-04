@@ -249,13 +249,17 @@ function SpreadInfoView:exitSpreadLayer(Data)
     if self._queryDialog then
         return
     end
-   self._queryDialog = QueryDialog:create(tostring(Data), function(ok)
-        if ok == true then
-            SLFacade:dispatchCustomEvent(Hall_Events.MSG_CLOSE_SPREAD_LAYER)
-        end
-        self._queryDialog = nil
-    end,nil,QueryDialog.QUERY_SURE):setCanTouchOutside(false)
-        :addTo(self)
+    local runScene = cc.Director:getInstance():getRunningScene()
+
+    if nil ~= runScene then
+        self._queryDialog = QueryDialog:create(tostring(Data), function(ok)
+            if ok == true then
+                SLFacade:dispatchCustomEvent(Hall_Events.MSG_CLOSE_SPREAD_LAYER)
+            end
+            self._queryDialog = nil
+        end,nil,QueryDialog.QUERY_SURE):setCanTouchOutside(false)
+            :addTo(runScene)
+    end
 end
 
 -- 如果本地有存 则不请求数据 避免多次请求
@@ -356,7 +360,7 @@ function SpreadInfoView:onUserSpreadInfoCallBack(result,message)
                 --获得我的推广数据以后再获取二维码
                 self:getMyErweima()
             else
-               -- self:exitSpreadLayer(message.result)
+                self:exitSpreadLayer(message.result)
             end 
             self:dismissPopWait()
         elseif message.tag == "get_wechat_web" then

@@ -60,6 +60,8 @@ function QueryDialog:ctor(msg, callback, txtsize, queryType)
     if LuaUtils.isIphoneXDesignResolution() then
         mask:setContentSize(1624,750)
         spbg:setPositionX(spbg:getPositionX() + 145)
+    else
+        mask:setContentSize(1334,750)
     end
     -- 确定
     local btn = spbg:getChildByName("Node_b1"):getChildByName("button_btn1")
@@ -82,7 +84,7 @@ function QueryDialog:ctor(msg, callback, txtsize, queryType)
 --    btn:setPressedActionEnabled(true)
 
     if QueryDialog.QUERY_SURE == queryType then
-    	self.m_btnSure:setPositionX(spbg:getContentSize().width * 0.5)
+        self.m_btnSure:setPositionX(-184)
     	self.m_btnCancel:setEnabled(false)
     	self.m_btnCancel:setVisible(false)
     end

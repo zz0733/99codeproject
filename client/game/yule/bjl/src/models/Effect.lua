@@ -331,7 +331,7 @@ function Effect:socreChangeDone(index, format, sound, flag)
     self.m_pLbScore[index]:setString(strScore)
     self.m_iShowCount[index] = 0
     if (sound) then
-         ExternalFun.playGameEffect("public/sound/sound-gold.wav")
+--         AudioManager.getInstance():playSound("public/sound/sound-gold.wav")
     end
 
     local scale = cc.EaseBackOut:create(cc.ScaleTo:create(1.0, 1))
@@ -477,7 +477,7 @@ function Effect:socreChangeDone2(index, format, sound)
     self.m_pLbScore[index]:setString(strScore)
     self.m_iShowCount[index] = 0
     if (sound) then
-         ExternalFun.playGameEffect("public/sound/sound-gold.wav")
+--         AudioManager.getInstance():playSound("public/sound/sound-gold.wav")
     end
 
     -- local scale = cc.EaseBackOut:create(cc.ScaleTo:create(1.0, 1/2))

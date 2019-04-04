@@ -361,6 +361,7 @@ function LhdzDataMgr:addRankUserToList(stUserShowEx)
     if stUserShowEx.dwUserID ~= G_CONSTANTS.INVALID_CHAIR then
         local rankSize = self:getRankUserSize()
         table.insert(self.m_vecRankUser, rankSize+1, stUserShowEx)
+        self.m_vecRankUser["id" .. stUserShowEx[1]] = stUserShowEx
         table.sort(self.m_vecRankUser,function (a,b)
             return a[6]>b[6]
         end)

@@ -382,7 +382,7 @@ function RankLayer:setRankNode(rankNode, data, tag, bSelf,nIdx)  --cell的csb上
         rankNode.label_rank:setString("")
         rankNode.image_num:setVisible(false)
 --        rankNode.image_out:setVisible(false)
-    elseif 3 < data.dwID and data.dwID <= 50 then
+    elseif 3 < data.dwID and data.dwID <= 100 then
         rankNode.image_top:setVisible(false)
         rankNode.label_rank:setString(data.dwID)
         rankNode.image_num:setVisible(true)

@@ -1104,6 +1104,20 @@ function ExternalFun.playCSBani(path, actionName, root, isloop)
     return ac2
 end
 
+-- 播放csb动画
+function ExternalFun.playCSBaniCallFunc(path, actionName, root, isloop, func)
+	isloop = isloop == nil and true or isloop
+	local ac2 = cc.CSLoader:createTimeline(path)
+	if ac2:IsAnimationInfoExists(actionName) == true then
+		ac2:play(actionName, isloop)
+	end
+	root:runAction(ac2)
+	if func then
+		ac2:setLastFrameCallFunc(func)
+	end
+	return ac2
+end
+
 -- 播放csb动画(未加载过的)
 function ExternalFun.playUnLoadCSBani(path, actionName, root, isloop,pos)
     if nil == pos then

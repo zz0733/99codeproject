@@ -46,6 +46,7 @@ function UserHeadView:init()
     self.m_pathUI:setPositionY((display.height - 750) / 2)
     self.m_pathUI:addTo(self.m_rootUI)
     self.m_pNode    = self.m_pathUI:getChildByName("center")
+    self.m_pNode:setPositionX((display.width) / 2)
     --弹窗
     self.m_pImgBg          = self.m_pNode:getChildByName("bg1")
     --关闭按钮

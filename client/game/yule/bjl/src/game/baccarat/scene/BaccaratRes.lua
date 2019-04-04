@@ -7,8 +7,8 @@ local BaccaratRes = --所有资源
 {
     CSB_GAME_LOADING        = "game/baccarat/BaccaratLoadingLayer.csb",
     CSB_GAME_TREND          = "game/baccarat/BaccaratTrendLayer.csb",
-    CSB_GAME_MAIN           = "game/baccarat/BaccaratUI.csb",
-    CSB_GAME_USERINFO       = "game/baccarat/OtherInfoLayer.csb",
+    CSB_GAME_MAIN           = "Baccarat/BaccaratScene.csb",
+    CSB_GAME_USERINFO       = "Baccarat/BaccaratPlayerList.csb",
     CSB_GAME_USERINFO_NODE  = "game/baccarat/OtherInfoItem.csb",
     CSB_GAME_POKER          = "game/baccarat/Poker.csb",
     --font
@@ -54,13 +54,13 @@ local BaccaratRes = --所有资源
     SOUND_OF_LOSE    = "game/baccarat/sound/sound-result-lose.mp3", --输
     SOUND_OF_BG      = "game/baccarat/sound/sound-happy-bg.mp3", --背景音乐
     SOUND_OF_COUNT   = "game/baccarat/sound/sound-countdown.mp3", --3秒倒计时音效
-    SOUND_OF_GETGOLD = "game/baccarat/sound/sound-get-gold.mp3",
+    SOUND_OF_GETGOLD = "Baccarat/sound/new_chips.mp3",
 
     --system sound
     --SOUND_OF_CLOCK       = "game/baccarat/sound/sound-clock-ring.mp3", --闹钟
     SOUND_OF_JETTON      = "game/baccarat/sound/sound-jetton.mp3", --下注
-    SOUND_OF_WAGER_START = "game/baccarat/sound/sound-start-wager.mp3", --下注
-    SOUND_OF_WAGER_STOP  = "game/baccarat/sound/sound-end-wager.mp3", --下注
+    SOUND_OF_WAGER_START = "Baccarat/sound/start.mp3", --下注
+    SOUND_OF_WAGER_STOP  = "Baccarat/sound/stopbet.mp3", --下注
     SOUND_OF_XPOINT      = "game/baccarat/sound/sound-baccarat-xpoint-%d.mp3", --闲家点数
     SOUND_OF_ZPOINT      = "game/baccarat/sound/sound-baccarat-zpoint-%d.mp3", --庄家点数
     SOUND_OF_PING        = "game/baccarat/sound/sound-baccarat-ping.mp3", --平局
@@ -123,8 +123,8 @@ local BaccaratRes = --所有资源
     ANI_FILE_WAIT       = "huanle30s_dengdaixiaju",
 
     --字体
-    FNT_RESULT_LOSE = "game/baccarat/font/sz_pdk4.fnt",
-    FNT_RESULT_WIN  = "game/baccarat/font/sz_pdk3.fnt",
+    FNT_RESULT_LOSE = "common/font/num_lose.fnt",
+    FNT_RESULT_WIN  = "common/font/num_win.fnt",
 
     vecReleaseAnim = {  -- 退出时需要释放的动画资源
         "game/baccarat/effect_public/daojishi_1/daojishi_1.ExportJson", --最后3秒倒计时
@@ -144,6 +144,30 @@ local BaccaratRes = --所有资源
 
     vecReleaseImg = {
        
+    },
+    spriteState = {
+        [1] = "Baccarat/image/clock_state_bet.png",
+        [2] = "Baccarat/image/clock_state_idle.png",
+    },
+
+      -- 牌
+    IMG_CARDS = {
+        [0] = "common/card/314.png",[1] = "common/card/32.png",[2] = "common/card/33.png",[3] = "common/card/34.png",[4] = "common/card/35.png",[5] = "common/card/36.png",[6] = "common/card/37.png",[7] = "common/card/38.png",[8] = "common/card/39.png",[9] = "common/card/310.png",[10] = "common/card/311.png",[11] = "common/card/312.png",[12] = "common/card/313.png",
+
+        [13] = "common/card/214.png",[14] = "common/card/22.png",[15] = "common/card/23.png",[16] = "common/card/24.png",[17] = "common/card/25.png",[18] = "common/card/26.png",[19] = "common/card/27.png",[20] = "common/card/28.png",[21] = "common/card/29.png",[22] = "common/card/210.png",[23] = "common/card/211.png",[24] = "common/card/212.png",[25] = "common/card/213.png",
+
+        [26] = "common/card/114.png",[27] = "common/card/12.png",[28] = "common/card/13.png",[29] = "common/card/14.png",[30] = "common/card/15.png",[31] = "common/card/16.png",[32] = "common/card/17.png",[33] = "common/card/18.png",[34] = "common/card/19.png",[35] = "common/card/110.png",[36] = "common/card/111.png",[37] = "common/card/112.png",[38] = "common/card/113.png",[39] = "common/card/114.png",
+
+        [39] = "common/card/014.png",[40] = "common/card/02.png",[41] = "common/card/03.png",[42] = "common/card/04.png",[43] = "common/card/05.png",[44] = "common/card/06.png",[45] = "common/card/07.png",[46] = "common/card/08.png",[47] = "common/card/09.png",[48] = "common/card/010.png",[49] = "common/card/011.png",[50] = "common/card/012.png",[51] = "common/card/013.png",
+    },
+    vecResult = {
+        ZHUANG = "Baccarat/image/result/dians_banker/%d.png",
+        XIAN   = "Baccarat/image/result/dians_player/%d.png",
+        TYPE = {
+            [1] = "Baccarat/image/result/result_player.png",
+            [2] = "Baccarat/image/result/result_banker.png",
+            [3] = "Baccarat/image/result/result_he.png",
+        },
     },
 
     vecReleaseSound = {

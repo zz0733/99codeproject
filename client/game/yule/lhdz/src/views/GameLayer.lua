@@ -537,7 +537,7 @@ function GameLayer:onEventGameMessage(sub,dataBuffer)   --接收消息通知
     end
 
     if sub == "enter" then      --自身玩家进入房间    
---        dump(dataBuffer)
+        --dump(dataBuffer)
         self._gameView:event_GameState(dataBuffer)
     elseif sub == "come" then   --有玩家进入房间
         print("有玩家进入房间")

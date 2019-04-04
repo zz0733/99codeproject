@@ -63,11 +63,11 @@ function GameViewLayer:ctor(scene)
 
     self:enableNodeEvents()
     math.randomseed(tostring(os.time()):reverse():sub(1, 7))
+    self:init()
 end
 
 function GameViewLayer:onEnter()
     LOG_PRINT(" - GameViewLayer onEnter - ")
-    self:init()
 end
 
 function GameViewLayer:onExit()
@@ -612,7 +612,7 @@ function GameViewLayer:initBtnClickEvent()
     self.m_pBtnDownBanker:addClickEventListener(handler(self, self.onBtnDownBankerClicked))
     for i=1, Lhdz_Const.TABEL_USER_COUNT do
         self.m_pBtnUserInfo[i]:setTag(i)
-        self.m_pBtnUserInfo[i]:addClickEventListener(handler(self, self.onBtnUserInfoClicked))
+        --self.m_pBtnUserInfo[i]:addClickEventListener(handler(self, self.onBtnUserInfoClicked))
     end
 end
 

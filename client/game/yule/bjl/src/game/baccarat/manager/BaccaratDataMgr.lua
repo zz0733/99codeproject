@@ -26,7 +26,7 @@ BaccaratDataMgr.eType_YueYouLu = 4
 BaccaratDataMgr.DALU_ROW_MAX = 5
 BaccaratDataMgr.XIAOLU_ROW_MAX = 3
 
-local AreaCount = 8 --投注区域数量
+local AreaCount = 5 --投注区域数量
 local ChipCount = 6 --可选筹码数量
 
 local _DEFAULT_RECORD = {
@@ -84,7 +84,7 @@ function BaccaratDataMgr:initData()
     self.m_llBankerScore = 0
     self.m_nStateTime = 0
     self.m_vecBankerList = {}
-
+    self.m_eLotteryBaseScore = 0
     self.m_llAllBetValue = {}
     self.m_llMyBetValue = {}
     self.m_llPlayScore = {}
@@ -127,7 +127,7 @@ function BaccaratDataMgr:initData()
     self.m_cacheRecord = nil
 
     self.m_gameTax = 0
-
+    self.data = nil
     self.m_bLoadGameSceneData = false
     print("BaccaratDataMgr:initData")
 end
@@ -155,7 +155,7 @@ end
 
 --获取筹码选择
 function BaccaratDataMgr:getJettonSelAdjust()
-    for i = ChipCount, 1, -1 do
+    for i = #self.m_vecJettonScore, 1, -1 do
         if PlayerInfo.getInstance():getUserScore() >= self.m_vecJettonScore[i] then
             return i
         end
@@ -960,6 +960,14 @@ function BaccaratDataMgr:cleanChipCancel()
 end
 -------------------------------------
 --get and set
+function BaccaratDataMgr:setLotteryBaseScore(score)
+    self.m_eLotteryBaseScore = score
+end
+
+function BaccaratDataMgr:getLotteryBaseScore()
+    return self.m_eLotteryBaseScore
+end
+
 function BaccaratDataMgr:setMembers(member)
 --    self.m_members = name
     table.insert(self.m_members,member)
@@ -967,6 +975,10 @@ end
 
 function BaccaratDataMgr:getMembers()
     return self.m_members
+end
+
+function BaccaratDataMgr:getMembersSize()
+    return table.nums( self.m_members )
 end
 
 function BaccaratDataMgr:setBankerId(id)
@@ -1041,10 +1053,8 @@ function BaccaratDataMgr:getBankerResult()
     return self.m_llBankerResult
 end
 
-function BaccaratDataMgr:setPlayScore(scores)
-    for k, v in pairs(self.m_llPlayScore) do
-        self.m_llPlayScore[k] = scores[k]
-    end
+function BaccaratDataMgr:setPlayScore(k ,scores)
+    self.m_llPlayScore[k] = scores
 end
 
 function BaccaratDataMgr:getPlayScore()
@@ -1090,4 +1100,11 @@ function BaccaratDataMgr:synCacheRecord()
     self.m_cacheRecord = nil
 end
 
+function BaccaratDataMgr:setData(data)
+    self.data = data
+end
+
+function BaccaratDataMgr:getData()
+    return self.data
+end
 return BaccaratDataMgr

@@ -427,7 +427,8 @@ function Fish:init(bRepeatUse)
     end
     
     --鱼动画
-    print('鱼动画'..strArmName..'动画线名字:'..strAnimationLive)
+    --print('鱼动画'..strArmName..'动画线名字:'..strAnimationLive)
+    print(strArmName.."++++++++++++++++++++")
     self.m_pFishArmture = ccs.Armature:create(strArmName)
     self.m_pFishArmture:getAnimation():play(strAnimationLive)
     self.m_pFishArmture:setAnchorPoint(cc.p(0.5, 0.5))

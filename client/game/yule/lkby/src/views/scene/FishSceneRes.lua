@@ -58,6 +58,8 @@ local FishRes =
         resPathBase .. "effect/fishArmatures/yu17_buyu/yu17_buyu.ExportJson",
         resPathBase .. "effect/fishArmatures/yu18_buyu/yu18_buyu.ExportJson",
         resPathBase .. "effect/fishArmatures/yu19_buyu/yu19_buyu.ExportJson",
+        resPathBase .. "effect/fishArmatures/yu20_buyu/yu20_buyu.ExportJson",
+        resPathBase .. "effect/fishArmatures/yu21_buyu/yu21_buyu.ExportJson",
         resPathBase .. "effect/fishArmatures/yu22_buyu/yu22_buyu.ExportJson",
         resPathBase .. "effect/fishArmatures/yu23_buyu/yu23_buyu.ExportJson",
         resPathBase .. "effect/fishArmatures/yu24_buyu/yu24_buyu.ExportJson",

@@ -355,6 +355,12 @@ function GameViewLayer:otherBetMoney(dataBuffer)--{[1]=1 [2]=50 [3]=123173021 [4
     if self.m_flychipidx > 2 then self.m_flychipidx = 0 end
     for k,v in  ipairs( self.seatuser ) do
         if v[1] == dataBuffer[3] then
+            if k <= 3 then
+                self.m_pNodeLeft[k]:getChildByName("money"):setString(dataBuffer[5])
+            else
+                self.m_pNodeRight[k-3]:getChildByName("money"):setString(dataBuffer[5])
+            end
+            
             self:playTableUserChipAni(k)
             self:createFlyChipSprite(dataBuffer[4],dataBuffer[1],self.m_tabPos[k],false,k,0.35,true)
             return
@@ -370,7 +376,6 @@ function GameViewLayer:myBetMoney(dataBuffer)--{[1]=5 [2]=0 [3]=819 [4]=92.1 }
     self:updateBetMoney(dataBuffer[2])
     self.m_myBetMoney[dataBuffer[2]] = self.m_myBetMoney[dataBuffer[2]] + dataBuffer[1]
     self:updateMyMoney()
-    self.m_pmyMoney:setString(PlayerInfo.getInstance():getUserScore() - dataBuffer[1])
     self.m_flychipidx = self.m_flychipidx + 1
     if self.m_flychipidx > 2 then self.m_flychipidx = 0 end
     self:createFlyChipSprite(dataBuffer[1],dataBuffer[2],self.m_pmyCoin,true,false,0.35,true)
@@ -1388,9 +1393,9 @@ end
 -- 重置随机投注点
 function GameViewLayer:resetChipPos()
     --self.m_lastflynum = 0
-    local offsetVec = {10, 10, 8}
-    local rowVal = {4, 4, 3}
-    local colVal = {9, 9, 10}
+    local offsetVec = {3, 3, 6}
+    local rowVal = {6, 6, 8}
+    local colVal = {15, 15, 20}
     for i = 1, 3 do
         self.m_randmChipSelf[i-1] = {
             idx = 1, -- pos点的索引，原则上按递增方式取点，保证首次最大化铺满区域，然后随机取点
@@ -1711,6 +1716,10 @@ function GameViewLayer:updateDL()
     for i = startIdx, len do
         local columnData = Num[i]    
         for j = 1, table.maxn(columnData) do
+            if table.maxn(columnData) > 6 then
+                i = i + (table.maxn(columnData) - 6)
+                j = j - (table.maxn(columnData) - 6)
+            end
             local dataItem = columnData[j]
             if dataItem then
                 local nodeItem = self.Image_dlItem[Num[i][1]]:clone()
@@ -1761,6 +1770,10 @@ function GameViewLayer:updateDYZL()
     for i = startIdx, len do
         local columnData = Num[i]    
         for j = 1, table.maxn(columnData) do
+            if table.maxn(columnData) > 6 then
+                i = i + (table.maxn(columnData) - 6)
+                j = j - (table.maxn(columnData) - 6)
+            end
             local dataItem = columnData[j]
             if dataItem then
                 local nodeItem = self.Image_dyzlItem[Num[i][1]]:clone()
@@ -1811,6 +1824,10 @@ function GameViewLayer:updateXL()
     for i = startIdx, len do
         local columnData = Num[i]    
         for j = 1, table.maxn(columnData) do
+            if table.maxn(columnData) > 6 then
+                i = i + (table.maxn(columnData) - 6)
+                j = j - (table.maxn(columnData) - 6)
+            end
             local dataItem = columnData[j]
             if dataItem then
                 local nodeItem = self.Image_xlItem[Num[i][1]]:clone()
@@ -1862,6 +1879,10 @@ function GameViewLayer:updateYYL()
     for i = startIdx, len do
         local columnData = Num[i]    
         for j = 1, table.maxn(columnData) do
+            if table.maxn(columnData) > 6 then
+                i = i + (table.maxn(columnData) - 6)
+                j = j - (table.maxn(columnData) - 6)
+            end
             local dataItem = columnData[j]
             if dataItem then
                 local nodeItem = self.Image_yylItem[Num[i][1]]:clone()

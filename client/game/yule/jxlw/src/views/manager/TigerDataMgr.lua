@@ -30,7 +30,7 @@ end
 function TigerDataMgr:Clear()
     self.m_nMinBetNum = 1              -- 底注值
     self.m_nBetNumIndex = 1            -- 底注倍数
-    self.m_nLineNum = 1                -- 压线数
+    self.m_nLineNum = 9                -- 压线数
     self.m_nLastBetNumIndex = 0        -- 中断断线重连用
     self.m_nLastLineNum = 0            -- 中断断线重连用
     self.m_bIsAuto = false             -- 是否自动
@@ -113,7 +113,7 @@ end
 
 -- 压线数
 function TigerDataMgr:setLineNum(nNum)
-    self.m_nLineNum = nNum
+    self.m_nLineNum = 9
 end
 function TigerDataMgr:getLineNum()
     return self.m_nLineNum

@@ -200,14 +200,14 @@ function FishPaoView:initCCB()
         self.m_pUsrGold[i] = self.m_pPaoNode[i]:getChildByName("Bitmap")
         self.m_pUsrGold[i]:setString("0")
 
-        local actionRotateBy = cc.RepeatForever:create(cc.RotateBy:create(0.5, 90))
+        local actionMoveBy = cc.RepeatForever:create(cc.RotateBy:create(0.5, 90))
 
 
         self.m_pSpriteGunRage[i] = display.newSprite("#game/lkfish/gui-fish-pao/gun_rage.png")
         self.m_pSpriteGunRage[i]:addTo(self, 100)
         self.m_pSpriteGunRage[i]:setPosition(self.m_pPaoTai[i]:getPositionX() , i <=2 and self.m_pPaoTai[i]:getPositionY() + 40 or self.m_pPaoTai[i]:getPositionY() - 40)
         self.m_pSpriteGunRage[i]:setVisible(false)
-        self.m_pSpriteGunRage[i]:runAction(actionRotateBy)
+        self.m_pSpriteGunRage[i]:runAction(actionMoveBy)
     end
 
     self.m_pAIButton:addClickEventListener(handler(self, self.onAIClicked))
@@ -540,12 +540,13 @@ function FishPaoView:InitPathData( pFish, fishData )
 end
 
 function FishPaoView:update(fvalue)
-    
+
     --修改：锁定时，鱼不在了，锁定到下一鱼，每帧检查
     local nChaidId = FishDataMgr:getInstance():getMeChairID()
     local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(nChaidId)
     if FishDataMgr:getInstance():getLock() then
         if not FishDataMgr:getInstance():checkFishLock(self.m_nLockFish) then
+
             self:deleteLockEffect(myViewChairID+1, self.m_nLockFish)
             self.m_nLockFish = FishDataMgr:getInstance():getLockFish2()
             self:createLockEffect(myViewChairID+1, self.m_nLockFish)
@@ -557,26 +558,33 @@ function FishPaoView:update(fvalue)
         self.m_pSpriteGunRage[myViewChairID + 1]:setVisible(false)
     end
 
+    --先隐藏其他玩家的锁鱼动画
+    for i = 1, #self.m_pSpriteGunRage do
+        if i ~= (myViewChairID + 1) then
+            self.m_pSpriteGunRage[i]:setVisible(false)
+        end
+    end
+
     --机器人锁定鱼
     for k,v in pairs(FishDataMgr:getInstance():getUserList()) do
         local chairid = FishDataMgr:getInstance():getChairIDByGuid(v.uid)
+        local lockfish = FishDataMgr:getInstance():getLockFish(chairid)
         local myViewChairID = FishDataMgr:getInstance():SwitchViewChairID(chairid)
         if v.is_dummy and FishDataMgr:getInstance().isMaster and v.isLockfish then
 
-           local lockfish = FishDataMgr:getInstance():getLockFish(chairid)
            if not FishDataMgr:getInstance():checkFishLock(lockfish) then
+
                 self:deleteLockEffect(myViewChairID+1, lockfish)
                 lockfish = FishDataMgr:getInstance():getLockFish2()
                 self:createLockEffect(myViewChairID+1, lockfish)
                 FishDataMgr:getInstance():setLockFish(chairid, lockfish)
                 CMsgFish.getInstance():FireContinuously(201, v.uid,lockfish)
             end
+
         end
 
         if v.isLockfish then
             self.m_pSpriteGunRage[myViewChairID + 1]:setVisible(true)
-        elseif chairid ~= nChaidId then
-            self.m_pSpriteGunRage[myViewChairID + 1]:setVisible(false)
         end
     end
 
@@ -706,6 +714,7 @@ function FishPaoView:onLockClicked() --锁定按钮
         else
             print("玩家找到锁定的鱼")
         end
+
     end
 
     self.m_pImageLock_on:setVisible(not islock)
@@ -955,12 +964,14 @@ function FishPaoView:_showPao(usChairID)
     end
 
     if self.m_pUsrGold[viewChairID+1] ~= nil then
-        local strFormatGold = string.format("%0.2f", fishScore)
+        --local strFormatGold = string.format("%0.2f", fishScore)
+        local strFormatGold = fishScore
         self.m_pUsrGold[viewChairID+1]:setString( (strFormatGold))      
         -- game option 游戏配置返回的分数全部为0 此处针对李逵劈鱼 初始化的时候 从playerinfo中读取金币数量
         if usChairID == FishDataMgr:getInstance():getMeChairID() then 
             local score = FishDataMgr:getInstance():getUserScore()
-            local strFormatGold = string.format("%0.2f", score)
+            --local strFormatGold = string.format("%0.2f", score)
+            local strFormatGold = score
             self.m_pUsrGold[viewChairID+1]:setString( strFormatGold)
         end
     end
@@ -1696,7 +1707,14 @@ function FishPaoView:dealBulletFish(pFish, pBullet,bulletPosX, bulletPosY, nBull
         local pFishID = pFish:getID()
         local bulletScore = pBullet:getBulletScore()
         local bulletTempId = pBullet:getBulletTempId()
-        if pFishID ~= nil then
+        local realProbV = 1000 - 300
+        local randV =  math.random(0, pFish:getMultiple()*1000)
+        local bhit = true 
+        if userinfor.is_dummy then
+            bhit = randV < realProbV
+        end
+
+        if pFishID ~= nil and bhit then
             local hitfishes = {}
             hitfishes[1] = pFishID
             CMsgFish.getInstance():HitContinuously(userinfor.uid, bulletScore, hitfishes)
@@ -2247,7 +2265,8 @@ function FishPaoView:onMsgScoreFresh(event)
 
     local fishScore = FishDataMgr:getInstance():getFishScoreByIndex(i)
     -- local strFormatGold = string.format("%d.%02d", (fishScore/100), math.abs((fishScore)%100))
-    local strFormatGold = string.format("%0.2f", fishScore)
+    -- local strFormatGold = string.format("%0.2f", fishScore)
+    local strFormatGold = fishScore
     local viewChairID = FishDataMgr:getInstance():SwitchViewChairID(i)
     if self.m_pUsrGold[viewChairID+1] then
         self.m_pUsrGold[viewChairID+1]:setString(strFormatGold)
@@ -2394,7 +2413,8 @@ function FishPaoView:onMsgScoreFresh2(event)
     end
 
     local fishScore = FishDataMgr:getInstance():getFishScoreByIndex(i)
-    local strFormatGold = string.format("%0.2f", fishScore)
+    --local strFormatGold = string.format("%0.2f", fishScore)
+    local strFormatGold = fishScore
     local viewChairID = FishDataMgr:getInstance():SwitchViewChairID(i)
     if self.m_pUsrGold[viewChairID+1] then
         self.m_pUsrGold[viewChairID+1]:setString(strFormatGold)
@@ -2821,18 +2841,35 @@ end
 -- 万佛朝中效果
 function FishPaoView:showWanFoChaoZhongEffect(_pos)
 
-    local armature = ccs.Armature:create("allscreenbomb")
-    armature:getAnimation():play("bomb")
-    armature:setPosition(cc.p(667, 375))
-    local function animationEvent(armature,moveMentType,moveMentId)
-        if moveMentType == ccs.MovementEventType.complete then 
-            if moveMentId == "bomb" then 
-                self:removeArmature(armature)
-            end 
-        end 
-    end
-    armature:getAnimation():setMovementEventCallFunc(animationEvent)
-    self.m_pathUI:addChild(armature, 100)
+    local ani = cc.CSLoader:createNode("game/lkfish/csb/SpecialFishExplode.csb")
+    --local diffX = 145-(1624-display.size.width)/2
+    --ani:setPosition(display.size.width/2 - diffX,display.size.height/2)
+    ani:setPosition(cc.p(667, 375))
+    ani:addTo(self.m_pathUI, 100)
+
+    local action = cc.CSLoader:createTimeline("game/lkfish/csb/SpecialFishExplode.csb")
+    action:play("explode", false)
+    ani:runAction(action)
+    ani:setVisible(true)
+    --ani:setScale(2)
+
+
+    performWithDelay(self, function()
+        ani:removeFromParent()
+    end, 1)
+
+    --local armature = ccs.Armature:create("allscreenbomb")
+    --armature:getAnimation():play("bomb")
+    --armature:setPosition(cc.p(667, 375))
+    --local function animationEvent(armature,moveMentType,moveMentId)
+    --    if moveMentType == ccs.MovementEventType.complete then
+    --        if moveMentId == "bomb" then
+    --            self:removeArmature(armature)
+    --        end
+    --    end
+    --end
+    --armature:getAnimation():setMovementEventCallFunc(animationEvent)
+    --self.m_pathUI:addChild(armature, 100)
 
     print("----------------------------万佛朝中 ")
 end
@@ -2864,6 +2901,28 @@ end
 function FishPaoView:showZhenYaoTaEffect(_pos)
     print("FishPaoView:showZhenYaoTaEffect")
 
+    FishDataMgr.getInstance():setAllSleepStatus(true)
+    print("=====setAllSleepStatus to true============== ")
+
+
+    local freeze = cc.Sprite:create("game/lkfish/gui/s_frozen.png")
+    local freezeTime = 6
+    local freezeAct = cc.ProgressTimer:create(freeze)
+    freezeAct:setType(cc.PROGRESS_TIMER_TYPE_BAR)
+    freezeAct:setMidpoint(cc.p(0.5, 0.5))
+    freezeAct:setBarChangeRate(cc.p(1, 1))
+    freezeAct:setPosition(cc.p(667, 375))
+    freezeAct:runAction(cc.Sequence:create(cc.ProgressTo:create(0.5, 100), cc.FadeOut:create(freezeTime - 0.5), cc.CallFunc:create(function(sender)
+        sender:removeFromParent()
+        FishDataMgr:getInstance():setAllSleepStatus(false)
+    end)))
+
+    local scaleX = display.width / freeze:getContentSize().width
+    local scaleY = display.height / freeze:getContentSize().height
+    freezeAct:setScale(scaleX, scaleY)
+    self.m_pathUI:addChild(freezeAct)
+
+    --[[
     --粒子
     local partical = cc.ParticleSystemQuad:create(FishRes.PARTICLE_OF_BAOZHA_1)
     partical:setPosition(_pos)
@@ -2896,6 +2955,7 @@ function FishPaoView:showZhenYaoTaEffect(_pos)
     end
     armature2:getAnimation():setMovementEventCallFunc(animation2Event)
     armature2:addTo(self.m_pathUI, 90)
+    ]]--
 end 
                                                      
 function FishPaoView:showZhenYaoTaEffectEnd(dt, p1, p2)
@@ -3164,6 +3224,8 @@ function FishPaoView:udpateLockEffect()
         self:udpateLockEffectParam(viewChairID+1, fish_id, i)
         self:updatePaoAngel(viewChairID+1, fish_id, i)
         --self:updateLockIcon(viewChairID, fish_id)
+
+
     end
 end 
 

@@ -9,7 +9,7 @@ local TigerConst     = require(module_pre..".scene.Tiger_Const")
 local Tiger_Res = {} --所有资源
 
 --csb
-Tiger_Res.CSB_OF_MAINSCENE  = "game/tiger/layer/TigerScene.csb"
+Tiger_Res.CSB_OF_MAINSCENE  = "fruitSuper/Fruit_Main.csb"
 Tiger_Res.CSB_OF_RULE       = "game/tiger/layer/TigerRule.csb"
 Tiger_Res.CSB_OF_LOADING    = "game/tiger/layer/TigerLoadingLayer.csb"
 
@@ -101,8 +101,8 @@ Tiger_Res.FMT_LINE_IMG          = "game/tiger/gui/gui-tiger-line-%d.png"
 Tiger_Res.FMT_NUM_LIGHT_IMG     = "game/tiger/gui/gui-tiger-num-%d.png"     -- light
 Tiger_Res.FMT_NUM_GRAY_IMG      = "game/tiger/gui/gui-tiger-num-%d-1.png"   -- gray.
 Tiger_Res.PNG_OF_HEAD           = "hall/image/file/gui-icon-head-%02d.png"--头像
-Tiger_Res.PNG_OF_FMT_ICON       = "game/tiger/icon/gui-tiger-icon-%d.png"   -- 图标 FMT.
-Tiger_Res.PNG_OF_FMT_MIX_ICON   = "game/tiger/icon/gui-tiger-mix-%d.png"    -- 转动图标 FMT.
+Tiger_Res.PNG_OF_FMT_ICON       = "fruitSuper/image/icon/fruitV3Item-%d.png"   -- 图标 FMT.
+Tiger_Res.PNG_OF_FMT_MIX_ICON   = "fruitSuper/image/icon/fruitV3Item-%d.png"    -- 转动图标 FMT.
 Tiger_Res.PNG_OF_FMT_NUM_ICON   = "game/tiger/gui/gui-tiger-joke-num-%d.png"    -- 彩金滚动数字 FMT.
 Tiger_Res.PNG_OF_NULL_ICON      = "game/tiger/gui/gui-tiger-texture-null.png"   -- 彩金滚动空图片
 

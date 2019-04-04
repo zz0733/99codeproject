@@ -633,9 +633,6 @@ function HallGameListView:updateResult(updateinfo, result, msg)
     if type(updateinfo) ~= "table" or nil == updateinfo._KindID then
         return
     end
-    if nil ~= self._query then
-        self._query:removeFromParent() 
-    end
     -- 移除信息
     self:removeDownloadInfo(updateinfo._KindID)
     -- 清理下载管理
@@ -660,7 +657,7 @@ function HallGameListView:updateResult(updateinfo, result, msg)
     else
         local runScene = cc.Director:getInstance():getRunningScene()
         if nil ~= runScene then
-            self._query = QueryDialog:create(msg.."\n是否重试？",function(bReTry)
+            QueryDialog:create(msg.."\n是否重试？",function(bReTry)
                 if bReTry == true then
                     local ref = ExternalFun.seekNodeByName(self.m_root_lv, updateinfo._KindID .. "_icon")
                     if nil ~= ref then
@@ -668,7 +665,6 @@ function HallGameListView:updateResult(updateinfo, result, msg)
                     end
                     self:onGameUpdate(updateinfo)
                 end
-                self._query = nil
             end)
             :addTo(runScene)
         end     

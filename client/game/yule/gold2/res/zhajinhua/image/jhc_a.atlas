@@ -1,0 +1,76 @@
+
+jhc_a.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bp_sd_00
+  rotate: false
+  xy: 2, 240
+  size: 449, 65
+  orig: 480, 90
+  offset: 14, 12
+  index: -1
+bp_sd_02
+  rotate: false
+  xy: 2, 114
+  size: 442, 57
+  orig: 480, 90
+  offset: 20, 15
+  index: -1
+bp_sd_03
+  rotate: false
+  xy: 2, 386
+  size: 450, 77
+  orig: 480, 90
+  offset: 11, 4
+  index: -1
+bp_sd_04
+  rotate: false
+  xy: 2, 2
+  size: 443, 51
+  orig: 480, 90
+  offset: 18, 18
+  index: -1
+bp_sd_05
+  rotate: false
+  xy: 454, 391
+  size: 455, 72
+  orig: 480, 90
+  offset: 7, 6
+  index: -1
+bp_sd_06
+  rotate: false
+  xy: 2, 173
+  size: 449, 65
+  orig: 480, 90
+  offset: 14, 12
+  index: -1
+bp_sd_08
+  rotate: false
+  xy: 2, 55
+  size: 442, 57
+  orig: 480, 90
+  offset: 20, 15
+  index: -1
+bp_sd_09
+  rotate: false
+  xy: 2, 307
+  size: 450, 77
+  orig: 480, 90
+  offset: 11, 4
+  index: -1
+bp_sd_10
+  rotate: false
+  xy: 454, 264
+  size: 443, 51
+  orig: 480, 90
+  offset: 18, 18
+  index: -1
+bp_sd_11
+  rotate: false
+  xy: 454, 317
+  size: 455, 72
+  orig: 480, 90
+  offset: 7, 6
+  index: -1

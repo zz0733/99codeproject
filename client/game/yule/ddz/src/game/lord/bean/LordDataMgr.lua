@@ -43,9 +43,9 @@ function LordDataMgr:Clean()
     self.m_cbTurnCardCount = 0
     self.m_cbLastOutCardCount = 0
     self.m_cbTimeOutCard = 30
-    self.m_cbTimeCallScore = 30
+    self.m_cbTimeCallScore = 10
     self.m_cbTimeHeadOutCard = 30
-    self.m_cbTimeAddTimes = 15
+    self.m_cbTimeAddTimes = 10
     self.m_wStartUser = 0
     self.m_iMuliple = 0
     self.m_iBombCount = 0 --记录炸弹数量
@@ -120,7 +120,24 @@ function LordDataMgr:Clean()
     for i = 0, 2 do
         self.m_bIsCall[i] = false
     end
-
+    self.m_bLeftCard = false
+    self.m_nLeftCard = {
+        [1]  = 4, --"3",
+        [2]  = 4, --"4",
+        [3]  = 4, --"5", 
+        [4]  = 4, --"6",
+        [5]  = 4, --"7",
+        [6]  = 4, --"8",
+        [7]  = 4, --"9",
+        [8]  = 4, --"10",
+        [9]  = 4, --"J",
+        [10] = 4, --"Q",
+        [11] = 4, --"K",
+        [12] = 4, --"A",
+        [13] = 4, --"2",
+        [14] = 1, --"小王",
+        [15] = 1, --"大王",
+    }
     --没初始化的变量
     self.m_llBaseScore = 0
     self.m_nOffLineChairID = INVALID_CHAIR
@@ -1140,5 +1157,87 @@ function LordDataMgr:getIsRobot()
     return false
 end
 
+--是否获取过记牌器数据
+function LordDataMgr:IsGetLeftCard()
+    return self.m_bLeftCard
+end
+
+--设置牌数
+function LordDataMgr:setLeftCard(cards)
+    
+    for i = 1, 15 do
+        self.m_nLeftCard[i] = cards[i]
+    end
+    self.m_bLeftCard = true
+end
+--获取牌数
+function LordDataMgr:getLeftCard()
+    
+    return self.m_nLeftCard
+end
+--记牌
+function LordDataMgr:markLeftCard(user, cards)
+
+    if user == PlayerInfo.getInstance():getChairID() then --自己出牌不计数
+        return
+    end
+
+    if self.m_bLeftCard == false then --未获取记牌数据
+        return
+    end
+    
+    --牌对应数组
+    local VALUE_TO_ARRAY = 
+    {
+        [1]  = 12,
+        [2]  = 13,
+        [3]  = 1, 
+        [4]  = 2,
+        [5]  = 3,
+        [6]  = 4,
+        [7]  = 5,
+        [8]  = 6,
+        [9]  = 7,
+        [10] = 8,
+        [11] = 9,  --J
+        [12] = 10, --Q
+        [13] = 11, --K
+        [14] = 14, --小王
+        [15] = 15, --大王
+    }
+
+    for k, v in pairs(cards) do
+        local cbCardData = v % 0x10
+        local index = VALUE_TO_ARRAY[cbCardData]
+        if self.m_nLeftCard[index] > 0 then
+            self.m_nLeftCard[index] = self.m_nLeftCard[index] - 1
+        else
+            print("")
+        end
+    end
+
+    --数组对应牌
+    local ARRAY_TO_VALUE = 
+    {
+        [1]  = "3",
+        [2]  = "4",
+        [3]  = "5", 
+        [4]  = "6",
+        [5]  = "7",
+        [6]  = "8",
+        [7]  = "9",
+        [8]  = "10",
+        [9]  = "J",
+        [10] = "Q",
+        [11] = "K",
+        [12] = "A",
+        [13] = "2",
+        [14] = "小王",
+        [15] = "大王",
+    }
+    for k, v in pairs(self.m_nLeftCard) do
+        print(ARRAY_TO_VALUE[k], v)
+    end
+end
 return LordDataMgr
 --endregion

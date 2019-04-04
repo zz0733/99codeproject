@@ -45,7 +45,9 @@ function BindAlipayView:init( ... )
     local diffY = (display.size.height - 750) / 2
     self.m_pathUI:setPosition(cc.p(0,diffY))
 
-    self.rootNode = self.m_pathUI:getChildByName("center"):getChildByName("image_Bg")
+    self.Center = self.m_pathUI:getChildByName("center")
+    self.Center:setPositionX((display.size.width)/2)
+    self.rootNode = self.Center:getChildByName("image_Bg")
     self.closeBtn = self.rootNode:getChildByName("button_closeBtn")
     self.sureBtn  = self.rootNode:getChildByName("button_sureBtn")
     self.accountImg  = self.rootNode:getChildByName("image_accountImg")

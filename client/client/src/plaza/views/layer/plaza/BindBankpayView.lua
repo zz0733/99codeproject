@@ -42,11 +42,12 @@ function BindBankpayView:init( ... )
     local diffY = (display.size.height - 750) / 2
     self.m_pathUI:setPosition(cc.p(0,diffY))
 
-    
-
-    self.rootNode_image_Bg = self.m_pathUI:getChildByName("center"):getChildByName("image_Bg")
-    self.bankListBg      = self.m_pathUI:getChildByName("panel_bankListBg")
-    self.Item = self.m_pathUI:getChildByName("panel_Item")
+    self.bindali_root = self.m_pathUI:getChildByName("bindali_root")
+    local diffX = 145 - (1624-display.size.width)/2
+    self.bindali_root:setPositionX(diffX)
+    self.rootNode_image_Bg = self.bindali_root:getChildByName("center"):getChildByName("image_Bg")
+    self.bankListBg      = self.bindali_root:getChildByName("panel_bankListBg")
+    self.Item = self.bindali_root:getChildByName("panel_Item")
     
     self.bankList = self.bankListBg:getChildByName("listView_bankList")
     

@@ -29,9 +29,9 @@ appdf.CLINET_MSG_BEGIN 						= 100
 appdf.CLIENT_MSG_TAKE_SCREENSHOT 			= appdf.CLINET_MSG_BEGIN + 2 			-- 截屏事件
 
 --程序版本
-appdf.BASE_C_VERSION = 3 --@app_version
+appdf.BASE_C_VERSION = 1 --@app_version
 --资源版本
-appdf.BASE_C_RESVERSION = 6 --@client_version
+appdf.BASE_C_RESVERSION = 1 --@client_version
 appdf.BASE_GAME = 
 {
 }
@@ -185,7 +185,7 @@ function appdf.onHttpJsionTable(url,methon,params,callback)
 		xhr:open(methon, url)
 	end
 	--HTTP回调函数
-	local function onJsionTable(xhr)
+	local function onJsionTable(xhr, url)
 		local datatable 
 		local response
 		local ok

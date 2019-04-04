@@ -25,7 +25,7 @@
 		"ModuleName": "yule.ddz",
 		"ClientVersion": "101122049",
 		"ResVersion": "10",
-		"AnimationPath": "dt/image/zcmdwc_zjm/button_zjhBtn.csb",
+		"AnimationPath": "dt/image/zcmdwc_zjm/button_ddzBtn.csb",
 		"AnimationName": "dt_020",
 		"SortID": "0"
 	}, {
@@ -72,7 +72,7 @@
 		"GameTypeIDs": "1",
 		"ModuleName": "yule.lhdz",
 		"ClientVersion": "101122049",
-		"ResVersion": "16",
+		"ResVersion": "17",
 		"AnimationPath": "dt/image/zcmdwc_zjm/button_lhdBtn.csb",
 		"AnimationName": "dt_026",
 		"SortID": "0"
@@ -108,7 +108,7 @@
 		"GameTypeIDs": "1",
 		"ModuleName": "yule.pjl",
 		"ClientVersion": "101122049",
-		"ResVersion": "10",
+		"ResVersion": "11",
 		"AnimationPath": "dt/image/zcmdwc_zjm/button_shzBtn.csb",
 		"AnimationName": "dt_024",
 		"SortID": "0"
@@ -121,24 +121,12 @@
 		"ModuleName": "yule.jxlw",
 		"ClientVersion": "101122049",
 		"ResVersion": "12",
-		"AnimationPath": "dt/image/zcmdwc_zjm/button_fruitSlotsBtn.csb",
-		"AnimationName": "dt_027",
-		"SortID": "0"
-	}, {
-		"KindID": "1077",
-		"KindName": "连环夺宝",
-		"TypeID": "0",
-		"Status": 2,
-		"GameTypeIDs": "1",
-		"ModuleName": "yule.longzhuduobao",
-		"ClientVersion": "101122049",
-		"ResVersion": "12",
-		"AnimationPath": "dt/image/zcmdwc_zjm/button_lhdb2Btn.csb",
+		"AnimationPath": "dt/image/zcmdwc_zjm/button_superFruitBtn.csb",
 		"AnimationName": "dt_027",
 		"SortID": "0"
 	}],
 	"gametype": [
-		[1006,1029, 1125, 2005, 1031, 1078, 1236, 1238,1101, 1120, 1002, 1036, 1083, 1015, 1077],
+		[1006,1029, 1125, 2005, 1031, 1078, 1236, 1238,1101, 1120, 1002, 1036, 1083, 1015],
 		[1029, 1125, 2005, 1031, 1078],
 		[1120],
 		[1238, 1236],

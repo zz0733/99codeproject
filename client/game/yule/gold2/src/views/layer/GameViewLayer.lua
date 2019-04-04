@@ -17,1615 +17,880 @@ local CardsNode = appdf.req(module_pre .. ".views.layer.gamecard.CardsNode")
 local GameLogic = appdf.req(module_pre .. ".models.GameLogic")
 local GameResultLayer = appdf.req(module_pre .. ".views.layer.GameResultLayer")
 
-local SettingLayer          = appdf.req(module_pre .. ".views.layer.SettingLayer")
-local RuleLayer             = appdf.req(module_pre .. ".views.layer.RuleLayer")
+local SettingLayer = appdf.req(module_pre .. ".views.layer.SettingLayer")
+local GameRuleLayer = appdf.req(module_pre .. ".views.layer.GameRuleLayer")
+local ZhajinhuaVsView = appdf.req(module_pre .. ".views.layer.ZhajinhuaVsView")
+
 local Poker                 = require(module_pre .. ".views.layer.Poker")
 local ProgressNode          = require(module_pre .. ".views.layer.ProgressNode")
 
 local TAG_ENUM = Define.TAG_ENUM
 local TAG_ZORDER = Define.TAG_ZORDER
+local SELF_UID = GlobalUserItem.tabAccountInfo.userid
 
 local GameViewLayer = class("GameViewLayer",function(scene)
         local gameViewLayer = display.newLayer()
     return gameViewLayer
 end)
 
---玩家当前状态
-GameViewLayer.STATE_HALFWAY = 0         --中途进入游戏房间
-GameViewLayer.STATE_ONZHUNBEI = 1       --玩家准备中
-GameViewLayer.STATE_QIPAI = 2           --玩家已弃牌
-GameViewLayer.STATE_LIANGPAI = 3        --玩家已亮牌
-GameViewLayer.STATE_GAMEOVER = 4        --游戏结束
---按钮tag标识
-GameViewLayer.BTN_GENDAODI  = 101       --跟到底
-GameViewLayer.BTN_QIPAI     = 102       --弃牌
-GameViewLayer.BTN_BIPAI     = 103       --比牌
-GameViewLayer.BTN_KANPAI    = 104       --看牌
-GameViewLayer.BTN_JIAZHU    = 105       --加注
-GameViewLayer.BTN_XIAZHU    = 106       --下注
-GameViewLayer.BTN_QUANXIA   = 107       --全下
-GameViewLayer.BTN_LIKAIYOUXI    = 108       --离开游戏
-GameViewLayer.BTN_JIXUYOUXI     = 109       --继续游戏
-GameViewLayer.BTN_LIANGPAI      = 109       --亮牌
-
-GameViewLayer.POKERPOS = {  --每张扑克的坐标
-{ cc.p(330.00,485.00),cc.p(352.00,485.00),cc.p(374.00,485.00)},     --左上
-{ cc.p(220.00,315.00),cc.p(242.00,315.00),cc.p(264.00,315.00)},     --左下
-{ cc.p(650.00,105.00),cc.p(693.00,105.00),cc.p(736.00,105.00)},     --自己
-{ cc.p(1005.00,315.00),cc.p(1027.00,315.00),cc.p(1049.00,315.00)},  --右下
-{ cc.p(895.00,485.00),cc.p(917.00,485.00),cc.p(939.00,485.00)}      --右上
-}
-GameViewLayer.CHIPPOS = {   --筹码创建位置的坐标
-cc.p(320,550),cc.p(230,300),cc.p(630,180),cc.p(1050,350),cc.p(1030,550)
-}
-GameViewLayer.QIPAIPOS = {  --弃牌动画的坐标
-cc.p(395,505),cc.p(285,335),cc.p(750,155),cc.p(1050,335),cc.p(940,505)
-}
-GameViewLayer.PAOPAOKUANGPOS = {  --泡泡框提示动画的坐标
-cc.p(395,550),cc.p(285,380),cc.p(750,195),cc.p(1050,375),cc.p(940,545)
-}
-GameViewLayer.PLAYER_ICON_POS = {  --玩家头像的坐标
-cc.p(252,626),cc.p(140,368),cc.p(558,202),cc.p(1188,368),cc.p(1070,623)
-}
-GameViewLayer.WIN_LOSE_LABEL_POS = {  --玩家输赢钱数飘字动画坐标
-cc.p(167,25),cc.p(167,25),cc.p(167,25),cc.p(-90,25),cc.p(-90,25)
-}
-GameViewLayer.chipSpRec = {
-        "goold2zjh/zjh/chip/bg-chip-01.png",
-        "goold2zjh/zjh/chip/bg-chip-02.png",
-        "goold2zjh/zjh/chip/bg-chip-04.png",
-        "goold2zjh/zjh/chip/bg-chip-06.png",
-        "goold2zjh/zjh/chip/bg-chip-08.png",
-        "goold2zjh/zjh/chip/bg-chip-10.png"
-}
+local chipNum = { 2, 5, 10}
 function GameViewLayer:ctor(scene)
 print("on enter -----------===========----------    GameViewLayer")
     --注册node事件
     ExternalFun.registerNodeEvent(self)
     self._scene = scene
 
-
-    self.pTex = cc.Director:getInstance():getTextureCache():addImage("goold2zjh/zjh/CARD1.png")
-    self.pokerTable = {}
-    self:createPokerArray()
-    --初始化界面
-    self:initViewLayer()
+    local rootLayer, csbNode = ExternalFun.loadRootCSB("zhajinhua/ZhajhScene.csb", self)
+    self.m_rootWidget = csbNode
+    --iphoneX适配
+    if LuaUtils.isIphoneXDesignResolution() then
+        local width_ = yl.WIDTH - display.size.width
+        self.m_rootWidget:setPositionX(self.m_rootWidget:getPositionX() - width_/2)
+    end
     
+    self:initVar()
+    self:initNode()
+end
+function GameViewLayer:initVar()
+    
+    self.m_pMenuState = false   --菜单界面是否点开
+    self.m_unitMoney = 0    --底注
+    self.m_initMoney = 0    --当前暗注		#当前暗注是底注倍数
+    self.m_niuBeilv = {}
+    self.m_playerTable = {}
+    self.m_pSelfKanpai = false  --自己是否已经看牌
+    self.m_pTime = 0    --玩家计时
+    self.myPosition = nil       --玩家自己带入房间的position
+    self.m_onGamePlayers = {}   -- 本局参与游戏的玩家
+    self.m_allCards = {}        --所有玩家的牌
+    self.m_allAboutChip = {}    --所有跟下注有关的东西 #收到消息 opt
+    self.isGenDaodi = false
+    self.isBipaiIng = false     --是否在比牌中
+    SLFacade:addCustomEventListener(GameRoleItem.ONEVENT_KANPAI_CLICK, handler(self, self.onKanpaiClickEvent), self.__cname)    --添加自己点击看牌按钮的事件监听
+    SLFacade:addCustomEventListener(GameRoleItem.ONEVENT_BIPAI_CLICK, handler(self, self.onBipaiClickEvent), self.__cname)    --添加自己点击玩家比牌的事件监听
+    SLFacade:addCustomEventListener("bipai_state", handler(self, self.setBipaiState), self.__cname)    --设置比牌状态
+end
+function GameViewLayer:initNode()
+    self.m_pImageBg         = self.m_rootWidget:getChildByName("image_bg")
+    self.m_pNomoneyWarning  = self.m_rootWidget:getChildByName("image_nomoneyFol")  --提示金钱不足
+    self.m_pPanelPlayer     = self.m_rootWidget:getChildByName("panel_playerPanel")
+    self.m_pVsSelectWarning = self.m_rootWidget:getChildByName("image_vsTpsSelect") --提示语 请选择vs对象
+    self.m_pPanel_setting   = self.m_rootWidget:getChildByName("panel_backMenu")    --设置层   监听关闭
+    self.m_pAtlas_winCoin   = self.m_rootWidget:getChildByName("atlas_winCoinNum")  --赢钱飘分
+    self.m_pAtlas_lostCoin  = self.m_rootWidget:getChildByName("atlas_loseCoinNum") --输钱飘分
+    self.m_pImageDaojishi   = self.m_rootWidget:getChildByName("image_lastTime")    --开牌前倒计时
+    self.m_pPanelLight      = self.m_rootWidget:getChildByName("panel_lightPanel")  --
+    self.m_pNodesCard       = {}                                                    --所有玩家放牌的节点
+    for i = 1,5 do                                  --1为自身，2为右边第一个，逆时针依次
+        local cardNode = self.m_rootWidget:getChildByName("fileNode_showAllHandFile_"..i) 
+        table.insert(self.m_pNodesCard,cardNode)
+    end
+    self.m_pTextDizhu       = self.m_pImageBg:getChildByName("Image_49"):getChildByName("text_guize1")  --底注
+    self.m_pTextShangxian   = self.m_pImageBg:getChildByName("Image_49"):getChildByName("text_guize2")  --上限
+    self.m_pTextHuihe       = self.m_pImageBg:getChildByName("Image_49"):getChildByName("text_jushu")   --回合
+    self.m_pTextAllChip     = self.m_pImageBg:getChildByName("Image_49"):getChildByName("image_jiangchi"):getChildByName("text_jiangjin")   --下注总额
+    self.m_pBtnBuy          = self.m_pImageBg:getChildByName("Node_7"):setVisible(false)                --商城按钮游戏中没有
+    self.m_pBtnMenu         = self.m_pImageBg:getChildByName("button_back")                             --按钮 菜单
+    self.m_pImageMenu       = self.m_pBtnMenu:getChildByName("Image_5")                                 --菜单按钮上的箭头
+    self.m_pBtnYjsf         = self.m_pImageBg:getChildByName("button_yjsf")                             --按钮 一决胜负
+    self.m_pBtnQxgz         = self.m_pImageBg:getChildByName("button_contrast")                         --按钮 取消跟注
+    self.m_pBtnDdd          = self.m_pImageBg:getChildByName("button_gdd")                              --按钮 跟到底
+    self.m_pBtnZhyb         = self.m_pImageBg:getChildByName("button_zhyb")                             --按钮 最后一搏
+    self.m_pBtnXiazhu1      = self.m_pImageBg:getChildByName("button_xiazhu1")                          --按钮 下注1
+    self.m_pBtnXiazhu2      = self.m_pImageBg:getChildByName("button_xiazhu2")                          --按钮 下注2
+    self.m_pBtnXiazhu3      = self.m_pImageBg:getChildByName("button_xiazhu3")                          --按钮 下注3
+    self.m_pBtnGenzhu       = self.m_pImageBg:getChildByName("button_followBtn")                        --按钮 跟注
+    self.m_pBtnZhunbei       = self.m_pImageBg:getChildByName("button_showHandBtn"):setVisible(false)    --按钮 全压 --作为准备按钮使用
+    self.m_pBtnLastFuck     = self.m_pImageBg:getChildByName("button_lastFuckBtn")                      --按钮 最后一搏
+    self.m_pBtnVS           = self.m_pImageBg:getChildByName("button_vsBtn")                            --按钮 比牌
+    self.m_pBtnGiveUp       = self.m_pImageBg:getChildByName("button_giveBtn")                          --按钮 弃牌
+    self.m_pBtnLastLife     = self.m_pImageBg:getChildByName("button_lastLifeBtn")                      --按钮 一决胜负
+    self.m_pBtnFollowEnd    = self.m_pImageBg:getChildByName("button_followendBtn")                     --按钮 跟到底
+    self.m_pBtnLiangPai     = self.m_pImageBg:getChildByName("button_liangpai")                         --按钮 亮牌
+    self.m_pPanelCoin       = self.m_pPanelPlayer:getChildByName("panel_coinPanel")                     --金币动画层 
+    self.m_pPanelAnimation  = self.m_pPanelPlayer:getChildByName("panel_animationPanel")                --动画层 
+    self.m_pPanelCards      = self.m_pPanelPlayer:getChildByName("panel_allCardPanel")                  --扑克层
+    self.m_pPanelFullWord   = self.m_pPanelPlayer:getChildByName("panel_addFullWordPanel")              
+    self.m_pNodeMidCenter   = self.m_pPanelPlayer:getChildByName("node_midCenterNode")       
+    self.m_pImageSettingBg  = self.m_pPanel_setting:getChildByName("image_settingPanel")                --设置层背景 移动的节点
+    self.m_pBtnBack         = self.m_pImageSettingBg:getChildByName("button_BtnBack")                   --按钮 退出游戏
+    self.m_pBtnHelp         = self.m_pImageSettingBg:getChildByName("button_BtnHelp")                   --按钮 帮助
+    self.m_pBtnSet          = self.m_pImageSettingBg:getChildByName("button_BtnSet")                    --按钮 设置
+    self.m_pNumDaojishi     = self.m_pImageDaojishi:getChildByName("image_lastBack"):getChildByName("text_lastTimeText")    --倒计时数字
+
+
+    self.m_pBtnGenzhu:addClickEventListener(handler(self, self.onGenzhuClicked))        --按钮 跟注
+    self.m_pBtnVS:addClickEventListener(handler(self, self.onVSClicked))                --按钮 比牌
+    self.m_pBtnGiveUp:addClickEventListener(handler(self, self.onGiveUpClicked))        --按钮 弃牌
+    self.m_pBtnFollowEnd:addClickEventListener(handler(self, self.onFollowEndClicked))  --按钮 跟到底
+    self.m_pBtnFollowEnd:getChildByName("Image_226"):getChildByName("image_followendImg"):setVisible(false)
+    self.m_pBtnLiangPai:addClickEventListener(handler(self, self.onLiangpaiClicked))    --按钮 亮牌（游戏结束亮牌给其他玩家看）
+    self.m_pBtnXiazhu1:addClickEventListener(handler(self, self.onXiazhu1Clicked))      --按钮 下注1
+    self.m_pBtnXiazhu2:addClickEventListener(handler(self, self.onXiazhu2Clicked))      --按钮 下注2
+    self.m_pBtnXiazhu3:addClickEventListener(handler(self, self.onXiazhu3Clicked))      --按钮 下注3
+    self.m_pBtnMenu:addClickEventListener(handler(self, self.onMenuClicked))        --按钮 菜单
+    self.m_pPanel_setting:addClickEventListener(handler(self, self.onMenuClicked))  --按钮 关闭菜单
+    self.m_pBtnBack:addClickEventListener(handler(self, self.onExitClicked))    --按钮 退出游戏
+    self.m_pBtnHelp:addClickEventListener(handler(self, self.onHelpClicked))    --按钮 帮助
+    self.m_pBtnSet:addClickEventListener(handler(self, self.onSettingClicked))  --按钮 设置
+    self.m_pBtnZhunbei:addClickEventListener(handler(self, self.onZhunbeiClicked))  --按钮 准备
+    ---------------
+    self.m_pBtnYjsf:setVisible(false)--:addClickEventListener(handler(self, self.onMenuClicked))        --按钮 一决胜负
+    self.m_pBtnQxgz:setVisible(false)--:addClickEventListener(handler(self, self.onMenuClicked))        --按钮 取消跟注
+    self.m_pBtnDdd:setVisible(false)--:addClickEventListener(handler(self, self.onMenuClicked))         --按钮 跟到底
+    self.m_pBtnZhyb:setVisible(false)--:addClickEventListener(handler(self, self.onMenuClicked))        --按钮 最后一搏
+    self.m_pBtnLastFuck:setVisible(false)--:addClickEventListener(handler(self, self.onMenuClicked))    --按钮 最后一搏    
+    self.m_pBtnLastLife:setVisible(false)--:addClickEventListener(handler(self, self.onMenuClicked))    --按钮 一决胜负
+    self.m_pPanelCoin:setVisible(false)         --金币动画层 
+    self.m_pPanelAnimation:setVisible(true)    --动画层 
+    self.m_pPanelCards:setVisible(false)        --扑克层
+    self.m_pNomoneyWarning:setVisible(false)    --提示金钱不足
+    self.m_pVsSelectWarning:setVisible(false)   --提示语 请选择vs对象
+    self.m_pPanel_setting:setVisible(false)     --设置层   监听关闭
+    self.m_pAtlas_winCoin:setVisible(false)     --赢钱飘分
+    self.m_pAtlas_lostCoin:setVisible(false)    --输钱飘分
+    self.m_pImageDaojishi:setVisible(false)     --开牌前倒计时
+    self.m_pPanelLight:setVisible(false)
+    self.m_pPanelPlayer:getChildByName("fileNode_player_1"):getChildByName("panel_playerInfoBg"):getChildByName("button_kanpai"):setVisible(false)
+    for i = 1,5 do
+        self.m_pPanelPlayer:getChildByName("fileNode_player_"..i):setVisible(false)
+        self.m_rootWidget:getChildByName("fileNode_showAllHandFile_"..i):setVisible(false)
+    end
+    ExternalFun.playBackgroudAudio("BACK_GROUND.mp3")
 end
 
-function GameViewLayer:initViewLayer( )
-    ExternalFun.playBackgroudAudio("bgm01.mp3")
-    self.root = ccs.GUIReader:getInstance():widgetFromJsonFile("goold2zjh/main_ui.json")    
-    if not self.root then
-        return false
-    end
-    self:addChild(self.root)
-    math.randomseed(tostring(os.time()):reverse():sub(1, 6))
-    --加载资源/动画
-    self.chipImageRes = {}
-    for key, res_ in ipairs(GameViewLayer.chipSpRec) do
-        local chipSpriteFrame = cc.Director:getInstance():getTextureCache():addImage(res_)
-        table.insert(self.chipImageRes,chipSpriteFrame)
-    end
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/heguan_1/heguan_1.ExportJson")   --荷官
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/dengdai_1/dengdai_1.ExportJson")   --等待下一局
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/wait-player/wait-player.ExportJson")   --等待其他玩家
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/paopaokuang_zhajinhua/paopaokuang_zhajinhua.ExportJson")   --泡泡框提示
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/pk_bipai/pk_bipai.ExportJson")   --比牌
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/qipai/qipai.ExportJson")   --弃牌
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/xiazhu_danshou/xiazhu_danshou.ExportJson")   --下注单手左右
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/xiazhu_qian/xiazhu_qian.ExportJson")   --下注单手自身
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/allin_you2/allin_you2.ExportJson")   --下注双手左右
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/allin_qian/allin_qian.ExportJson")   --下注双手自身
-    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo("goold2zjh/zjh/effect/kebipai_1/kebipai_1.ExportJson")        --可比牌
-    --给各种层设置ZOder
-    self.root:getChildByName("Panel_287"):getChildByName("Panel_ksyx"):setZOrder(100)   --pk动画层
-    self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"):setZOrder(99)  --筹码层
-    self.root:getChildByName("Panel_287"):getChildByName("animHodler"):setZOrder(98)    --弃牌动画层
-    self.root:getChildByName("Panel_287"):getChildByName("Panel_pai"):setZOrder(97)     --扑克层
-    --播放荷官动画
-    local heguan = ccs.Armature:create("heguan_1")
-    heguan:setAnchorPoint(cc.p(0,0))
-    heguan:setPosition(cc.p(-30,60))
-	heguan:addTo(self.root:getChildByName("Panel_287"):getChildByName("Panel_hg"))
-	heguan:getAnimation():playWithIndex(0)
-    --全局变量    
-    self.playInfoTable = {}     --房间内的玩家
-    self.isMyState = false      --是否是自身回合
-    self.isHalfWay = false      --是否是中途进入本局游戏
-    self.waitNextGame = true    --等待新的一局游戏开始
-    self.isKanpai = false       --自己是否看牌
-    self.isQipai = false        --自己是否已经弃牌
-    self.isGendaodi = false     --是否选择一跟到底
-    self.isCanBipai = false     --是否可以发起比牌
-    self.isZidongQipai = false  --是否是时间到了自动弃牌
-    self.deskState = nil        --桌子状态/回合(中途进入)
-    self.antes_ = 0             --底注
-    self.straightBet = 0        --单注
-    self.straightBet_num = 0    --单注（0-10）
-    self.straightBet_Max = 0    --单注最大值
---    self.roundNumber = 0        --回合数
-    self.totalBet = 0           --总下注
-    self.myPos_ = 0             --进入房间时我的坐标
-    self.chipButtonLabel = {}   --加注按钮的标签
-    self.chip_sprite_table = {} --存放筹码精灵
-
-    self.m_pProgressTimer = {}      --头像进度条
-    self.timeOut_progress = 0       --消息中的timeout，用于进度条倒计时
-    self.waitOthers = nil       --等待其他玩家进来的动画
-    self.waitNext = nil         --等待下一局开始的动画
-    self.waitPlayer = nil       --正在匹配玩家文字
-    --初始化时隐藏的
-    self.root:getChildByName("Panel_Entrust"):setVisible(false)
-    
-    
-    --按钮及其回调
-    local touchFunC = function(ref, tType)
-        if tType == ccui.TouchEventType.ended then          
-           self:onButtonClickedEvent(ref:getTag(),ref)
-        end
-    end
-        --跟到底
-    local btn_gdd = self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd")     
-    btn_gdd:setTag( GameViewLayer.BTN_GENDAODI )
-    btn_gdd:addTouchEventListener( touchFunC )
-    btn_gdd:setPressedActionEnabled(true)
-        --弃牌
-    local btn_qp = self.root:getChildByName("Panel_287"):getChildByName("Button_qp")
-    btn_qp:setTag( GameViewLayer.BTN_QIPAI )
-    btn_qp:addTouchEventListener( touchFunC )
-    btn_qp:setPressedActionEnabled(true)
-        --比牌   
-    local btn_bp = self.root:getChildByName("Panel_287"):getChildByName("Button_bp") 
-    btn_bp:setTag( GameViewLayer.BTN_BIPAI )
-    btn_bp:addTouchEventListener( touchFunC )
-    btn_bp:setPressedActionEnabled(true)
-        --看牌    
-    local btn_kp = self.root:getChildByName("Panel_287"):getChildByName("Button_kp")   
-    btn_kp:setTag( GameViewLayer.BTN_KANPAI )
-    btn_kp:addTouchEventListener( touchFunC )
-    btn_kp:setPressedActionEnabled(true) 
-        --下注
-    local btn_gz = self.root:getChildByName("Panel_287"):getChildByName("Button_gz")  
-    btn_gz:setTag( GameViewLayer.BTN_XIAZHU )
-    btn_gz:addTouchEventListener( touchFunC )
-    btn_gz:setPressedActionEnabled(true)
-        --加注  
-    local btn_jz = self.root:getChildByName("Panel_287"):getChildByName("Button_jz")    
-    btn_jz:setTag( GameViewLayer.BTN_JIAZHU )
-    btn_jz:addTouchEventListener( touchFunC )
-    btn_jz:setPressedActionEnabled(true)
-        --全下
-    local btn_qx = self.root:getChildByName("Panel_287"):getChildByName("Button_qx")   
-    btn_qx:setTag( GameViewLayer.BTN_QUANXIA )
-    btn_qx:addTouchEventListener( touchFunC )
-    btn_qx:setPressedActionEnabled(true)
-        --离开游戏
-    local btn_lkyx = self.root:getChildByName("Panel_Entrust"):getChildByName("Button_Exit")   
-    btn_lkyx:setTag( GameViewLayer.BTN_LIKAIYOUXI )
-    btn_lkyx:addTouchEventListener( touchFunC )
-    btn_lkyx:setPressedActionEnabled(true)
-        --继续游戏
-    local btn_jxyx = self.root:getChildByName("Panel_Entrust"):getChildByName("Button_Goon")   
-    btn_jxyx:setTag( GameViewLayer.BTN_JIXUYOUXI )
-    btn_jxyx:addTouchEventListener( touchFunC )
-    btn_jxyx:setPressedActionEnabled(true)
-        --亮牌
-    local btn_lp = self.root:getChildByName("Panel_287"):getChildByName("Button_lp")   
-    btn_lp:setTag( GameViewLayer.BTN_LIANGPAI )
-    btn_lp:addTouchEventListener( touchFunC )
-    btn_lp:setPressedActionEnabled(true)
-        --加注界面
-    local panelTouchFunc = function(ref, tType)
-        if tType == ccui.TouchEventType.ended then
-            self.root:getChildByName("Panel_chips"):setVisible(false)
-        end
-    end
-    self.root:getChildByName("Panel_chips"):setTouchEnabled(true):addTouchEventListener( panelTouchFunc )
-        --加注的五个按钮
-    for i = 1, 5 do
-        local bet_touchFunC = function(ref, tType)
-            if tType == ccui.TouchEventType.ended then
-                local beishu = i*2
---                if self.straightBet_num < beishu then
---                    if self.straightBet_num == 0 then
---                        self.straightBet_num = 1
---                    end
---                    beishu = beishu - self.straightBet_num
---                end
-                if self.isKanpai == true then
-                    beishu = beishu*2
-                end
-                self._scene:sendAdd(beishu*self.antes_)
-                self.root:getChildByName("Panel_chips"):setVisible(false)
-            end
-        end
-        local btn_bet = self.root:getChildByName("Panel_chips"):getChildByName(string.format("Button_chip%d",i-1)):addTouchEventListener( bet_touchFunC )
-       
-    end
-        --返回按钮
-    local backTouchFunc = function(ref, tType)
-        if tType == ccui.TouchEventType.ended then
-            self._scene:onQueryExitGame()
-        end
-    end
-    self.root:getChildByName("Panel_287"):getChildByName("Button_return"):setZOrder(102)
-    self.root:getChildByName("Panel_287"):getChildByName("Button_return"):addTouchEventListener( backTouchFunc )
-    --规则按钮
-    local ruleTouchFunc = function(ref, tType)
-        if tType == ccui.TouchEventType.ended then
-            local ruleLayer = RuleLayer.new(self)
-            self:addChild(ruleLayer)
-        end
-    end
-    self.root:getChildByName("Panel_287"):getChildByName("Button_rule"):setZOrder(102)
-    self.root:getChildByName("Panel_287"):getChildByName("Button_rule"):addTouchEventListener( ruleTouchFunc )
-    --声音按钮
-    local soundsTouchFunc = function(ref, tType)
-        if tType == ccui.TouchEventType.ended then
-            local setingLayer = SettingLayer.new(self)
-            self:addChild(setingLayer)
-        end
-    end
-    self.root:getChildByName("Panel_287"):getChildByName("Button_voice"):setZOrder(102)
-    self.root:getChildByName("Panel_287"):getChildByName("Button_voice"):addTouchEventListener( soundsTouchFunc )
-end
 --进入游戏
 function GameViewLayer:onEventEnter(bufferData) 
-    self.max_player_num = bufferData.deskinfo.max_player_num
+    dump(bufferData)
+    self.m_unitMoney = bufferData.deskinfo.unit_money
+    self.m_initMoney = bufferData.deskinfo.init_money/bufferData.deskinfo.unit_money
+    self.m_pTime = bufferData.deskinfo.continue_timeout
+    self.m_pTextDizhu:setString(self.m_unitMoney)  --底注
+    self.m_pTextShangxian:setString(bufferData.deskinfo.top_money)--上限
     for key, player_ in ipairs(bufferData.memberinfos) do
-        if player_.uid == GlobalUserItem.tabAccountInfo.userid then
-            self.myPos_ = player_.position
+        if player_.uid == SELF_UID then
+            self.myPosition = player_.position
         end
     end
-    
-    --加载玩家信息
     for key, player_ in ipairs(bufferData.memberinfos) do
-        self:loadPlayerInfo(player_)
+        local player_ = GameRoleItem.new( self.myPosition, player_, self.m_pPanelPlayer, self.m_pPanelAnimation, self.m_pNodeMidCenter )
+        table.insert(self.m_playerTable, player_)
     end
-    --加载房间信息
-    self.antes_ = bufferData.deskinfo.unit_money             --底注
-    self.root:getChildByName("Panel_287"):getChildByName("Label_uplimit_bet"):setString(self.antes_)
-    self.straightBet_Max = self.antes_*10--bufferData.deskinfo.init_money
-    self.straightBet = bufferData.deskinfo.unit_money
-    
-    if #self.playInfoTable == 1 then
-        --显示等待其他玩家进入房间
-        self.waitOthers = ccs.Armature:create("wait-player")
-        self.waitOthers:setAnchorPoint(cc.p(0,0))
-        self.waitOthers:setPosition(cc.p(650,180))
-	    self.waitOthers:addTo(self.root:getChildByName("Panel_287"):getChildByName("animHodler"))
-	    self.waitOthers:getAnimation():playWithIndex(0)
-        self.waitNextGame = true
-    end
-    --初始化加注panel
-    for i = 1, 5 do
-        local parent_node = self.root:getChildByName("Panel_chips"):getChildByName(string.format("Button_chip%d",i-1))
-        parent_node:getChildByName(string.format("Label_chip%d",i-1)):setVisible(false)
-        local label_money = cc.LabelBMFont:create("", "goold2zjh/fnt/xuanbeishu.fnt")
-        label_money:setPosition(50,50)
-        parent_node:addChild(label_money)
-        local label_value = 0
-        if self.isKanpai == false then
-            label_value = self.antes_*i*2
-        else
-            label_value = self.antes_*i*4
-        end
-        label_money:setString(label_value)
-        table.insert(self.chipButtonLabel,label_money)
-    end
-    self:buttonState()
+    self:hideAllBtn()
 end
 --有玩家进入房间
 function GameViewLayer:onEventCome(bufferData)
-    print("***********--------onEventCome")
-    self:loadPlayerInfo(bufferData.memberinfo)
-    if self.waitPlayer ~= nil then
-        self.waitPlayer:removeFromParent()
-        self.waitPlayer = nil
-    end
+    dump(bufferData)
+    local player_ = GameRoleItem.new( self.myPosition, bufferData.memberinfo, self.m_pPanelPlayer, self.m_pPanelAnimation, self.m_pNodeMidCenter )
+    table.insert(self.m_playerTable, player_)
 end
 --有玩家离开房间
 function GameViewLayer:onEventLeave(bufferData)   
-    print("***********--------onEventLeave")
-    for key, player_ in ipairs(self.playInfoTable) do
-        if player_.uid == bufferData then
-            player_.panel:removeFromParent()
-            table.remove(self.playInfoTable,key)
-            for key, card_ in ipairs(player_.cardSpTab) do
-                card_:removeFromParent()
-                table.remove(player_.cardSpTab,key)
-            end
-            player_.cardSpTab = {}
+    dump(bufferData)
+    for key, player_ in ipairs(self.m_playerTable) do
+        if bufferData == player_.uid then
+            player_:onEventPlayerLeave()
+            table.remove(self.m_playerTable,key)
         end
     end
-    
+--    self._scene:sendReady()
 end
 --有玩家准备
-function GameViewLayer:onEventReady(bufferData)  
-    if bufferData == GlobalUserItem.tabAccountInfo.userid then
-        for i=#self.playInfoTable,1,-1 do
-            local player_ = self.playInfoTable[i]
-            if player_.uid ~= bufferData then
-                player_.panel:removeFromParent()
-                table.remove(self.playInfoTable,key)
-                for key, card_ in ipairs(player_.cardSpTab) do
-                    card_:removeFromParent()
-                    table.remove(player_.cardSpTab,key)
-                end
-                player_.cardSpTab = {}
-            end
-        end
-        self.waitPlayer = cc.LabelTTF:create("正在为您匹配桌子，请稍后···",  "Arial", 28)
-        self.waitPlayer:setPosition(cc.p(667,375))
-        self.waitPlayer:addTo(self.root:getChildByName("Panel_287"))
+function GameViewLayer:onEventReady(bufferData)
+    print("玩家准备-------------------")
+    dump(bufferData)
+    if bufferData == SELF_UID then
+        self.m_pBtnZhunbei:setVisible(false)
     end
 end
 --更新自身钱包
 function GameViewLayer:onEventUpdate_intomoney(bufferData)   
-    for key, player_ in ipairs(self.playInfoTable) do
-        if player_.uid == GlobalUserItem.tabAccountInfo.userid then
-            player_.panel:getChildByName("Label_score"):setString(bufferData)
-        end
-    end
     
 end
 --玩家弃牌
 function GameViewLayer:onEventDrop(bufferData)
-    local soundIndex = math.random(1,5)
-    ExternalFun.playSoundEffect(string.format("Quit_0%d.mp3",soundIndex))
-    if bufferData.uid == GlobalUserItem.tabAccountInfo.userid then
-        self.waitNextGame = true
-        if bufferData.pk == 1 then
-            self.isCanBipai = true
-        else
-            self.isCanBipai = false
+    print("玩家弃牌-------------------")
+    dump(bufferData)
+    for key, player_ in ipairs(self.m_playerTable) do
+        if bufferData.uid == player_:getUserid() then
+            player_:onEventPlayerDrop()
+            self:showQuitCardAction(player_)
+            self:updateButton(false)
         end
-        if self.isZidongQipai == true then
-            self.isZidongQipai = false
-        else
-            self.isZidongQipai = true
-        end
-     end
+    end
 
-    for key, player_ in ipairs(self.playInfoTable) do
-        if bufferData.uid == player_.uid then
-            --播放弃牌动画
-            local qipai = ccs.Armature:create("qipai")
-            qipai:setAnchorPoint(cc.p(0.5,0.5))
-            qipai:setPosition(GameViewLayer.QIPAIPOS[player_.chairID+1])
-	        qipai:addTo(self.root:getChildByName("Panel_287"):getChildByName("animHodler"))
-	        qipai:getAnimation():playWithIndex(0) 
-            if player_.chairID ~= 2 then
-                qipai:setScale(0.7)
-            end     
-            if player_.chairID == 1 or player_.chairID == 0 then
-                for i = 1, 3 do
-                    self:PokerInitWithTexture(player_.cardSpTab[i],56)
-                    player_.cardSpTab[i]:setSkewX(0)
-                end
-                player_.cardSpTab[1]:runAction(cc.Sequence:create( cc.MoveBy:create(0,cc.p(30,-7)),cc.RotateTo:create(0.5,-20) ))
-                player_.cardSpTab[2]:runAction(cc.MoveBy:create(0,cc.p(20,0)))
-                player_.cardSpTab[3]:runAction(cc.Sequence:create( cc.MoveBy:create(0,cc.p(10,7)),cc.RotateTo:create(0.5,20) ))
-            elseif player_.chairID == 3 or player_.chairID == 4 then
-                for i = 1, 3 do
-                    self:PokerInitWithTexture(player_.cardSpTab[i],56)
-                    player_.cardSpTab[i]:setSkewX(0)
-                end
-                player_.cardSpTab[1]:runAction(cc.Sequence:create( cc.MoveBy:create(0,cc.p(-10,-7)),cc.RotateTo:create(0.5,-20) ))
-                player_.cardSpTab[2]:runAction(cc.MoveBy:create(0,cc.p(-20,0)))
-                player_.cardSpTab[3]:runAction(cc.Sequence:create( cc.MoveBy:create(0,cc.p(-30,7)),cc.RotateTo:create(0.5,20) ))
-            elseif player_.chairID == 2 then
-                if self.isKanpai == false then
-                    for i = 1, 3 do
-                        self:PokerInitWithTexture(player_.cardSpTab[i],56)
-                    end
-                end                
+    for key, player_ in ipairs(self.m_playerTable) do        
+        if player_:getUserid() == SELF_UID then
+            if bufferData.ply == SELF_UID then
+                --第一次轮到自己以后就可以看牌
+                player_:showKanpaiButton(true)
+                self.m_allAboutChip = bufferData.opt
+                self:updateButton(true)
             end 
-            --播放泡泡框动画
-            local qipaiAct = ccs.Armature:create("paopaokuang_zhajinhua")
-            qipaiAct:setAnchorPoint(cc.p(0,0))
-            qipaiAct:setPosition(GameViewLayer.PAOPAOKUANGPOS[player_.chairID+1])
-	        qipaiAct:addTo(self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"))
-	        qipaiAct:getAnimation():play("Animation7")
-            local func = function (armature,movementType,movementID)
-                    if movementType == ccs.MovementEventType.complete or movementType == ccs.MovementEventType.loopComplete then
-                        if armature then 
-                            armature:removeFromParent()
-                        end
-                    end
-                end
-            qipaiAct:getAnimation():setMovementEventCallFunc(func)
-            player_["isCanBipai"] = false                                     
+           if bufferData.uid == SELF_UID then
+                --如果自己还没看牌就弃牌
+                player_:showKanpaiButton(false)
+                self:hideAllBtn()
+            end  
         end
-    end
-    if bufferData.ply == GlobalUserItem.tabAccountInfo.userid then
-        self.isMyState = true
-    end
-    self:buttonState()
-    --倒计时
-    for key, player_ in ipairs(self.playInfoTable) do
-        if bufferData.ply == player_.uid then
-            local chair_id = player_.chairID;
-            self.timeOut_progress = bufferData.time
-            self:showProgrssTimer(chair_id+1)
+        --开启倒计时
+        if player_:getUserid() == bufferData.ply then
+            self:doAction(player_,bufferData.time)
         end
-    end
+    end 
 end
 --跟注/加注
 function GameViewLayer:onEventAdd(bufferData)
-    
-    local straightBet_num_last = self.straightBet_num
-    self.straightBet = bufferData.chip[1] * self.antes_
-    self.straightBet_num = bufferData.chip[1]
-    self.root:getChildByName("Panel_287"):getChildByName("Label_unit_bet"):setString(self.straightBet)
-    self.root:getChildByName("Panel_287"):getChildByName("Image_zzbg"):getChildByName("Label_current_total_bet"):setString(bufferData.chip[2])
-
-    local chair_id_ = 0         --获取下注玩家的位置
-    local isKanpai_ = false     --获取下注玩家是否看牌，用作动画的选择
-    for key, player_ in ipairs(self.playInfoTable) do       --设置加注的玩家的金钱改变
-        if bufferData.uid == player_.uid then
-            player_.panel:getChildByName("BitmapLabel_21"):setString(bufferData.chip[4])
-            player_.panel:getChildByName("Label_score"):setString(bufferData.chip[3])
-            player_.money_now = bufferData.chip[3]
-            chair_id_ = player_.chairID
-            isKanpai_ = player_.isKanpai
-        end        
+    print("跟注/加注-------------------")
+    dump(bufferData)
+    local isGenzhu = true --#true 跟注，false 加注
+    local lastInitMoney = self.m_initMoney
+    self.m_initMoney = bufferData.chip[1]
+    if self.m_initMoney>lastInitMoney then
+        isGenzhu = false
     end
-    if bufferData.ply == GlobalUserItem.tabAccountInfo.userid then  --是否轮到自身回合
-        self.isMyState = true
-        if bufferData.pk == 1 then
-            self.isCanBipai = true
-        else
-            self.isCanBipai = false
-        end
-    else
-        self.isMyState = false
-    end
-    --播放泡泡框提示动画
-    if straightBet_num_last == bufferData.chip[1] or bufferData.chip[1] == 1 then
-        local soundIndex = math.random(1,3)
-        ExternalFun.playSoundEffect(string.format("Call_0%d.mp3",soundIndex))
-        local genzhuAct = ccs.Armature:create("paopaokuang_zhajinhua")
-        genzhuAct:setAnchorPoint(cc.p(0,0))
-        genzhuAct:setPosition(GameViewLayer.PAOPAOKUANGPOS[chair_id_+1])
-	    genzhuAct:addTo(self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"))
-	    genzhuAct:getAnimation():play("Animation1")
-        local func = function (armature,movementType,movementID)
-                if movementType == ccs.MovementEventType.complete or movementType == ccs.MovementEventType.loopComplete then
-                    if armature then 
-                        armature:removeFromParent()
-                    end
-                end
-            end
-        genzhuAct:getAnimation():setMovementEventCallFunc(func)
-    else
-        local soundIndex = math.random(1,4)
-        ExternalFun.playSoundEffect(string.format("Add_0%d.mp3",soundIndex))
-        local jiazhuAct = ccs.Armature:create("paopaokuang_zhajinhua")
-        jiazhuAct:setAnchorPoint(cc.p(0,0))
-        jiazhuAct:setPosition(GameViewLayer.PAOPAOKUANGPOS[chair_id_+1])
-	    jiazhuAct:addTo(self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"))
-	    jiazhuAct:getAnimation():play("Animation4")
-        local func = function (armature,movementType,movementID)
-                if movementType == ccs.MovementEventType.complete or movementType == ccs.MovementEventType.loopComplete then
-                    if armature then 
-                        armature:removeFromParent()
-                    end
-                end
-            end
-        jiazhuAct:getAnimation():setMovementEventCallFunc(func)
-    end
---    --播放手的动画 
-    local shouAction = nil
-    local name = "anim" .. chair_id_
-    if chair_id_ == 2 then
-        shouAction = ccs.Armature:create("xiazhu_qian")        
-        shouAction:setPosition(cc.p(667,0))
-	    shouAction:getAnimation():playWithIndex(0)
-    elseif chair_id_ == 1 then
-        shouAction = ccs.Armature:create("xiazhu_danshou")        
-        shouAction:setPosition(cc.p(0,230))
-	    shouAction:getAnimation():playWithIndex(0)
-    elseif chair_id_ == 0 then
-        shouAction = ccs.Armature:create("xiazhu_danshou")        
-        shouAction:setPosition(cc.p(0,500))
-	    shouAction:getAnimation():playWithIndex(0)
-    elseif chair_id_ == 3 then
-        shouAction = ccs.Armature:create("xiazhu_danshou")        
-        shouAction:setPosition(cc.p(1000,230))
-	    shouAction:getAnimation():playWithIndex(1)
-    elseif chair_id_ == 4 then
-        shouAction = ccs.Armature:create("xiazhu_danshou")        
-        shouAction:setPosition(cc.p(1000,500))
-	    shouAction:getAnimation():playWithIndex(1)
-    end
-    shouAction:setAnchorPoint(cc.p(0,0))
-    shouAction:addTo(self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"))
-	shouAction:setName(name)
-    local funcShou = function(armature,movementType,movementID)
-        if movementType == ccs.MovementEventType.complete or movementType == ccs.MovementEventType.loopComplete then
-            self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"):removeChildByName(name)
+    for key, player_ in ipairs(self.m_playerTable) do
+        if bufferData.uid == player_:getUserid() then
+            --自己回合结束
+            player_:onEventPlayerAdd(bufferData , isGenzhu)
+            self:updateButton(false)
+            player_:updateMoney( bufferData.chip[3], bufferData.chip[4] )  --更新自己的钱  背包的钱/总下注的钱  
+	        player_:flytoCenterCoin(bufferData.chip[5])	    --飞金币  发起比牌的玩家交钱     --本次下的钱
+            self:setColorPool(bufferData.chip[2])           --更新桌面显示的钱      总下注
         end
     end
-    shouAction:getAnimation():setMovementEventCallFunc(funcShou)
-    --创建筹码及其动画
-    local x_1 = math.random(410, 910)
-    local y_1 = math.random(330, 410)
-    local move_1 = cc.MoveTo:create(0.3,cc.p(x_1,y_1))
-    local chip_parent_node = self.root:getChildByName("Panel_287"):getChildByName("choumaHolder")
-    if isKanpai_ == false then
-        local beishu,ttt = math.modf(bufferData.chip[1]/2)+1
-        local chip_1 = cc.Sprite:createWithTexture(self.chipImageRes[beishu])
-        chip_parent_node:addChild(chip_1)
-        chip_1:setPosition(GameViewLayer.CHIPPOS[chair_id_+1])
-        chip_1:setScale(0.6)
-        local label_money = cc.LabelBMFont:create("", "goold2zjh/fnt/xuanbeishu.fnt")
-        label_money:setPosition(54,55)
-        chip_1:addChild(label_money)
-        label_money:setString(bufferData.chip[5])
-        chip_1:runAction(move_1)
-        
-        table.insert(self.chip_sprite_table,chip_1)
-    else
-        local beishu,ttt = math.modf(bufferData.chip[1]/2)+1
-        local chip_1 = cc.Sprite:createWithTexture(self.chipImageRes[beishu])
-        chip_parent_node:addChild(chip_1)
-        chip_1:setPosition(GameViewLayer.CHIPPOS[chair_id_+1])
-        chip_1:setScale(0.6)
-        local label_money = cc.LabelBMFont:create("", "goold2zjh/fnt/xuanbeishu.fnt")
-        label_money:setPosition(54,55)
-        chip_1:addChild(label_money)
-        label_money:setString(bufferData.chip[5]/2)
-        chip_1:runAction(move_1)
-        
-        local chip_2 = cc.Sprite:createWithTexture(self.chipImageRes[beishu])
-        chip_parent_node:addChild(chip_2)
-        chip_2:setPosition(GameViewLayer.CHIPPOS[chair_id_+1])
-        chip_2:setScale(0.6)
-        local label_money_2 = cc.LabelBMFont:create("", "goold2zjh/fnt/xuanbeishu.fnt")
-        label_money_2:setPosition(54,55)
-        chip_2:addChild(label_money_2)
-        label_money_2:setString(bufferData.chip[5]/2)
-        local x_2 = math.random(410, 910)
-        local y_2 = math.random(330, 410)
-        local move_2 = cc.MoveTo:create(0.3,cc.p(x_2,y_2))
-        chip_2:runAction(move_2)
-
-        table.insert(self.chip_sprite_table,chip_1)
-        table.insert(self.chip_sprite_table,chip_2)
-    end
-    self:buttonState()
-    --倒计时
-    for key, player_ in ipairs(self.playInfoTable) do
-        if bufferData.ply == player_.uid then
-            local chair_id = player_.chairID;
-            self.timeOut_progress = bufferData.time
-            self:showProgrssTimer(chair_id+1)
+    for key, player_ in ipairs(self.m_playerTable) do        
+        if player_:getUserid() == SELF_UID then
+            if bufferData.ply == SELF_UID then
+                --轮到自己
+                player_:showKanpaiButton(true)
+                self.m_allAboutChip = bufferData.opt
+                self:updateButton(true)
+            end  
         end
-    end
+        --开启倒计时
+        if player_:getUserid() == bufferData.ply then
+            self:doAction(player_,bufferData.time)
+        end
+    end 
 end
 --发牌
 function GameViewLayer:onEventRun(bufferData) 
-    print("********************------------onEventRun")
-    ExternalFun.playSoundEffect("heguan-fapai.mp3")
-    if self.waitOthers ~= nil then
-        self.waitOthers:removeFromParent()
-        self.waitOthers = nil
+    print("玩家发牌-------------------")
+    dump(bufferData)
+    self.m_onGamePlayers = bufferData.us
+    self.m_pPanelCards:removeAllChildren()
+    self.m_pPanelLight:removeAllChildren()
+	self.m_pPanelCards:setVisible(true)
+    self:isShowMaskPanel(false)	--遮罩
+    self:updateButton(false)
+    --清除玩家自己位置前的等待下局游戏动画
+--    self:freshXiaZhuBtn(false, tableinfo.basecoin)
+    for key, player_ in ipairs(self.m_playerTable) do
+        --清除所有玩家的状态
+        player_:reSetPlayer()
     end
-    if self.waitNext ~= nil then
-        self.waitNext:removeFromParent()
-        self.waitNext = nil
-    end
-    self.straightBet_num = bufferData.rm[2]
-    for key, uid_ in ipairs(bufferData.us) do
-        if uid_ == GlobalUserItem.tabAccountInfo.userid then
-            self.waitNextGame = false
-        end
-        for key_, player_ in ipairs(self.playInfoTable) do
-            if uid_ == player_.uid then
-                player_["isCanBipai"] = true
+    --飞底注金币
+    self:setColorPool(#bufferData.us * self.m_unitMoney)           --更新桌面显示的钱      总下注
+    for key, player_ in ipairs(self.m_playerTable) do
+        for key_, user in ipairs(bufferData.surplus_money_info) do
+            if player_:getUserid() == user[1] then
+                player_:updateMoney( user[2], self.m_unitMoney )  --更新自己的钱  背包的钱/总下注的钱  
+	            player_:flytoCenterCoin(self.m_unitMoney)	    --飞金币  发起比牌的玩家交钱     --本次下的钱
             end
         end
-        
-    end
-    if bufferData.ply == GlobalUserItem.tabAccountInfo.userid then
-        self.isMyState = true
-        if bufferData.pk == 1 then
-            self.isCanBipai = true
-        else
-            self.isCanBipai = false
-        end
-    else
-        self.isMyState = false
-    end
-    --压底注动画
-    for key, player_ in ipairs(self.playInfoTable) do
-        for key, uid_ in ipairs(bufferData.us) do
-            if uid_ == player_.uid then
-                local chair_id = player_.chairID
-                local x_1 = math.random(410, 910)
-                local y_1 = math.random(330, 410)
-                local move_1 = cc.MoveTo:create(0.3,cc.p(x_1,y_1))
-                local chip_parent_node = self.root:getChildByName("Panel_287"):getChildByName("choumaHolder")
-                local chip_1 = cc.Sprite:createWithTexture(self.chipImageRes[1])
-                chip_parent_node:addChild(chip_1)
-                chip_1:setPosition(GameViewLayer.CHIPPOS[chair_id+1])
-                chip_1:setScale(0.6)
-                local label_money = cc.LabelBMFont:create("", "goold2zjh/fnt/xuanbeishu.fnt")
-                label_money:setPosition(54,55)
-                chip_1:addChild(label_money)
-                label_money:setString(self.antes_)
-                chip_1:runAction(move_1)
-                table.insert(self.chip_sprite_table,chip_1)
-                player_.panel:getChildByName("BitmapLabel_21"):setString(self.antes_)
-            end
-        end        
-    end
-    
-    self.root:getChildByName("Panel_287"):getChildByName("Image_zzbg"):getChildByName("Label_current_total_bet"):setString(#bufferData.us*self.antes_)
-    
+    end    
     --发牌动画
-    local playerNumber = #bufferData.us --本局参与玩家的总数
-    local js = 0                        --计数器
-    local cardNums = playerNumber *3    --需要创建的牌的总数
-    local OnFapaiUpdata = function ()
-        if js == cardNums then
-            --倒计时
-            for key, player_ in ipairs(self.playInfoTable) do
-                if bufferData.ply == player_.uid then
-                    local chair_id = player_.chairID;
-                    self.timeOut_progress = bufferData.time - 3 
-                    self:showProgrssTimer(chair_id+1)
+    self:crateFlyCards()
+
+    for key, player_ in ipairs(self.m_playerTable) do        
+        if player_:getUserid() == SELF_UID then
+            if bufferData.ply == SELF_UID then
+                --第一次轮到自己以后就可以看牌                
+                local showBut = function()
+                    player_:showKanpaiButton(true)
                 end
+                self:doSomethingLater(showBut,1.5)
+                self.m_allAboutChip = bufferData.opt
+                self:updateButton(true)
+            else
+                self:updateButton(false)
             end
-            cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self._FaPaiFun)
-            self._FaPaiFun = nil
-            self:buttonState()
-            ExternalFun.playSoundEffect("lottery_xz_start.mp3")
-        else
-            ExternalFun.playSoundEffect("fapai.mp3")
-            local chairId_ = js % playerNumber
-            local card_index,ttt = math.modf(js/playerNumber)+1 --第几张牌
-            local scaleX_num = 1     --最后的缩放系数X
-            local scaleY_num = 1     --最后的缩放系数Y
-            local player_ = self.playInfoTable[chairId_+1]
-            local card_ = self:createPoker(55)
-            card_:addTo(self.root:getChildByName("Panel_287"):getChildByName("Panel_pai"))
-            table.insert(player_.cardSpTab,card_)
-            card_:setPosition(cc.p(645,475))
-            card_:setScale(0.2)
-            if player_.chairID == 0 then
-                scaleX_num = 0.45
-                scaleY_num = 0.35
-                card_:setSkewX(20)
-            elseif player_.chairID == 1 then
-                scaleX_num = 0.55
-                scaleY_num = 0.4
-                card_:setSkewX(20)
-            elseif player_.chairID == 3 then
-                scaleX_num = 0.55
-                scaleY_num = 0.4
-                card_:setSkewX(-20)
-            elseif player_.chairID == 4 then
-                scaleX_num = 0.45
-                scaleY_num = 0.35
-                card_:setSkewX(-20)
-            end
-            card_:runAction(cc.Spawn:create(cc.ScaleTo:create(0.3,scaleX_num,scaleY_num),cc.MoveTo:create(0.3,GameViewLayer.POKERPOS[player_.chairID+1][card_index])))            
+            
         end
-        js = js+1
-    end
-    self._FaPaiFun = cc.Director:getInstance():getScheduler():scheduleScriptFunc(function()
-                OnFapaiUpdata()
-            end, 0.2, false) 
+        --开启倒计时
+        if player_:getUserid() == bufferData.ply then
+            self:doAction(player_,bufferData.time)
+        end  
+    end 
 end
 --中途进入房间
 function GameViewLayer:onEventRun2(bufferData) 
-    --设置中途进入的自身状态
-    for key, info_ in ipairs(bufferData.cs) do
-        if info_[1] == GlobalUserItem.tabAccountInfo.userid then
-            if info_[4] == 1 then
-                self.isHalfWay = true
-                --等待下一局游戏开始
-                self.waitNext = ccs.Armature:create("dengdai_1")
-                self.waitNext:setAnchorPoint(cc.p(0,0))
-                self.waitNext:setPosition(cc.p(650,180))
-	            self.waitNext:addTo(self.root:getChildByName("Panel_287"):getChildByName("animHodler"))
-	            self.waitNext:getAnimation():playWithIndex(0)
-            end
-        end
-    end
-    --加载桌面信息
-    self.root:getChildByName("Panel_287"):getChildByName("Label_unit_bet"):setString(bufferData.chip[1]*self.antes_)    --当前底注
-    for key, player_ in ipairs(self.playInfoTable) do           --遍历表里玩家
-        for key_, playerinfo_ in ipairs(bufferData.cs) do
-            if player_.uid == playerinfo_[1] then
-                player_.panel:getChildByName("BitmapLabel_21"):setString(playerinfo_[3])
-                if playerinfo_[4] == 0 then     --参与了本局游戏的玩家
-                    if playerinfo_[2] == 0 then         --该玩家为暗牌
-                        for i = 1, 3 do
-                            player_.isCanBipai = true
-                            local card_ = self:createPoker(55)
-                            card_:addTo(self.root:getChildByName("Panel_287"):getChildByName("Panel_pai"))
-                            table.insert(player_.cardSpTab,card_)
-                            if player_.chairID == 2 then-------------------------------------------------
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                self.isHalfWay = false
-                                self.waitNextGame = false
-                            elseif player_.chairID == 1 then
-                                card_:setSkewX(20)
-                                card_:setScaleX(0.55)
-                                card_:setScaleY(0.4)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                            elseif player_.chairID == 0 then
-                                card_:setSkewX(20)
-                                card_:setScaleX(0.45)
-                                card_:setScaleY(0.35)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                            elseif player_.chairID == 3 then
-                                card_:setSkewX(-20)
-                                card_:setScaleX(0.55)
-                                card_:setScaleY(0.4)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                            elseif player_.chairID == 4 then
-                                card_:setSkewX(-20)
-                                card_:setScaleX(0.45)
-                                card_:setScaleY(0.35)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                            end
-                        end
-                    elseif playerinfo_[2] == 1 then     --该玩家已亮牌
-                        player_.isKanpai = true
-                        player_.isCanBipai = true
-                        for i = 1, 3 do
-                            local card_ = self:createPoker(55)
-                            card_:addTo(self.root:getChildByName("Panel_287"):getChildByName("Panel_pai"))
-                            table.insert(player_.cardSpTab,card_)
-                            if player_.chairID == 2 then
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])                                
-                                self.isKanpai = true
-                                self.isHalfWay = false
-                                self.waitNextGame = false
-                            elseif player_.chairID == 1 then
-                                card_:setSkewX(20)
-                                card_:setScaleX(0.55)
-                                card_:setScaleY(0.4)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 3 then
-                                    self:PokerInitWithTexture(card_,59)
-                                end
-                            elseif player_.chairID == 0 then
-                                card_:setSkewX(20)
-                                card_:setScaleX(0.45)
-                                card_:setScaleY(0.35)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 3 then
-                                    self:PokerInitWithTexture(card_,59)
-                                end
-                            elseif player_.chairID == 3 then
-                                card_:setSkewX(-20)
-                                card_:setScaleX(0.55)
-                                card_:setScaleY(0.4)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 3 then
-                                    self:PokerInitWithTexture(card_,59)
-                                end
-                            elseif player_.chairID == 4 then
-                                card_:setSkewX(-20)
-                                card_:setScaleX(0.45)
-                                card_:setScaleY(0.35)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 3 then
-                                    self:PokerInitWithTexture(card_,59)
-                                end
-                            end
-                            
-                        end
-                    elseif playerinfo_[2] == 2 then     --该玩家为弃牌
-                        for i = 1, 3 do
-                            player_.isCanBipai = false
-                            local card_ = self:createPoker(56)
-                            card_:addTo(self.root:getChildByName("Panel_287"):getChildByName("Panel_pai"))
-                            table.insert(player_.cardSpTab,card_)
-                            local shibai = cc.Sprite:create("goold2zjh/zjh/ts/paimian_qipai.png")
-                            shibai:setPosition(GameViewLayer.QIPAIPOS[player_.chairID+1])
-                            self.root:getChildByName("Panel_287"):getChildByName("animHodler"):addChild(shibai)
-                            if player_.chairID == 2 then
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                self.isQipai = true
-                            elseif player_.chairID == 1 then
-                                card_:setScaleX(0.55)
-                                card_:setScaleY(0.4)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 1 then
-                                    card_:setRotation(-20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(30,-7)))
-                                elseif i == 2 then
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(20,0)))
-                                elseif i == 3 then
-                                    card_:setRotation(20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(10,7)))
-                                end
-                            elseif player_.chairID == 0 then
-                                card_:setScaleX(0.45)
-                                card_:setScaleY(0.35)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 1 then
-                                    card_:setRotation(-20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(30,-7)))
-                                elseif i == 2 then
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(20,0)))
-                                elseif i == 3 then
-                                    card_:setRotation(20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(10,7)))
-                                end
-                            elseif player_.chairID == 3 then
-                                card_:setScaleX(0.55)
-                                card_:setScaleY(0.4)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 1 then
-                                    card_:setRotation(-20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(-10,-7)))
-                                elseif i == 2 then
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(-20,0)))
-                                elseif i == 3 then
-                                    card_:setRotation(20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(-30,7)))
-                                end
-                            elseif player_.chairID == 4 then
-                                card_:setScaleX(0.45)
-                                card_:setScaleY(0.35)
-                                card_:setPosition(GameViewLayer.POKERPOS[player_.chairID+1][i])
-                                if i == 1 then
-                                    card_:setRotation(-20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(-10,-7)))
-                                elseif i == 2 then
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(-20,0)))
-                                elseif i == 3 then
-                                    card_:setRotation(20)
-                                    card_:runAction(cc.MoveBy:create(0,cc.p(-30,7)))
-                                end
-                            end                                                       
-                        end
-                    end                
-                end
-            end
-        end        
-    end
-    for key, player_ in ipairs(self.playInfoTable) do
-        if player_.uid == GlobalUserItem.tabAccountInfo.userid and #bufferData.cards == 3 then
-            for i = 1, 3 do
-                self:PokerInitWithTexture(player_.cardSpTab[i],bufferData.cards[i]+1)
-            end            
-        end
-        --倒计时
-        if bufferData.pid[2] == player_.uid then
-            local chair_id = player_.chairID;
-            self.timeOut_progress = bufferData.time
-            self:showProgrssTimer(chair_id+1)
-        end
-    end
-
-    
-    if bufferData.pid[2] == GlobalUserItem.tabAccountInfo.userid then
-        self.isMyState = true
-    end
-    self:buttonState()
-
-    
+    print("中途进入房间-------------------")
+    dump(bufferData)
 end
 --看牌
 function GameViewLayer:onEventShow(bufferData) 
-    local soundIndex = math.random(1,3)
-    ExternalFun.playSoundEffect(string.format("Look_0%d.mp3",soundIndex))
-    for key, player_ in ipairs(self.playInfoTable) do
-        if bufferData.uid == player_.uid then
-            self:PokerInitWithTexture(player_.cardSpTab[3],59)
-            player_.isKanpai = true
-            if bufferData.uid == GlobalUserItem.tabAccountInfo.userid then
-                self.isKanpai = true
-                for i = 1, 3 do
-                    self:PokerInitWithTexture(player_.cardSpTab[i],bufferData.cards[i]+1)
-                end                
-                for i = 1, 5 do
-                    self.chipButtonLabel[i]:setString(self.antes_*i*4)
-                end                
-            end
-            --播放泡泡框动画
-            local kanpaiAct = ccs.Armature:create("paopaokuang_zhajinhua")
-            kanpaiAct:setAnchorPoint(cc.p(0,0))
-            kanpaiAct:setPosition(GameViewLayer.PAOPAOKUANGPOS[player_.chairID+1])
-	        kanpaiAct:addTo(self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"))
-	        kanpaiAct:getAnimation():play("Animation5")
-            local func = function (armature,movementType,movementID)
-                    if movementType == ccs.MovementEventType.complete or movementType == ccs.MovementEventType.loopComplete then
-                        if armature then 
-                            armature:removeFromParent()
-                        end
-                    end
-                end
-            kanpaiAct:getAnimation():setMovementEventCallFunc(func)
+    print("玩家看牌-------------------")
+   dump(bufferData)
+    for key, player_ in ipairs(self.m_playerTable) do
+        if bufferData.uid == player_:getUserid() then
+            player_:onEventPlayerShow(bufferData)
         end
-    end    
-    self:buttonState()
+        if bufferData.uid == SELF_UID then
+            --第一次轮到自己以后就可以看牌
+            player_:showKanpaiButton(false)
+            self.m_allAboutChip = bufferData.opt
+            self:kanUptadeButton()
+        end 
+    end
 end
 --比牌
 function GameViewLayer:onEventVS(bufferData)  
-    ExternalFun.playSoundEffect("PK_01.mp3")
-    for key, player_ in ipairs(self.playInfoTable) do
-        player_.panel:getChildByName("Image_select"):removeAllChildren()
-    end
-    
-    if bufferData.pid[1][3] == GlobalUserItem.tabAccountInfo.userid then
-        self.waitNextGame = true
-    end
-    
-    for key, player_ in ipairs(self.playInfoTable) do
-        if player_.uid == bufferData.pid[1][3] then
-            player_["isCanBipai"] = false
-        end
-    end
-    
-    self.root:getChildByName("Panel_287"):getChildByName("Image_zzbg"):getChildByName("Label_current_total_bet"):setString(bufferData.chip[3])  --更新总下注
-    for key, player_ in ipairs(self.playInfoTable) do
-        if player_.uid == bufferData.pid[1][1] then
-            player_.panel:getChildByName("BitmapLabel_21"):setString(bufferData.chip[4])    --更新发起PK玩家下注钱数
-            player_.panel:getChildByName("Label_score"):setString(bufferData.chip[5])       --更新发起PK玩家剩余钱数
-        end
-    end
-    
-    --播放比牌动画--------------------------------------------------------------------------------------------------------------
-    local pk_parent_node = self.root:getChildByName("Panel_287"):getChildByName("Panel_touch"):setZOrder(101)
-    pk_parent_node:setTouchEnabled(false)
-    pk_parent_node:setSwallowTouches(false)
-    pk_parent_node:setVisible(true)
-    local bipai = ccs.Armature:create("pk_bipai")
-    bipai:setAnchorPoint(cc.p(0.5,0))
-    bipai:setPosition(cc.p( 667, 0))
-	bipai:addTo(pk_parent_node)
-	bipai:getAnimation():playWithIndex(0)
-    local func = function (armature,movementType,movementID)
-            if movementType == ccs.MovementEventType.complete or movementType == ccs.MovementEventType.loopComplete then
-                if armature then 
-                    armature:removeFromParent()
-                end
-            end
-        end
-    bipai:getAnimation():setMovementEventCallFunc(func)
-    
-    --创建头像动画---------------------------------
-    local str_namePk_1 = nil    --发起比牌玩家的名字
-    local str_namePk_2 = nil
-    local sp_iconPk_1 = nil     --发起比牌玩家的头像
-    local sp_iconPk_2 = nil
-    local biPai_uid_1 = bufferData.pid[1][1]    --发起比牌玩家的ID
-    local biPai_uid_2 = nil
-    local bipai_chairId_1 = nil --发起比牌玩家的椅子坐标
-    local bipai_chairId_2 = nil 
-    if bufferData.pid[1][2] == biPai_uid_1 then
-        biPai_uid_2 = bufferData.pid[1][3]
+    print("比牌-------------------")
+    dump(bufferData)
+
+    local finfo_id = bufferData.pid[1][1]
+    local win_id = bufferData.pid[1][2]
+    local lose_id = bufferData.pid[1][3]
+    local cInfo_id = 0
+    if finfo_id == win_id then
+        cInfo_id = lose_id
     else
-        biPai_uid_2 = bufferData.pid[1][2]
+        cInfo_id = win_id
     end
-    for key, player_ in ipairs(self.playInfoTable) do
-        if player_.uid == biPai_uid_1 then     --发起比牌的玩家
-            str_namePk_1 = player_.nickname
-            sp_iconPk_1 = HeadSprite:createClipHead(player_, 100)
-            sp_iconPk_1:setAnchorPoint(cc.p(0.5,0.5))
-            bipai_chairId_1 = player_.chairID
+    local fInfo,cInfo = nil
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getUserid() == finfo_id then
+            fInfo = player_
         end
-        if player_.uid == biPai_uid_2 then     --被比牌的玩家
-            str_namePk_2 = player_.nickname
-            sp_iconPk_2 = HeadSprite:createClipHead(player_, 100)
-            sp_iconPk_2:setAnchorPoint(cc.p(0.5,0.5))
-            bipai_chairId_2 = player_.chairID
+        if player_:getUserid() == cInfo_id then
+            cInfo = player_
         end
-    end
-    
-    local label0 = ccui.Text:create(str_namePk_1 , "Arial", 18)
-    label0:setTextColor(cc.c3b(255,255,255))
-    
-    local label1 = ccui.Text:create(str_namePk_2 , "Arial", 18)
-    label1:setTextColor(cc.c3b(255,255,255))
-    
-    local namebg0 = ccui.ImageView:create("goold2zjh/zjh/bipai_name.png", ccui.TextureResType.localType)
-    local namebg1 = ccui.ImageView:create("goold2zjh/zjh/bipai_name.png", ccui.TextureResType.localType)
-
---    local head0 = ccui.ImageView:create(strHeadIcon, ccui.TextureResType.localType)
---    local head1 = ccui.ImageView:create(strHeadIcon1, ccui.TextureResType.localType)
-
-    local scaleHead = 110/sp_iconPk_1:getContentSize().width
-    
-    sp_iconPk_1:setScale(110/sp_iconPk_1:getContentSize().width)
-    sp_iconPk_2:setScale(110/sp_iconPk_2:getContentSize().width)
-
-    pk_parent_node:addChild(sp_iconPk_1,100)
-    pk_parent_node:addChild(sp_iconPk_2,100)
-
-    sp_iconPk_1:addChild(namebg0,100)
-    sp_iconPk_2:addChild(namebg1,100)
-    namebg0:setPosition(cc.p(sp_iconPk_1:getContentSize().width/2, -20))
-    namebg1:setPosition(cc.p(sp_iconPk_2:getContentSize().width/2, -20))
-    
-    namebg0:addChild(label0)
-    namebg1:addChild(label1)
-    label0:setPosition(cc.p(namebg0:getContentSize().width/2, namebg0:getContentSize().height/2))
-    label1:setPosition(cc.p(namebg1:getContentSize().width/2, namebg0:getContentSize().height/2))
-    --坐标和动作列表
-    local headPy = pk_parent_node:getContentSize().height/2+ sp_iconPk_1:getContentSize().height/2 -35
-    
-    sp_iconPk_1:setPosition(cc.p(-230, headPy))
-    sp_iconPk_2:setPosition(cc.p(pk_parent_node:getContentSize().width+230, headPy))
-    
-
-    --头像入场终点坐标
-    local leftEnd = cc.p(430,headPy + 50)
-    local rightEnd = cc.p(904,headPy+20)
-
-    --头像回去的坐标
-    local backLeftPos = cc.p(70, 98)
-    backLeftPos = GameViewLayer.PLAYER_ICON_POS[bipai_chairId_1+1]
-    
-    local backrightPos = cc.p(70, 98)    --fakePlayerPos[i]
-    backrightPos = GameViewLayer.PLAYER_ICON_POS[bipai_chairId_2+1]
-
-    --头像入场动作
-    local moveleft = cc.MoveTo:create(0.3, leftEnd)
-    local moveRight = cc.MoveTo:create(0.3, rightEnd)
-    --比牌缩放
---    local flag = (biPai_uid_1 == bufferData.pid[3])
-    local function func()
-        if biPai_uid_1 == bufferData.pid[3] then
-            sp_iconPk_1:setColor(cc.c3b(150,150,150))
-        else
-            sp_iconPk_2:setColor(cc.c3b(150,150,150))
+        if player_:getUserid() == lose_id then
+            player_:setIsQipai( true )
         end
-    end
-    local scaleSmall =  cc.Spawn:create(cc.ScaleTo:create(0.5,scaleHead-0.03),cc.CallFunc:create(func))
-    local scaleBig = cc.Spawn:create(cc.ScaleTo:create(0.5,scaleHead+0.03))
+        --开启倒计时
+        if player_:getUserid() == bufferData.ply then
+            self:doAction(player_,bufferData.time)
+        end
+    end  
+	dump(fInfo,"发起人的数据")
+	if fInfo:getChairId() == 1 then
+--		dispatchEvent("stopCountdown")  -- 关闭倒计时
+	end
+    fInfo:updateMoney( bufferData.chip[5], bufferData.chip[4] )  --更新自己的钱  背包的钱/总下注的钱  
+	fInfo:flytoCenterCoin(bufferData.chip[2])	    --飞金币  发起比牌的玩家交钱     --本次下的钱
+    self:setColorPool(bufferData.chip[3])           --更新桌面显示的钱      总下注
 
-    local function funcT()
-        namebg0:setVisible(false)
-    end
+---------------------以上部分需要保留
 
-    local function funcTh()
-        namebg1:setVisible(false)
+--	local sex = cc.loaded_packages.ZhajinhuaModel:getPlayerSexByClientIndex(fclient)
+--	local sexName = sex == 0 and "woman/F_BIPAI" or "man/M_BIPAI"
+--	performWithDelay(self, function ()
+--		cc.loaded_packages.KKMusicPlayer:playEffect(string.format("zhajinhua/sound/%s.mp3", sexName),false)
+--	end,0.5)
+    local sound = function()
+        ExternalFun.playSoundEffect("man/M_BIPAI.mp3")
     end
-    
-    --比牌结束后返回 并隐藏名字
-    local moveBack_left = cc.Spawn:create(cc.MoveTo:create(0.5,backLeftPos), cc.CallFunc:create(funcT))
-    local moveBack_right = cc.Spawn:create(cc.MoveTo:create(0.5,backrightPos), cc.CallFunc:create(funcTh))
-    --最终回调  比牌结束 和 比牌 后 牌的状态改变    
-    local function funcF(args)
-        pk_parent_node:setVisible(true)
-        pk_parent_node:stopAllActions()
-        pk_parent_node:removeAllChildren()
-        for key, player_ in ipairs(self.playInfoTable) do
-            if bufferData.pid[1][3] == player_.uid then
-                player_.panel:setColor(cc.c3b(150,150,150))               
-                if bufferData.pid[1][3] ~= GlobalUserItem.tabAccountInfo.userid then
-                    for i = 1,3 do
-                        self:PokerInitWithTexture(player_.cardSpTab[i],56)
-                    end
-                else
-                    if self.isKanpai == false then
-                        for i = 1,3 do
-                            self:PokerInitWithTexture(player_.cardSpTab[i],56)
-                        end
-                    end
-                end
-                local shibai = cc.Sprite:create("goold2zjh/zjh/ts/lose_b.png")
-                shibai:setPosition(GameViewLayer.QIPAIPOS[player_.chairID+1])                
-                if bufferData.pid[1][3] ~= GlobalUserItem.tabAccountInfo.userid then
-                    shibai:setScale(0.7)
-                end
-                self.root:getChildByName("Panel_287"):getChildByName("animHodler"):addChild(shibai)
-            end
-        end
-        
-    end
-    local fun_left = nil
-    local fun_right = nil
-    if biPai_uid_1 == bufferData.pid[3] then
-        fun_left = scaleSmall
-        fun_right = scaleBig
-    else
-        fun_left = scaleBig
-        fun_right = scaleSmall
-    end
-    local actionList_left = cc.Sequence:create(moveleft, cc.DelayTime:create(0.5),fun_left, cc.DelayTime:create(1.0),moveBack_left)
-    local actionList_right = cc.Sequence:create(moveRight, cc.DelayTime:create(0.5),fun_right, cc.DelayTime:create(1.0),moveBack_right,cc.CallFunc:create(funcF))
-    
-    sp_iconPk_1:runAction(actionList_left)
-    sp_iconPk_2:runAction(actionList_right)
-    
-    local function funcFi()
-        ExternalFun.playSoundEffect("goold2zjh/zjh/sound/gamesolo.mp3")
-    end
-    self:runAction(cc.Sequence:create(cc.DelayTime:create(0.2),cc.CallFunc:create(funcFi)))
-    --倒计时
-    for key, player_ in ipairs(self.playInfoTable) do
-        if bufferData.ply == player_.uid then
-            local chair_id = player_.chairID;
-            self.timeOut_progress = bufferData.time
-            self:showProgrssTimer(chair_id+1)
-        end
-    end
-    if bufferData.ply == GlobalUserItem.tabAccountInfo.userid then
-        self.isMyState = true
-        if bufferData.pk == 1 then
-            self.isCanBipai = true
-        else
-            self.isCanBipai = false
-        end
-        self:runAction(cc.Sequence:create( cc.DelayTime:create(3),cc.CallFunc:create(function()
-                self:buttonState()
-            end) ))
-    else
-        self:buttonState()
-    end
-    
+    self:doSomethingLater(sound,0.5)
+	self:doSomethingLater(function ()
+		    local view = ZhajinhuaVsView.create()   --添加比牌的层   --cc.loaded_packages.App:createLayer("app.games.zhajinhua.ZhajinhuaVsView")	
+		    view:setData(fInfo,cInfo,win_id,self)	--pk层的
+		    self:addChild(view)
+	    end,0.1)
+
+--	local winClient = cc.loaded_packages.ZhajinhuaModel:changeSeat(info.winnerseatindex)    --待删除
+	if finfo_id == SELF_UID or cInfo_id == SELF_UID then
+		if win_id ~= SELF_UID then
+			cInfo:isCanPai(false)
+            cInfo:showKanpaiButton(false)
+		end
+	end
+	local delayFunc = function ()
+		print(finfo_id,"----",cInfo_id,"---------",win_id)
+		if win_id == cInfo_id then
+			if finfo_id == SELF_UID then
+				self:hideAllBtn()
+				fInfo:showDoActionResult("比牌失败")
+			end
+			fInfo:showResultCard(1)
+			fInfo:showPlayerState(3)
+			fInfo:isCanPai(false)
+            fInfo:showKanpaiButton(false)
+		elseif win_id == finfo_id then
+			if cInfo_id == SELF_UID then
+				self:hideAllBtn()
+				cInfo:showDoActionResult("比牌失败")
+			end
+			cInfo:showResultCard(1)
+			cInfo:showPlayerState(3)
+			cInfo:isCanPai(false)
+            cInfo:showKanpaiButton(false)
+		end
+        if bufferData.ply == SELF_UID then --如果下个玩家是自己
+            self.m_allAboutChip = bufferData.opt
+            self:updateButton(true)
+        end        
+	end
+
+	self:doSomethingLater(delayFunc , 1.4)	--当比牌失败的为自己的时候
 end
 --结算
 function GameViewLayer:onEventOver(bufferData)    
-    
-    local isZdqp = true --self.isZidongQipai   --是否是自动弃牌
-    local funAction = cc.CallFunc:create(function()
-        self.timeOut_progress = 3
-        self:showProgrssTimer(3)
-        local winMoney = 0;
-        local winChairId = nil
+    print("结算-------------------")
+    dump(bufferData)
+    self:isShowMaskPanel(false)
+    self:allPlayerStopCD()
+    self:hideAllBtn()
+    local allChild = self.m_pPanelAnimation:getChildren()
+    for key, player_ in ipairs(self.m_playerTable) do
+		player_:stopCD()
+		player_:clearAllLight() --清除着火动画
+		player_:clearLoseAnimation()
+		player_:isCanPai(false)
+        player_:showKanpaiButton(false)
+	end
+
+    local isWin = false
+	local winClient = bufferData.win
+    for key, player_ in ipairs(self.m_playerTable) do
         for key, info_ in ipairs(bufferData.cs) do
-            if bufferData.win == info_[1] then
-                winMoney = info_[2]
-            end
-        end
-    
-        for key, player_ in ipairs(self.playInfoTable) do
-            player_.panel:getChildByName("BitmapLabel_21"):setString(0)
-            if bufferData.win == player_.uid then
-                player_.money_now = player_.money_now + winMoney
-                player_.panel:getChildByName("Label_score"):setString(player_.money_now)
-                winChairId = player_.chairID
-            end
-        end
-    
-        for key, info_ in ipairs(bufferData.gold_nn) do
-            for key_, player_ in ipairs(self.playInfoTable) do
-                if info_[2][1] ~= nil then      --展示可以展示的牌面
-                    if info_[1] == player_.uid then
-                        for i = 1, 3 do
-                            local card_ = player_.cardSpTab[i]
-                            self:PokerInitWithTexture(card_,info_[2][i]+1)
-                        end
+            if player_:getUserid() == info_[1] then
+                --获胜玩家
+                if player_:getUserid() == winClient then
+--		            player_:synSeatInfo()
+	                player_:delayCenterCoinToHead()
+	                player_:delayShowWinMoney(info_[2], self.m_pAtlas_winCoin)--self.winCoinNum)
+                    if player_:getUserid() == SELF_UID then
+                        player_:showSelfWinAnimation()
+			            isWin = true
                     end
-                end
-                if info_[1] == player_.uid then
-                    local panel_win_lose = nil      --展示输赢的钱数动画
-                    if info_[4] > 0 then    
-                        player_.panel:getChildByName("Panel_y"):setVisible(true)
-                        panel_win_lose = player_.panel:getChildByName("Panel_y"):getChildByName("BitmapLabel_WinScore"):setString("+"..info_[4])
-                        player_.panel:getChildByName("Panel_y"):getChildByName("Image_24"):setVisible(true)
-                        if player_.uid == GlobalUserItem.tabAccountInfo.userid then
-                            ExternalFun.playSoundEffect("game_win.mp3")
-                        end
-                    else
-                        player_.panel:getChildByName("Panel_s"):setVisible(true)
-                        panel_win_lose = player_.panel:getChildByName("Panel_s"):getChildByName("BitmapLabel_WinScore"):setString(info_[4])
-                        if player_.uid == GlobalUserItem.tabAccountInfo.userid and info_[2] ~= 0 then
-                            ExternalFun.playSoundEffect("game_lose.mp3")
-                        end
-                    end
-                    panel_win_lose:runAction( cc.Sequence:create( cc.MoveBy:create(1,cc.p(0,10)),cc.CallFunc:create(function()
-                    end) ) )
-                end
-            end       
-        end
-        for key, chip_ in ipairs(self.chip_sprite_table) do
-            chip_:runAction(cc.Sequence:create( cc.MoveTo:create(1,GameViewLayer.PLAYER_ICON_POS[winChairId+1]),cc.CallFunc:create(function()
-                chip_:removeFromParent()
-            end) ))
-        end
-    end)
-    --延时恢复为初始状态的
-    local funTo0 = cc.CallFunc:create(function()         
-        for key, player_ in ipairs(self.playInfoTable) do
-            for key_, card_ in ipairs(player_.cardSpTab) do
-                card_:removeFromParent()
+		        end
+                player_:updateMoney( info_[6], 0 )
+                --展示牌
+                player_:setCardValue(info_[3],info_[4])  --1.牌面，2.牌型
             end
-            player_.cardSpTab = {}
-            player_.isKanpai = false
-            self.root:getChildByName("Panel_287"):getChildByName("animHodler"):removeAllChildren()
-            self.waitNext = nil
-            --输赢钱归位
-            player_.panel:getChildByName("Panel_y"):setVisible(false)
-            player_.panel:getChildByName("Panel_s"):setVisible(false)
-            player_.panel:getChildByName("Panel_y"):getChildByName("BitmapLabel_WinScore"):setPosition(GameViewLayer.WIN_LOSE_LABEL_POS[player_.chairID+1])
-            player_.panel:getChildByName("Panel_s"):getChildByName("BitmapLabel_WinScore"):setPosition(GameViewLayer.WIN_LOSE_LABEL_POS[player_.chairID+1])
         end
-        --清楚全部筹码
-        self.root:getChildByName("Panel_287"):getChildByName("choumaHolder"):removeAllChildren()
-        self.chip_sprite_table = {}
-        
-    end)
-    --延时发送准备
-    local fun_ready = cc.CallFunc:create(function()
-        if isZdqp == false then
-            self._scene:sendReady()
-        else 
-            self.root:getChildByName("compareBg"):setVisible(true)
-            self.root:getChildByName("Panel_Entrust"):setVisible(true)
-            self.isZidongQipai = false
-        end
-    end)
-    self:runAction(cc.Sequence:create( funAction,cc.DelayTime:create(2),funTo0,cc.DelayTime:create(1),fun_ready ))
+        --开启倒计时
+        if player_:getUserid() == SELF_UID then
+            self:doAction(player_,bufferData.time)
+        end	
+	end
+
+    self:setColorPool(0)
+	self:hideVsTps()
+    self:runAction(cc.Sequence:create(cc.DelayTime:create(3),cc.CallFunc:create(function()
+        self.m_pBtnZhunbei:setVisible(true)
+    end)))
 end
 --游戏结束
 function GameViewLayer:onEventDeskover(bufferData)
---    if self.isZidongQipai == true then                 --时间到了自动弃牌
---        self.root:getChildByName("compareBg"):setVisible(true)
---        self.root:getChildByName("Panel_Entrust"):setVisible(true)
---        self.isZidongQipai = false
---    end
-    --及时恢复为初始状态的
-    self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd"):getChildByName("Image_a"):setVisible(true)
-    self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd"):getChildByName("Image_l"):setVisible(false)
-    self.isKanpai =  false
-    self.isHalfWay = false
-    self.isQipai = false
-    self.isGendaodi = false    
-    self.straightBet = 0        --单注
-    self.straightBet_num = 0    --单注（0-10）
-    self.totalBet = 0           --总下注
-    self.root:getChildByName("Panel_287"):getChildByName("Label_unit_bet"):setString(self.straightBet)
-    self.root:getChildByName("Panel_287"):getChildByName("Image_zzbg"):getChildByName("Label_current_total_bet"):setString(self.totalBet)
-    for i = 1, 5 do
-        self.chipButtonLabel[i]:setString(self.antes_*i*2)
-    end
-end
---加载玩家信息
-function GameViewLayer:loadPlayerInfo(playerInfo)
-    local isHave = false    --判断玩家信息表中是否已存在该玩家信息
-    for key, player_ in ipairs(self.playInfoTable) do
-        if playerInfo.uid == player_.uid then
-            isHave = true
-        end
-    end
-    if isHave ~= true then
-        table.insert(self.playInfoTable,playerInfo)
-    end
-    playerInfo["chairID"] = self:SwitchViewChairID(playerInfo.position)
-
-    local panel_ = nil
-    if playerInfo.chairID == 2 then
-        panel_ = ccs.GUIReader:getInstance():widgetFromJsonFile("goold2zjh/player_ui_me.json") 
-    elseif playerInfo.chairID == 1 or playerInfo.chairID == 0 then
-        panel_ = ccs.GUIReader:getInstance():widgetFromJsonFile("goold2zjh/player_ui.json")
-    elseif playerInfo.chairID == 3 or playerInfo.chairID == 4 then
-        panel_ = ccs.GUIReader:getInstance():widgetFromJsonFile("goold2zjh/player_ui_0.json") 
-    end
-    panel_:getChildByName("Label_name"):setString(playerInfo.nickname)
-    panel_:getChildByName("Label_score"):setString(playerInfo.into_money)
-    local icon = panel_:getChildByName("Button_head")
-    local head = HeadSprite:createClipHead(playerInfo, 100)
-    head:setAnchorPoint(cc.p(0.08,0.08))
-    head:setScale(120/head:getContentSize().width)
-    icon:addChild(head)
-    panel_:addTo(self.root:getChildByName("Panel_287"):getChildByName("node_player"):getChildByName("player_node_"..playerInfo.chairID))
-    playerInfo["money_now"] = playerInfo.into_money         --玩家身上的钱
-    playerInfo["panel"] = panel_                            --玩家panel
-    panel_:getChildByName("BitmapLabel_21"):setString("0")  --玩家自身总下注
-    panel_:getChildByName("Image_Banker"):setVisible(false) --庄家角标
-    playerInfo["cardSpTab"] = {}                            --存放玩家牌的表
-    playerInfo["isKanpai"] = false                          --玩家是否看牌标志位
-    playerInfo["isCanBipai"] = false                           --玩家是否可以被比牌
-    local fun_bipai = function(ref, tType)
-        if tType == ccui.TouchEventType.ended then          
-           self._scene:sendVS(playerInfo.uid)
-        end
-    end
-    panel_:getChildByName("Image_select"):addTouchEventListener(fun_bipai)
-end
---按钮的回调事件
-function GameViewLayer:onButtonClickedEvent(Tag,Ref)
-    for key, player_ in ipairs(self.playInfoTable) do
-        player_.panel:getChildByName("Image_select"):removeAllChildren()
-        player_.panel:getChildByName("Image_select"):setVisible(false)
-    end
-
-    if Tag == GameViewLayer.BTN_GENDAODI then       --跟到底
-        if self.isGendaodi == false then
-            self.isGendaodi = true
-            self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd"):getChildByName("Image_l"):setVisible(true)
-            self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd"):getChildByName("Image_a"):setVisible(false)
-            self:buttonState()
-        else
-            self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd"):getChildByName("Image_a"):setVisible(true)
-            self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd"):getChildByName("Image_l"):setVisible(false)
-            self.isGendaodi = false
-            self:buttonState()
-        end        
-    elseif Tag == GameViewLayer.BTN_QIPAI then      --弃牌
-        self.isZidongQipai = true
-        self._scene:sendDrop()
-    elseif Tag == GameViewLayer.BTN_BIPAI then      --比牌
-        self:onClickBipaiEvent()
-    elseif Tag == GameViewLayer.BTN_KANPAI then     --看牌
-        self._scene:sendShow()
-    elseif Tag == GameViewLayer.BTN_JIAZHU then     --加注
-        self.root:getChildByName("Panel_chips"):setVisible(true)
-        for i = 1, 5 do
-            local btn_bet = self.root:getChildByName("Panel_chips"):getChildByName(string.format("Button_chip%d",i-1))
-            if self.straightBet_num >= i*2 then
-                btn_bet:setTouchEnabled(false)
-                btn_bet:setBright(false)
-            else
-                btn_bet:setTouchEnabled(true)
-                btn_bet:setBright(true)
-            end
-        end        
-    elseif Tag == GameViewLayer.BTN_XIAZHU then     --下注
---        self._scene:sendAdd(self.straightBet_num)
-        self._scene:sendAdd(0)
-    elseif Tag == GameViewLayer.BTN_QUANXIA then    --全下---------------
+    print("游戏结束-------------------")
+    dump(bufferData)
     
-    elseif Tag == GameViewLayer.BTN_LIKAIYOUXI then --离开游戏
-        self.root:getChildByName("compareBg"):setVisible(false)
-        self.root:getChildByName("Panel_Entrust"):setVisible(false)
-        self._scene:onQueryExitGame()
-    elseif Tag == GameViewLayer.BTN_JIXUYOUXI then  --继续游戏
-        self.root:getChildByName("compareBg"):setVisible(false)
-        self.root:getChildByName("Panel_Entrust"):setVisible(false)
+    
+end
+-----------------------------------------------------------------------------------
+function GameViewLayer:onHelpClicked( sender )
+--帮助按钮
+    ExternalFun.playClickEffect()
+    local gameRuleLayer = GameRuleLayer.create()
+    gameRuleLayer:addTo(self.m_rootWidget)
+end
+function GameViewLayer:onMenuClicked( sender )
+--菜单按钮
+    ExternalFun.playClickEffect()
+--    _:disableQuickClick(self.m_btnMenu)
+    local jiantou = self.m_pBtnMenu:getChildByName("Image_5")
+    if self.m_pMenuState == false then
+        self.m_pPanel_setting:setVisible(true)
+        self.m_pImageSettingBg:runAction(cc.MoveBy:create(0.3,cc.p(190,0)))
+        jiantou:runAction(cc.RotateTo:create(0.2,180))
+        self.m_pMenuState = true
+    else        
+        self.m_pImageSettingBg:runAction(cc.Sequence:create(cc.MoveBy:create(0.3,cc.p(-190,0)),cc.CallFunc:create(function()
+                self.m_pPanel_setting:setVisible(false)
+            end)))
+        jiantou:runAction(cc.RotateTo:create(0.2,90))
+        self.m_pMenuState = false
+    end
+
+end
+--准备按钮
+function GameViewLayer:onZhunbeiClicked()
+    ExternalFun.playClickEffect() 
+    local clearFunc = function()
+        for key, player_ in ipairs(self.m_playerTable) do
+            player_:reSetPlayer()   --最后刷新这个
+            player_:stopCD()
+        end
+	end
+    self:runAction(cc.Sequence:create(cc.CallFunc:create(function()
+        clearFunc()
+    end),cc.DelayTime:create(0.5),cc.CallFunc:create(function()
         self._scene:sendReady()
-    elseif Tag == GameViewLayer.BTN_LIANGPAI then   --亮牌----------------
-
-    end 
+    end)))
 end
-function GameViewLayer:onClickBipaiEvent()
-    for key, player_ in ipairs(self.playInfoTable) do
-        if player_.uid ~= GlobalUserItem.tabAccountInfo.userid then
-            if player_.isCanBipai == true then
-                --播放泡泡框动画
-                local node_actParent = player_.panel:getChildByName("Image_select"):setVisible(true)
-                local kebipaiAct = ccs.Armature:create("kebipai_1")
-                kebipaiAct:setAnchorPoint(cc.p(0,0))
-                kebipaiAct:setPosition(cc.p(0,0))
-                node_actParent:removeAllChildren()
-	            kebipaiAct:addTo(node_actParent)
-	            kebipaiAct:getAnimation():playWithIndex(0)
-                node_actParent:setTouchEnabled(true)
+function GameViewLayer:onExitClicked( sender )
+--退出按钮
+    ExternalFun.playClickEffect()
+    self._scene:onQueryExitGame()
+
+end
+
+function GameViewLayer:onSettingClicked( sender )
+--设置按钮
+    ExternalFun.playClickEffect()
+    local settingLayer = SettingLayer.create()--SettingLayer.create()
+    settingLayer:addTo(self.m_rootWidget)
+end
+
+function GameViewLayer:onKanpaiClickEvent(  )
+    --自身点击看牌
+    self._scene:sendShow()
+end
+function GameViewLayer:onBipaiClickEvent( event )
+    local uid = event.uid
+    --点击比牌对象
+    self._scene:sendVS( uid )
+    --先在这里清除选择比牌对象的动画
+    self:hideVsTps()
+--    self.m_pVsSelectWarning:setVisible(false)
+--    for k,player_ in pairs(self.m_playerTable) do
+--		player_:clearSelectAnimation()
+--	end
+end
+function GameViewLayer:onVSClicked(  )
+    ExternalFun.playClickEffect() 
+    --比牌
+    --self._scene:sendVS(uid)
+    local inGameNum = 0
+    local inGamePlayers = {}
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getIsQiPai() == false then  
+            if player_:getUserid() ~= SELF_UID then
+                inGameNum = inGameNum +1
+                table.insert(inGamePlayers,player_)
+            end
+        end
+    end
+    print("剩余玩家____________________"..inGameNum)
+    --如果只剩一个玩家直接比牌
+    if inGameNum == 1 then
+        self._scene:sendVS(inGamePlayers[1]:getUserid())
+        return
+    end
+--    self.vsTpsSelect:show()
+    self.m_pVsSelectWarning:setVisible(true)
+    for k,player_ in pairs(inGamePlayers) do
+		player_:showSelectAnimation()
+	end
+end
+function GameViewLayer:onGiveUpClicked(  )
+    ExternalFun.playClickEffect() 
+    --弃牌
+    self._scene:sendDrop()
+end
+function GameViewLayer:onFollowEndClicked(  )
+    ExternalFun.playClickEffect() 
+    --跟到底
+    if self.isGenDaodi == false then
+        self.m_pBtnFollowEnd:getChildByName("Image_226"):getChildByName("image_followendImg"):setVisible(true)
+        self.isGenDaodi = true
+        self._scene:sendAdd(0)
+    else
+        self.isGenDaodi =false
+        self.m_pBtnFollowEnd:getChildByName("Image_226"):getChildByName("image_followendImg"):setVisible(false)
+    end
+    
+end
+function GameViewLayer:onGenzhuClicked()
+    ExternalFun.playClickEffect() 
+    --跟注
+    self._scene:sendAdd(0)
+end
+function GameViewLayer:onXiazhu1Clicked()
+    ExternalFun.playClickEffect() 
+    --下注1
+    local beishu = 1
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getUserid() == SELF_UID then
+            if player_:getIsKanPai() == true then
+                beishu = 2
+            end
+        end
+    end    
+    self._scene:sendAdd(chipNum[1] * self.m_unitMoney * beishu)
+end
+function GameViewLayer:onXiazhu2Clicked()
+    ExternalFun.playClickEffect() 
+    --下注2
+    local beishu = 1
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getUserid() == SELF_UID then
+            if player_:getIsKanPai() == true then
+                beishu = 2
+            end
+        end
+    end
+    self._scene:sendAdd(chipNum[2] * self.m_unitMoney * beishu)
+end
+function GameViewLayer:onXiazhu3Clicked()
+    ExternalFun.playClickEffect() 
+    --下注3
+    local beishu = 1
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getUserid() == SELF_UID then
+            if player_:getIsKanPai() == true then
+                beishu = 2
+            end
+        end
+    end
+    self._scene:sendAdd(chipNum[3] * self.m_unitMoney * beishu)
+end
+
+----------------------------------------工具------------------------------------------
+function GameViewLayer:hideVsTps()
+	self.m_pVsSelectWarning:setVisible(false)
+	--清除选中状态表现动画
+	for key, player_ in ipairs(self.m_playerTable) do
+		player_:clearSelectAnimation()
+	end
+end
+function GameViewLayer:allPlayerStopCD()
+	for key, player_ in ipairs(self.m_playerTable) do
+		player_:stopCD()
+	end
+end
+function GameViewLayer:setColorPool( allChip )
+    self.m_pTextAllChip:setString(allChip)
+end
+function GameViewLayer:setBipaiState( event )
+    --设置是否在比牌的状态
+    self.isBipaiIng = event.ing
+end
+
+--是否展示遮罩
+function GameViewLayer:isShowMaskPanel( ishow )
+    if not ishow then
+		self.m_pPanelCoin:runAction(cc.Sequence:create(cc.DelayTime:create(0.3),cc.CallFunc:create(function ()
+			self.m_pPanelCoin:setVisible(ishow)
+		end)))
+	else
+		self.m_pPanelCoin:setVisible(ishow)
+	end
+end
+--刷新所有下注按钮上的金币数       是否看牌   单注钱
+function GameViewLayer:freshXiaZhuBtn(isopen,base)
+	for i = 1, 3 do
+		if isopen then
+			self["xiazhuv_"..i]:setString(string.format("+%d$", self["xiazhu"..i].add * base *2))
+		else
+			self["xiazhuv_"..i]:setString(string.format("+%d$", self["xiazhu"..i].add * base))
+		end
+	end
+end
+--创建牌并飞牌
+function GameViewLayer:crateFlyCards()
+    if self.m_pPanelCards then
+        self.m_pPanelCards:setVisible(true)
+        local cards = {}
+	    self.m_allCards = {}
+        for i = 1, #self.m_onGamePlayers * 3 do
+		    local cardSpr = cc.Sprite:create("common/card/cardBack.png")
+		    cardSpr:setScaleX(71/156)--setContentSize(cc.size(96,132))--:setContentSize(cc.size(71,98))
+            cardSpr:setScaleY(98/214)
+		    cardSpr:setPosition(cc.p(display.center.x, display.center.y + cardSpr:getContentSize().height/2))
+		    self.m_pPanelCards:addChild(cardSpr, i)
+		    table.insert(cards, cardSpr)
+	    end
+	    self.m_allCards = cards
+    end
+    --动画
+    --筛选当前参与的玩家
+	local haveNum = #self.m_onGamePlayers 
+	print(haveNum,"当前人数")
+
+--	for i = 1, #sortClientAttr do
+--		--设置下注和剩余的钱
+--	end
+	for y = 1, 3 do
+        for key, player_ in ipairs(self.m_playerTable) do
+            for i = 1, haveNum do
+                if self.m_onGamePlayers[i] == player_:getUserid() then
+                    local ac = cc.MoveTo:create(0.1,cc.p(player_:getCardsPos()[y]))
+			        local xuanzhuan = cc.RotateBy:create(0.1 , 360)
+			        if player_:getUserid() == SELF_UID then
+				        local wwc = cc.Spawn:create(ac,xuanzhuan,cc.CallFunc:create(function ()
+--					        self.m_allCards[i + (y - 1) * haveNum]:setContentSize(cc.size(96,132))
+                            self.m_allCards[i + (y - 1) * haveNum]:setScaleX(96/156)--setContentSize(cc.size(96,132))--:setContentSize(cc.size(71,98))
+                            self.m_allCards[i + (y - 1) * haveNum]:setScaleY(132/214)
+				        end))
+				        self.m_allCards[i + (y - 1) * haveNum]:runAction(cc.Sequence:create(cc.DelayTime:create( i * 0.1 + (y - 1)* 0.1*haveNum),wwc,cc.CallFunc:create(function ()
+--					        cc.loaded_packages.KKMusicPlayer:playEffect("zhajinhua/sound/FAIPAI.mp3",false)
+                            ExternalFun.playSoundEffect("FAIPAI.mp3")
+				        end)))
+			        else
+				        local wwc = cc.Spawn:create(ac,xuanzhuan,cc.CallFunc:create(function ()
+				        end))
+				        self.m_allCards[i + (y - 1) * haveNum]:runAction(cc.Sequence:create(cc.DelayTime:create( i * 0.1+ (y - 1)* 0.1 *haveNum),wwc,cc.CallFunc:create(function ()
+--					        cc.loaded_packages.KKMusicPlayer:playEffect("zhajinhua/sound/FAIPAI.mp3",false)
+                            ExternalFun.playSoundEffect("FAIPAI.mp3")
+				        end)))
+			        end
+                end			        
+		    end
+        end  
+	end
+        
+    local callF = cc.CallFunc:create(function()
+        if self and self.removeCardAndToHeadCard then
+			self:removeCardAndToHeadCard()
+		end
+        for key, player_ in ipairs(self.m_playerTable) do
+            for _,v in pairs(self.m_onGamePlayers) do
+                local uid = player_:getUserid()
+                if v == uid then
+                    player_:showCard()
+                end
+            end
+		end
+    end)
+    self:runAction(cc.Sequence:create( cc.DelayTime:create(1.4),callF))
+end
+
+function GameViewLayer:removeCardAndToHeadCard()
+	for i = 1, #self.m_allCards do
+		if self.m_allCards[i] then
+			self.m_pPanelCards:removeChild(self.m_allCards[i],true)
+		end
+	end
+	self.m_pPanelCards:setVisible(false)
+	self.m_allCards = {}
+end
+--弃牌飞牌动画
+function GameViewLayer:showQuitCardAction( player_ )
+    for i = 1, 3 do
+        local ac = cc.MoveTo:create(0.3,cc.p(display.center.x, display.center.y + 59))
+        local xuanzhuan = cc.RotateBy:create(0.3 , 360)
+        local scaleTo = cc.ScaleTo:create(0.3, 0.5)
+
+        local cardBei = cc.Sprite:create("common/card/cardBack.png")
+        cardBei:setPosition(player_:getCardsPos()[i])
+        self.m_pPanelCards:addChild(cardBei)   --self.m_pPanelCards --self.m_pPanelAnimation
+        self.m_pPanelCards:setVisible(true)
+        if player_:getChairId() == 1 then
+            cardBei:setContentSize(cc.size(96,132))
+        else
+            cardBei:setContentSize(cc.size(71,98))
+        end
+
+        local wwc = cc.Spawn:create(ac,xuanzhuan,scaleTo)
+        cardBei:runAction(cc.Sequence:create(wwc,cc.FadeOut:create(0.05),cc.CallFunc:create(function ()
+            cardBei:setVisible(false)
+            self.m_pPanelCards:setVisible(false)
+        end),cc.RemoveSelf:create()))
+    end
+end
+--隐藏所有按钮
+function GameViewLayer:hideAllBtn(  )
+    self.m_pBtnLiangPai:setVisible(false)     --= self.m_pImageBg:getChildByName("button_liangpai")                         --按钮 亮牌
+    self.m_pBtnDdd:setVisible(false)          --= self.m_pImageBg:getChildByName("button_gdd")                              --按钮 跟到底
+    self.m_pBtnXiazhu1:setVisible(false)      --= self.m_pImageBg:getChildByName("button_xiazhu1")                          --按钮 下注1
+    self.m_pBtnXiazhu2:setVisible(false)      --= self.m_pImageBg:getChildByName("button_xiazhu2")                          --按钮 下注2
+    self.m_pBtnXiazhu3:setVisible(false)      --= self.m_pImageBg:getChildByName("button_xiazhu3")                          --按钮 下注3
+    self.m_pBtnGenzhu:setVisible(false)       --= self.m_pImageBg:getChildByName("button_followBtn")                        --按钮 跟注
+    self.m_pBtnGiveUp:setVisible(false)                                                                                     --按钮 弃牌
+    self.m_pBtnVS:setVisible(false)                                                                                         --按钮 比牌
+    self.m_pBtnFollowEnd:setVisible(false)    --= self.m_pImageBg:getChildByName("button_followendBtn")                     --按钮 跟到底
+--    self.m_pBtnFollowEnd:getChildByName("Image_226"):getChildByName("image_followendImg"):setVisible(false)
+end
+
+--更新按钮的显示    #isMyRound true自己回合，false其他玩家回合   self.m_unitMoney = 0    --底注
+function GameViewLayer:updateButton( isMyRound )
+    self:hideAllBtn()
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getUserid() == SELF_UID then
+            if player_:getIsQiPai() == true then
+                return
             end
         end
     end
     
-end
---不同回合和自身回合按钮的状态
-function GameViewLayer:buttonState()
-    local btn_Gendaodi = self.root:getChildByName("Panel_287"):getChildByName("CheckBox_gdd")     --跟到底
-    local btn_Qipai = self.root:getChildByName("Panel_287"):getChildByName("Button_qp")     --弃牌
-    local btn_Bipai = self.root:getChildByName("Panel_287"):getChildByName("Button_bp")     --比牌
-    local btn_Kanpai = self.root:getChildByName("Panel_287"):getChildByName("Button_kp")    --看牌
-    local btn_Genzhu = self.root:getChildByName("Panel_287"):getChildByName("Button_gz")    --跟注
-    local btn_Jiazhu = self.root:getChildByName("Panel_287"):getChildByName("Button_jz")    --加注
-    local btn_Quanxia = self.root:getChildByName("Panel_287"):getChildByName("Button_qx")   --全下
-    --自身回合
-    if self.isMyState == true then
-
-        if self.isGendaodi == true then
-            print("_________________________________true")
-            self._scene:sendAdd(0)
-        else
-            print("_________________________________false")
-        end
-        btn_Gendaodi:setTouchEnabled(true)
-        btn_Gendaodi:setBright(true)
-        btn_Qipai:setTouchEnabled(true)
-        btn_Qipai:setBright(true)
-        if self.isCanBipai == true then
-            btn_Bipai:setTouchEnabled(true)
-            btn_Bipai:setBright(true)
-        else
-            btn_Bipai:setTouchEnabled(false)
-            btn_Bipai:setBright(false)
-        end        
-        btn_Kanpai:setTouchEnabled(true)
-        btn_Kanpai:setBright(true)
-        btn_Genzhu:setTouchEnabled(true)
-        btn_Genzhu:setBright(true)            
-        btn_Quanxia:setVisible(true)
-        btn_Quanxia:setVisible(false)
-        btn_Jiazhu:setTouchEnabled(false)
-        btn_Jiazhu:setBright(false)
-        if self.straightBet < self.straightBet_Max then
-            btn_Jiazhu:setTouchEnabled(true)
-            btn_Jiazhu:setBright(true)
-        end
-        if self.isKanpai == true then
-            btn_Kanpai:setTouchEnabled(false)
-            btn_Kanpai:setBright(false)
-        end
-    else
-        btn_Gendaodi:setTouchEnabled(true)
-        btn_Gendaodi:setBright(true)
-        btn_Qipai:setTouchEnabled(false)
-        btn_Qipai:setBright(false)
-        btn_Bipai:setTouchEnabled(false)
-        btn_Bipai:setBright(false)            
-        btn_Genzhu:setTouchEnabled(false)
-        btn_Genzhu:setBright(false)
-        btn_Jiazhu:setTouchEnabled(false)
-        btn_Jiazhu:setBright(false)
-        btn_Quanxia:setVisible(false)
-        if self.isKanpai then
-            btn_Kanpai:setTouchEnabled(false)
-            btn_Kanpai:setBright(false)
-        else
-            btn_Kanpai:setTouchEnabled(true)
-            btn_Kanpai:setBright(true)
+    if not isMyRound then        
+        --只显示跟到底
+        self.m_pBtnFollowEnd:setVisible(true)
+        return
+    end
+    if self.isGenDaodi == true then
+        self._scene:sendAdd(0)
+        return
+    end
+    local initMoney = self.m_initMoney  --当前暗注		#当前暗注是底注倍数
+    local opt = self.m_allAboutChip
+    local isKanpai = 1
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getUserid() == SELF_UID then            
+            if player_:getIsKanPai() == true then
+                isKanpai = 2
+            end
         end
     end
-    --已经弃牌
-    if self.isQipai == true then
-        btn_Gendaodi:setTouchEnabled(false)
-        btn_Gendaodi:setBright(false)
-        btn_Qipai:setTouchEnabled(false)
-        btn_Qipai:setBright(false)
-        btn_Bipai:setTouchEnabled(false)
-        btn_Bipai:setBright(false)
-        btn_Kanpai:setTouchEnabled(false)
-        btn_Kanpai:setBright(false)
-        btn_Genzhu:setTouchEnabled(false)
-        btn_Genzhu:setBright(false)
-        btn_Jiazhu:setTouchEnabled(false)
-        btn_Jiazhu:setBright(false)
-        btn_Quanxia:setVisible(false)
-        self.root:getChildByName("Panel_chips"):setVisible(false)
+    self.m_pBtnXiazhu1:getChildByName("bmfont_xiazhuv_1"):setString(string.format("+%d$",chipNum[1]*isKanpai*self.m_unitMoney))
+    self.m_pBtnXiazhu2:getChildByName("bmfont_xiazhuv_2"):setString(string.format("+%d$",chipNum[2]*isKanpai*self.m_unitMoney))
+    self.m_pBtnXiazhu3:getChildByName("bmfont_xiazhuv_3"):setString(string.format("+%d$",chipNum[3]*isKanpai*self.m_unitMoney))
+    if initMoney < chipNum[1] then
+        self.m_pBtnXiazhu1:setVisible(true)
+        self.m_pBtnXiazhu2:setVisible(true)
+        self.m_pBtnXiazhu3:setVisible(true)
+    elseif initMoney < chipNum[2] then
+        self.m_pBtnXiazhu2:setVisible(true)
+        self.m_pBtnXiazhu3:setVisible(true)
+    elseif initMoney < chipNum[3] then
+        self.m_pBtnXiazhu3:setVisible(true)
     end
-    --中途进入游戏
-    if self.isHalfWay == true or self.waitNextGame == true then
-        btn_Gendaodi:setTouchEnabled(false)
-        btn_Gendaodi:setBright(false)
-        btn_Qipai:setTouchEnabled(false)
-        btn_Qipai:setBright(false)
-        btn_Bipai:setTouchEnabled(false)
-        btn_Bipai:setBright(false)
-        btn_Kanpai:setTouchEnabled(false)
-        btn_Kanpai:setBright(false)
-        btn_Genzhu:setTouchEnabled(false)
-        btn_Genzhu:setBright(false)
-        btn_Jiazhu:setTouchEnabled(false)
-        btn_Jiazhu:setBright(false)
-        btn_Quanxia:setVisible(false)
+    self.m_pBtnGenzhu:getChildByName("text_genCoin"):setString("%&"..opt[3].."$")
+    self.m_pBtnGenzhu:setVisible(true)
+    if opt[4] == 1 then --是否可以比牌
+        self.m_pBtnVS:setVisible(true)    
+    end
+    if opt[7] == 1 then --是否可以弃牌
+        self.m_pBtnGiveUp:setVisible(true)    
     end
 end
---创建存放全部扑克精灵的数组
-function GameViewLayer:createPokerArray()
-    local fWidth = self.pTex:getContentSize().width % 13
-    local fHeight = self.pTex:getContentSize().height / 13
-    for i = 1, 59 do
-        local index_ = i
-        if index_ == 53 then
-            index_ = 54
-        elseif index_ == 54 then
-            index_ = 53
-        end
-        local value = index_%13
-        local color ,ttt = math.modf(index_-1/13);
-        local x = (value-1)*fWidth
-	    local y = color*fHeight
-        local cardRect = cc.rect(x,y,fWidth,fHeight);
-        local card_ = cc.Sprite:createWithTexture(self.pTex,cardRect)
-        card_:setPosition(cc.p(0,0))
-        card_:setAnchorPoint(cc.p(0,0))
-        table.insert(self.pokerTable,card_)
-    end
-end
-function GameViewLayer:createPoker(pDate)
-    
-    local fWidth = self.pTex:getContentSize().width / 13
-    local fHeight = self.pTex:getContentSize().height / 5
-
-    local index_ = pDate
-    if pDate == 53 then
-        index_ = 54
-    elseif pDate == 54 then
-        index_ = 53
-    end
-    local value = index_%13
-    local color ,ttt = math.modf((index_-1)/13);
-    local x = (value-1)*fWidth
-	local y = color*fHeight
-    local cardRect = cc.rect(x,y,fWidth,fHeight);
-    local card_ = cc.Sprite:createWithTexture(self.pTex,cardRect)
-    card_:setPosition(cc.p(0,0))
-    card_:setAnchorPoint(cc.p(0,0))
-    return card_
-end
-
-function GameViewLayer:PokerInitWithTexture(Poker_,pDate)
-    local fWidth = self.pTex:getContentSize().width / 13
-    local fHeight = self.pTex:getContentSize().height / 5
-    
-    if pDate == 14 then
-        pDate = 1
-    elseif pDate == 27 then
-        pDate = 14
-    elseif pDate == 40 then
-        pDate = 27
-    elseif pDate == 53 then
-        pDate = 40
-    end    
-    local index_ = pDate - 1
-    if pDate == 53 then
-        index_ = 54
-    elseif pDate == 54 then
-        index_ = 53
-    end
-    local value = index_%13
-    local color ,ttt = math.modf(index_/13);
-    local x = value*fWidth
-	local y = color*fHeight
-    local cardRect = cc.rect(x,y,fWidth,fHeight);
-    if Poker_ then
-        Poker_:initWithTexture(self.pTex,cardRect)
-        Poker_:setAnchorPoint(cc.p(0,0))
-    end    
-end
--- 时钟接口
---玩家头像进度条
-function GameViewLayer:showProgrssTimer( i)
-    if i < 1 or i > 6 then return end
-    local node_parent = self.root:getChildByName("Panel_287"):getChildByName("node_player")
-    if not self.m_pProgressTimer[i] then
-        self.m_pProgressTimer[i] = ProgressNode.create()
-        if not self.m_pProgressTimer[i] then return end
-        self.m_pProgressTimer[i]:setPosition(GameViewLayer.PLAYER_ICON_POS[i])
-
-        node_parent:addChild(self.m_pProgressTimer[i],99,999)
-    end
-    for m = 1, 5 do
-        if self.m_pProgressTimer[m] and i ~= m then
-            self.m_pProgressTimer[m]:setVisible(false)
+--看牌更新按钮显示
+function GameViewLayer:kanUptadeButton(  )
+    local initMoney = self.m_initMoney  --当前暗注		#当前暗注是底注倍数
+    local opt = self.m_allAboutChip
+    local isKanpai = 1
+    for key, player_ in ipairs(self.m_playerTable) do
+        if player_:getUserid() == SELF_UID then            
+            if player_:getIsKanPai() == true then
+                isKanpai = 2
+            end
         end
     end
-    
-    local countTime = 0 
-    countTime = self.timeOut_progress
---    local gameStatus = self.deskState
---    if self.deskState == GameViewLayer.STATE_ONZHUNBEI then
---        countTime = self.timeOut_progress
---    elseif self.deskState == GameViewLayer.STATE_QIANGZHUANG then
---        countTime = self.timeOut_progress
---    elseif self.deskState == GameViewLayer.STATE_XIAZHU then
---        countTime = self.timeOut_progress
---    elseif self.deskState == GameViewLayer.STATE_LIANGPAI then
---        countTime = self.timeOut_progress
---    end
-
-    self.m_pProgressTimer[i]:setParameters(countTime,cc.c3b(255,255,255), 100)
-    self.m_pProgressTimer[i]:setVisible(true)
-
-    self.m_pProgressTimer[i]:startCount()
+    self.m_pBtnXiazhu1:getChildByName("bmfont_xiazhuv_1"):setString(string.format("+%d$",chipNum[1]*isKanpai*self.m_unitMoney))
+    self.m_pBtnXiazhu2:getChildByName("bmfont_xiazhuv_2"):setString(string.format("+%d$",chipNum[2]*isKanpai*self.m_unitMoney))
+    self.m_pBtnXiazhu3:getChildByName("bmfont_xiazhuv_3"):setString(string.format("+%d$",chipNum[3]*isKanpai*self.m_unitMoney))
+    self.m_pBtnGenzhu:getChildByName("text_genCoin"):setString("%&"..opt[3].."$")
 end
-
-function GameViewLayer:SwitchViewChairID(chair)
-    local viewid = yl.INVALID_CHAIR
-    local nChairCount = self.max_player_num
-    local nChairID = self.myPos_
-    if chair ~= yl.INVALID_CHAIR and chair < nChairCount then
-        viewid = math.mod(chair + math.floor(nChairCount * 3/2) - nChairID, nChairCount)
---        viewid = math.mod(chair + self.max_player_num +1 - nChairID, nChairCount) - 1
+function GameViewLayer:doAction(player,time)  
+    for key, player_ in ipairs(self.m_playerTable) do
+        player_:stopCD()
     end
-    return viewid
+      
+    player:startCD(time)
 end
+
+--延时回调
+function GameViewLayer:doSomethingLater( call, delay )
+    self.m_rootWidget:runAction(cc.Sequence:create(cc.DelayTime:create(delay), cc.CallFunc:create(call)))
+end
+
 -----------------------------------------------------------------------------------------------------------------
---*************************************************************************************************************--
------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------分界线-------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------- 分界线 --------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------
+
 
 
 function GameViewLayer:getParentNode()
@@ -1640,21 +905,22 @@ end
 function GameViewLayer:unloadResource()
 --    if self.bgAnimation then
 --        self.bgAnimation:removeFromParent()    
---    end
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/heguan_1/heguan_1.ExportJson")   --荷官
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/dengdai_1/dengdai_1.ExportJson")   --等待下一局
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/wait-player/wait-player.ExportJson")   --等待其他玩家
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/paopaokuang_zhajinhua/paopaokuang_zhajinhua.ExportJson")   --泡泡框提示
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/pk_bipai/pk_bipai.ExportJson")   --比牌
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/qipai/qipai.ExportJson")   --弃牌
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/xiazhu_danshou/xiazhu_danshou.ExportJson")   --下注单手左右
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/xiazhu_qian/xiazhu_qian.ExportJson")   --下注单手自身
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/allin_you2/allin_you2.ExportJson")   --下注双手左右
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/allin_qian/allin_qian.ExportJson")   --下注双手自身
-    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/kebipai_1/kebipai_1.ExportJson")        --可比牌
-    for key, res_ in ipairs(GameViewLayer.chipSpRec) do
-        cc.Director:getInstance():getTextureCache():removeTextureForKey(res_)
-    end
+--    end ONEVENT_BIPAI_CLICK "bipai_state"
+    SLFacade:removeCustomEventListener(GameRoleItem.ONEVENT_KANPAI_CLICK, self.__cname)
+    SLFacade:removeCustomEventListener(GameRoleItem.ONEVENT_BIPAI_CLICK, self.__cname)
+    SLFacade:removeCustomEventListener("bipai_state", self.__cname)
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/heguan_1/heguan_1.ExportJson")   --荷官
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/dengdai_1/dengdai_1.ExportJson")   --等待下一局
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/wait-player/wait-player.ExportJson")   --等待其他玩家
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/paopaokuang_zhajinhua/paopaokuang_zhajinhua.ExportJson")   --泡泡框提示
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/pk_bipai/pk_bipai.ExportJson")   --比牌
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/qipai/qipai.ExportJson")   --弃牌
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/xiazhu_danshou/xiazhu_danshou.ExportJson")   --下注单手左右
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/xiazhu_qian/xiazhu_qian.ExportJson")   --下注单手自身
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/allin_you2/allin_you2.ExportJson")   --下注双手左右
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/allin_qian/allin_qian.ExportJson")   --下注双手自身
+--    ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo("goold2zjh/zjh/effect/kebipai_1/kebipai_1.ExportJson")        --可比牌
+
 
 
     cc.Director:getInstance():getTextureCache():removeUnusedTextures()

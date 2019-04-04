@@ -130,7 +130,7 @@ function ActivityNoticeView:initCSB()
 
     self:createtabPanel(false)
 
-    self.m_ptabItem = self.m_pImageBg:getChildByName("panel_tabItem")
+    self.m_ptabItem = self.m_pImageBg:getChildByName("panel_tabItem"):setVisible(false)
     self.m_ptabItem:getChildByName("redimage"):setVisible(false)
     self.m_plistview = self.m_pImageBg:getChildByName("listView_tabBtnList")
     self.m_plistview:setScrollBarEnabled(false)
@@ -162,30 +162,41 @@ function ActivityNoticeView:initCSB()
 end
 function ActivityNoticeView:initImageview()
     self.m_plistview:removeAllChildren()
+    self.HotActivity = {}
     for i = 1 ,HUODONGBTN_IMAGESCLECE do      
         local item = self.m_ptabItem:clone();
+        item:setVisible(true)
         self.m_itemLight[i] = item:getChildByName("light"):setVisible(false)
-        local sp = ccui.Button:create(self:getrealname(BTN_Num[i]));
-        sp:setAnchorPoint(cc.p(0,0))
-        sp:setPosition(cc.p(10,-5))
-        sp:setTag(i)
-        sp:addTo(item)
-        sp:addClickEventListener(handler(self,self.OnBtnImageChick))
+        self.HotActivity[i] = ccui.Button:create(self:getrealname(BTN_Num_1[i]));
+        if i == 1 then
+            self.HotActivity[i]:loadTextures(self:getrealname(BTN_Num[1]),self:getrealname(BTN_Num[1]),0)
+        end
+        
+        self.HotActivity[i]:setAnchorPoint(cc.p(0,0))
+        self.HotActivity[i]:setPosition(cc.p(10,-5))
+        self.HotActivity[i]:setTag(i)
+        self.HotActivity[i]:addTo(item)
+        self.HotActivity[i]:addClickEventListener(handler(self,self.OnBtnImageChick))
         self.m_plistview:addChild(item)
     end
-
+    
 end
 function ActivityNoticeView:initWorldview()
     self.m_plistview:removeAllChildren()
+    self.Btn_worldview = {}
     for i = 1 ,GONGGAOBTN_IMAGESCLECE do      
         local item = self.m_ptabItem:clone();
+        item:setVisible(true)
         self.m_itemLight2[i] = item:getChildByName("light"):setVisible(false)
-        local sp = ccui.Button:create(self:getrealname(BTN_Num[i+5]));
-        sp:setPosition(cc.p(10,-5))
-        sp:setAnchorPoint(cc.p(0,0))
-        sp:setTag(i)
-        sp:addTo(item)
-        sp:addClickEventListener(handler(self,self.OnBtnWorldChick))
+        self.Btn_worldview[i] = ccui.Button:create(self:getrealname(BTN_Num_1[i+HUODONGBTN_IMAGESCLECE]));
+        if i == 1 then
+            self.Btn_worldview[i]:loadTextures(self:getrealname(BTN_Num[HUODONGBTN_IMAGESCLECE + 1]),self:getrealname(BTN_Num[HUODONGBTN_IMAGESCLECE + 1]),0)
+        end
+        self.Btn_worldview[i]:setPosition(cc.p(10,-5))
+        self.Btn_worldview[i]:setAnchorPoint(cc.p(0,0))
+        self.Btn_worldview[i]:setTag(i)
+        self.Btn_worldview[i]:addTo(item)
+        self.Btn_worldview[i]:addClickEventListener(handler(self,self.OnBtnWorldChick))
         self.m_plistview:addChild(item)
     end
 
@@ -199,11 +210,13 @@ function ActivityNoticeView:OnBtnImageChick(sender)
     local a = sender:getTag()
     for i = 1, HUODONGBTN_IMAGESCLECE do
         self.m_itemLight[i]:setVisible(false)
+        self.HotActivity[i]:loadTextures(self:getrealname(BTN_Num_1[i]),self:getrealname(BTN_Num_1[i]),0)
         if i == a then
         self.m_itemLight[i]:setVisible(true)
+        sender:loadTextures(self:getrealname(BTN_Num[a]),self:getrealname(BTN_Num[a]),0)
         end
     end
-
+    
     if self.ImageSp ~= nil then
         self.ScrollView:removeAllChildren()
         self.ImageSp = nil
@@ -219,8 +232,10 @@ function ActivityNoticeView:OnBtnWorldChick(sender)
     local a = sender:getTag()
     for i = 1, GONGGAOBTN_IMAGESCLECE do
         self.m_itemLight2[i]:setVisible(false)
+        self.Btn_worldview[i]:loadTextures(self:getrealname(BTN_Num_1[i+HUODONGBTN_IMAGESCLECE]),self:getrealname(BTN_Num_1[i+HUODONGBTN_IMAGESCLECE]),0)
         if i == a then
         self.m_itemLight2[i]:setVisible(true)
+        sender:loadTextures(self:getrealname(BTN_Num[a+HUODONGBTN_IMAGESCLECE]),self:getrealname(BTN_Num[a+HUODONGBTN_IMAGESCLECE]),0)
         end
     end
     self.Text_1:setVisible(false)

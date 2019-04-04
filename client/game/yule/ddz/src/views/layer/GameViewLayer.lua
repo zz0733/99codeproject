@@ -285,13 +285,13 @@ function GameViewLayer:initCSB()
     end
     self.m_pLockScore = self.m_pNodeLock:getChildByName("score")
 
---    --记牌器
---    self.m_pBtnLeft = self.m_pNodeLeft:getChildByName("Button_1")
---    self.m_pLayerLeft = self.m_pNodeLeft:getChildByName("Panel_1"):getChildByName("Image_9")
---    self.m_pLabelLeft = {}
---    for i = 1, 15 do
---        self.m_pLabelLeft[i] = self.m_pLayerLeft:getChildByName("BitmapFontLabel_" .. i)
---    end
+    --记牌器
+    self.m_pBtnLeft = self.m_pNodePlay:getChildByName("Button_jipaiqi")
+    self.m_pLayerLeft = self.m_pBtnLeft:getChildByName("Image_jipaiqi")
+    self.m_pLabelLeft = {}
+    for i = 1, 15 do
+        self.m_pLabelLeft[i] = self.m_pLayerLeft:getChildByName("BitmapFontLabel_" .. i)
+    end
     --提示image
     self.m_pSpriteTips = {}
     for i = 0, 4 do
@@ -648,8 +648,8 @@ function GameViewLayer:onNodeLoaded()
     self.m_pSpriteForce:setVisible(false)
 
         --Node_left
---    self.m_pBtnLeft:setVisible(false)
---    self.m_pLayerLeft:setVisible(false)
+    self.m_pBtnLeft:setVisible(false)
+    self.m_pLayerLeft:setVisible(false)
     -- 界面显示 --------------------------------------
 
     -- 绑定按钮 --------------------------------------
@@ -689,8 +689,8 @@ function GameViewLayer:onNodeLoaded()
     --开始
     self.m_pBtnNewStart:addClickEventListener(handler(self, self.onStartClicked))
     self.m_pBtnNewSwitch:addClickEventListener(handler(self, self.onStartClicked))
---    --记牌器
---    self.m_pBtnLeft:addClickEventListener(handler(self, self.onLeftClicked))
+    --记牌器
+    self.m_pBtnLeft:addClickEventListener(handler(self, self.onLeftClicked))
     -- 绑定按钮 --------------------------------------
 
     -- 更新按钮 --------------------------------------
@@ -928,34 +928,34 @@ function GameViewLayer:onRuleClicked()
 end
 
 --记牌器
---function GameViewLayer:onLeftClicked()
---    ExternalFun.playGameEffect("public/sound/sound-button.mp3")
+function GameViewLayer:onLeftClicked()
+    ExternalFun.playGameEffect("public/sound/sound-button.mp3")
 
---    -- 防连点
---    local nCurTime = cc.exports.gettime()
---    if self.m_nLastTouchTime and nCurTime - self.m_nLastTouchTime <= 0.15 then
---        return
---    else
---        self.m_nLastTouchTime = nCurTime
---    end
+    -- 防连点
+    local nCurTime = cc.exports.gettime()
+    if self.m_nLastTouchTime and nCurTime - self.m_nLastTouchTime <= 0.15 then
+        return
+    else
+        self.m_nLastTouchTime = nCurTime
+    end
 
---    if self.m_pLayerLeft:isVisible() then
---        self:showLeftCard(false)
---    else
---        --已经结束
+    if self.m_pLayerLeft:isVisible() then
+        self:showLeftCard(false)
+    else
+        --已经结束
 --        if self.g_gameDataLogic:getGameStatus() ~= GS_T_PLAY then
 --            self:showLeftCard(true)
 
 --        --已经获取过记牌器数据
 --        elseif self.g_gameDataLogic:IsGetLeftCard() then
---            self:onUpdateLeftCard()
---            self:showLeftCard(true)
+            self:onUpdateLeftCard()
+            self:showLeftCard(true)
 
 --        else --没获取数据
 --            CMsgLord:getInstance():sendLeftCard()
 --        end
---    end
---end
+    end
+end
 --开始
 function GameViewLayer:onStartClicked()
     ExternalFun.playGameEffect("public/sound/sound-button.mp3")
@@ -1037,7 +1037,7 @@ function GameViewLayer:onJiaBeiClicked(sender)
     
     --CMsgLord.getInstance():sendAddTimes(tag)
     self:onAddTimesLocal(tag)
-
+    
     --隐藏按钮
     self.m_pNodeJiaBei:setVisible(false)
 end
@@ -1331,8 +1331,8 @@ function GameViewLayer:onReady()
     self:onUpdateDifen()
 
         -- 底牌隐藏
---    self.m_pBtnLeft:setVisible(false)
---    self.m_pLayerLeft:setVisible(false)
+    self.m_pBtnLeft:setVisible(false)
+    self.m_pLayerLeft:setVisible(false)
     -- 初始动画
 --    PlayerInfo.getInstance():setGender(GlobalUserItem.tabAccountInfo.sex)
     local gender = PlayerInfo.getInstance():getGender()
@@ -1401,9 +1401,51 @@ function GameViewLayer:updataMyMoney(dataBuffer)   -- 跟新自己背包呢
     print("更新金币")
     self:onUpdateUserScore(dataBuffer)
 end
+function GameViewLayer:updatajipaiqi(data)
+    local Datashuju = self.g_gameDataLogic:getLeftCard()
+    for i = 1,#data do
+        if     data[i] == 0  or data[i] == 13 or data[i] == 26 or data[i] == 39 then Datashuju[1] = Datashuju[1] - 1
+        elseif data[i] == 1  or data[i] == 14 or data[i] == 27 or data[i] == 40 then Datashuju[2] = Datashuju[2] - 1
+        elseif data[i] == 2  or data[i] == 15 or data[i] == 28 or data[i] == 41 then Datashuju[3] = Datashuju[3] - 1
+        elseif data[i] == 3  or data[i] == 16 or data[i] == 29 or data[i] == 42 then Datashuju[4] = Datashuju[4] - 1
+        elseif data[i] == 4  or data[i] == 17 or data[i] == 30 or data[i] == 43 then Datashuju[5] = Datashuju[5] - 1
+        elseif data[i] == 5  or data[i] == 18 or data[i] == 31 or data[i] == 44 then Datashuju[6] = Datashuju[6] - 1
+        elseif data[i] == 6  or data[i] == 19 or data[i] == 32 or data[i] == 45 then Datashuju[7] = Datashuju[7] - 1
+        elseif data[i] == 7  or data[i] == 20 or data[i] == 33 or data[i] == 46 then Datashuju[8] = Datashuju[8] - 1
+        elseif data[i] == 8  or data[i] == 21 or data[i] == 34 or data[i] == 47 then Datashuju[9] = Datashuju[9] - 1
+        elseif data[i] == 9  or data[i] == 22 or data[i] == 35 or data[i] == 48 then Datashuju[10] = Datashuju[10] - 1
+        elseif data[i] == 10 or data[i] == 23 or data[i] == 36 or data[i] == 49 then Datashuju[11] = Datashuju[11] - 1
+        elseif data[i] == 11 or data[i] == 24 or data[i] == 37 or data[i] == 50 then Datashuju[12] = Datashuju[12] - 1
+        elseif data[i] == 12 or data[i] == 25 or data[i] == 38 or data[i] == 51 then Datashuju[13] = Datashuju[13] - 1
+        elseif data[i] == 52 then Datashuju[14] = Datashuju[14] - 1
+        elseif data[i] == 53 then Datashuju[15] = Datashuju[15] - 1
+        end
+    end
+    self.g_gameDataLogic:setLeftCard(Datashuju)
+
+end
 
 function GameViewLayer:updataFaPai(dataBuffer)   -- 发牌
     print("发牌")
+    local m_nLeftCard = {
+        [1]  = 4, --"3",
+        [2]  = 4, --"4",
+        [3]  = 4, --"5", 
+        [4]  = 4, --"6",
+        [5]  = 4, --"7",
+        [6]  = 4, --"8",
+        [7]  = 4, --"9",
+        [8]  = 4, --"10",
+        [9]  = 4, --"J",
+        [10] = 4, --"Q",
+        [11] = 4, --"K",
+        [12] = 4, --"A",
+        [13] = 4, --"2",
+        [14] = 1, --"小王",
+        [15] = 1, --"大王",
+    }
+    self.g_gameDataLogic:setLeftCard(m_nLeftCard)
+    self:updatajipaiqi(dataBuffer.mycards)
     self.m_pNodeWait:setVisible(false)
 --    self.FapaiData = dataBuffer
     for k,v in ipairs(self.memberinfos) do
@@ -1485,42 +1527,34 @@ function GameViewLayer:StartRaise(dataBuffer)            -- 开始加倍
             self.g_gameDataLogic.m_SearchCardResult.cbSearchCount = 20
         end
     end
+    if dataBuffer.banker == GlobalUserItem.tabAccountInfo.userid then
+        self:updatajipaiqi(dataBuffer.hide_cards)
+    end
+    
     for i = 0 ,#dataBuffer.hide_cards - 1 do
         self.g_gameDataLogic.m_cbBankerCard[i] = self:ChangeNumPai( dataBuffer.hide_cards[i+1] )
         if dataBuffer.banker == GlobalUserItem.tabAccountInfo.userid then
-            self.g_gameDataLogic.m_cbHandCardData[17+i] = self:ChangeNumPai( dataBuffer.hide_cards[i+1] )   
+            self.g_gameDataLogic.m_cbHandCardData[17+i] = self:ChangeNumPai( dataBuffer.hide_cards[i+1] ) 
         end
     end
---    local viewChair = 0
---    for k,v in ipairs(self.memberinfos) do
---        if v.uid == dataBuffer.banker then
---            viewChair = self.g_gameDataLogic:SwitchViewChairID(v.position)
---        end
+    self.g_gameDataLogic:SortCardListOfSelf()
+--    if dataBuffer.thisone == GlobalUserItem.tabAccountInfo.userid then
+--            self:onShowGameAddTime(true)
 --    end
+
     self.g_gameDataLogic:setIsAddTimesStatus(1)
     self:onBanker(false)
 end
 --{hide_cards={} double=1 banker=68905577 timeout=10 thisone=77164409 }
 function GameViewLayer:updataRaise(dataBuffer)            -- 加倍
     print("加倍")
-
---    if GlobalUserItem.tabAccountInfo.userid == dataBuffer.nextone then
---        self.g_gameDataLogic:setAddTimeLocal(1)
---    else
---        self.g_gameDataLogic:setAddTimeLocal(0)
---    end
     self.g_gameDataLogic.m_wAddTimeChairID = dataBuffer.thisone
---    if GlobalUserItem.tabAccountInfo.userid == dataBuffer.thisone and self.istrue == true then
---        self:onBanker(true)
---        self.istrue = false
---    end
-    
+
+    self.g_gameDataLogic:setMuliple(dataBuffer.double)
     if dataBuffer.nextone == dataBuffer.thisone then
         self.g_gameDataLogic.m_cbAddTimeCanOutCard = 1
         self:onAddTimes()
     end
-    
-    
 end
 --{nextone=1134319 israise=0 double=1 timeout=10 thisone=98936090 }
 function GameViewLayer:ShowCards(dataBuffer)            -- 明牌
@@ -1553,6 +1587,9 @@ end
 --{nextone=77164409 thisone=98775463 timeout=15 mycards={} }
 function GameViewLayer:PlayCards(dataBuffer)            -- 出牌
     print("出牌")
+    if dataBuffer.thisone ~= GlobalUserItem.tabAccountInfo.userid then
+        self:updatajipaiqi(dataBuffer.put_cards)
+    end
     self.num = 0
     self.PlayPai = dataBuffer
     local pOutCard = {
@@ -1862,12 +1899,10 @@ function GameViewLayer:onBanker(isStart)
     --自己是地主不显示加倍
     local banker = self.g_gameDataLogic:getBankerUser()
     local chairId = self.g_gameDataLogic:GetMeChairID()
-    if self.g_gameDataLogic:getAddTimeLocal() == 1 then
-        self:onShowGameAddTime(true)
-    else
-        self:onShowGameAddTime(false)
-    end
 
+    self:onShowGameAddTime(false)
+
+    self:onUpdateLeftCard()
     self:onUpdateNodeShow(self.m_pBtnRobot, false)
     self:onUpdateNodeShow(self.m_pNodeRobot, false)
 
@@ -1913,7 +1948,7 @@ function GameViewLayer:onBanker(isStart)
         local cardCount = self.g_gameDataLogic.m_cbHandCardCount[chair]
         self.m_pCardLayer:SetCardData(cardData, cardCount)
         self.m_pCardLayer:SetBanker(true)
-        self.g_gameDataLogic:SortCardListOfSelf()
+--        self.g_gameDataLogic:SortCardListOfSelf()
         if not isStart then
             self.m_pCardLayer:downShoot(self.g_gameDataLogic.m_cbBankerCard, 3)
         end
@@ -1926,14 +1961,19 @@ function GameViewLayer:onBanker(isStart)
         --显示加倍按钮
         if self.g_gameDataLogic:bankIsMe() == false
         and self.g_gameDataLogic.m_iAddTimes[self.g_gameDataLogic:GetMeChairID()] == 0 then
-            self.m_pNodeJiaBei:setVisible(true)
+            self:doSomethingLater(function ()
+                self.m_pNodeJiaBei:setVisible(true)
+            end,3) 
         end
 
         --加倍倒计时
         for i = 0, 2 do
             local viewChair = self.g_gameDataLogic:SwitchViewChairID(i)
             if self.g_gameDataLogic.m_iAddTimes[i] == 0 and banker ~= i then
-                self:startClock(viewChair, CLOCK_ADD_TIME, "onBanker(加倍倒计时)")
+                self:doSomethingLater(function ()
+                    self:startClock(viewChair, CLOCK_ADD_TIME, "onBanker(加倍倒计时)")
+                end,2.5) 
+                
             else
                 self:stopClock(viewChair)
             end
@@ -2036,13 +2076,13 @@ function GameViewLayer:onAddTimes()
             end
         end
 
---        --显示记牌器按钮
---        self.m_pBtnLeft:setVisible(true)
---        self:showLeftCard(true)
+        --显示记牌器按钮
+        self.m_pBtnLeft:setVisible(true)
+        self:showLeftCard(true)
 
---        --获取记牌器数据
+        --获取记牌器数据
 --        if not self.g_gameDataLogic:IsGetLeftCard() then
---            CMsgLord:getInstance():sendLeftCard()
+----            CMsgLord:getInstance():sendLeftCard()
 --        end
     end
 
@@ -2096,15 +2136,15 @@ function GameViewLayer:onOutCard(isPass, isStart)
     self:onUpdateBeishuInfo()
 
         --更新底牌
---    self:onUpdateLeftCard()
+    self:onUpdateLeftCard()
 
---    --显示记牌器按钮
---    local bVisible = self.g_gameDataLogic:getGameStatus() == GS_T_PLAY
---    if bVisible then
---        self.m_pBtnLeft:setVisible(true)
---    else
---        self.m_pBtnLeft:setVisible(false)
---    end
+    --显示记牌器按钮
+    local bVisible = self.g_gameDataLogic:getGameStatus() == GS_T_PLAY
+    if bVisible then
+        self.m_pBtnLeft:setVisible(true)
+    else
+        self.m_pBtnLeft:setVisible(false)
+    end
     --加倍结束
     self.g_gameDataLogic:setIsAddTimesStatus(0)
 
@@ -2426,7 +2466,7 @@ function GameViewLayer:onConclude()
     local score = self.g_gameDataLogic.m_pGameConclude.lGameScore[chair]
     local strMusic = score > 0 and "game/lord/sound/MusicEx_Win.mp3" or "game/lord/sound/MusicEx_Lose.mp3"
     self:doSomethingLater(function()
-        ExternalFun.playGameBackgroundAudio(strMusic, false)
+        ExternalFun.playGameEffect(strMusic, false)
     end, 0.5)
 
     --金币动作
@@ -3638,7 +3678,7 @@ function GameViewLayer:showLeftCard(bShow)
     self.m_bLayerMoving = true
 
     local Time_Move = 0.08
-    local Pos_Show = cc.p(0, 50)
+    local Pos_Show = cc.p(100, 100)
     local Pos_Hide = cc.p(-680, 50)
 
     --记牌栏
@@ -3808,9 +3848,7 @@ function GameViewLayer:onAddTimesLocal(tag)
     --本地加倍保存(不加倍1/加倍2）
     self.g_gameDataLogic:setAddScoreLocal(true)
     self.g_gameDataLogic:setAddTimeLocal(tag + 1)
-    if tag == 1 then tag = 0
-    elseif tag == 2 then tag = 1
-    end
+
     --发送加倍
     if device.platform == "windows" then
         cc.exports.scheduler.performWithDelayGlobal(function()
@@ -4234,7 +4272,7 @@ function GameViewLayer:onUpdateBeishu(beishu)
     if beishu and beishu == 0 then
         self.m_pLbBeishu:setString(0)
     else
-        local iBeishu = self.g_gameDataLogic:getCurrentMuliple() == 0 and 1 or self.g_gameDataLogic:getCurrentMuliple()
+        local iBeishu = self.g_gameDataLogic:getCurrentMuliple() --== 0 and 1 or self.g_gameDataLogic:getCurrentMuliple()
 --        local iJiabei = self:getJiaBeiCount()
         self.m_pLbBeishu:setString(iBeishu )
     end
@@ -4552,7 +4590,14 @@ function GameViewLayer:onUpdateLogoAlert(index, isShow)
         self.m_pNodesLogoAlert[index]:addChild(pAnim)
     end
 end
-
+--更新记牌器
+function GameViewLayer:onUpdateLeftCard()
+    
+    local data = self.g_gameDataLogic:getLeftCard()
+    for i = 1, 15 do
+        self.m_pLabelLeft[i]:setString(data[i])
+    end
+end
 --更新闹钟
 function GameViewLayer:onUpdateClockCount(index, isShow, nCount)
     
@@ -4721,7 +4766,7 @@ function GameViewLayer:onUpdateWinInfo()
             strName = LuaUtils.getDisplayNickNameInGame(user.nickname)
         end
         local strBeishu = string.format("x%d", vecBeishu[i])
-        local strScore = (score > 0 and "+" or "") .. string.format("%0.2f", score )
+        local strScore = (score > 0 and "+" or "") .. string.format("%d", score )
         self.m_pSpEndLord[viewChair]:setVisible(bLandlord)
         self.m_pLbEndName[viewChair]:setString(strName)
         self.m_pLbEndBei[viewChair]:setString(strBeishu)
@@ -4758,9 +4803,9 @@ function GameViewLayer:onUpdateWinScore(index, score)
 
     local strScore = "" --分数
     if score > 0 then
-        strScore = string.format("+%0.2f", score )
+        strScore = string.format("+%d", score )
     else
-        strScore = string.format("%0.2f", score )
+        strScore = string.format("%d", score )
     end
     self.m_pLabelEndScore[index]:setString(strScore)
 

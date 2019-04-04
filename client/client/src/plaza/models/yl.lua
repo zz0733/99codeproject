@@ -9,12 +9,34 @@ yl.STATION_ID							= 1
 
 yl.HTTP_URL = ""
 
---基础配置地址
-yl.BASE_CONFIG = 
-{
-    "http://download.tianshenyule.cc/unity/jiuwanqpandroid.xml",
-    "http://download.tianshenyule.cc/unity/jiuwanqpios.xml",
-}   
+if  device.platform  == "android" then
+    --基础配置地址
+    yl.BASE_CONFIG = 
+    {
+        "http://download.tianshenyule.cc/unity/jiuwanqpandroid.xml",
+        "http://download.tianshenyule.net/unity/jiuwanqpandroid.xml",
+        "http://download.tianshenyule.vip/unity/jiuwanqpandroid.xml",
+        "http://oss.aliyuncs.com/dong888/unity/jiuwanqpandroid.xml",
+    } 
+elseif device.platform  == "ios" then
+    --基础配置地址
+    yl.BASE_CONFIG = 
+    {
+        "http://download.tianshenyule.cc/unity/jiuwanqpqyios.xml",
+        "http://download.tianshenyule.net/unity/jiuwanqpqyios.xml",
+        "http://download.tianshenyule.vip/unity/jiuwanqpqyios.xml",
+        "http://oss.aliyuncs.com/dong888/unity/jiuwanqpqyios.xml",
+    }
+else
+    --基础配置地址
+    yl.BASE_CONFIG = 
+    {
+        "http://download.tianshenyule.cc/unity/jiuwanqpandroid.xml",
+        "http://download.tianshenyule.net/unity/jiuwanqpandroid.xml",
+        "http://download.tianshenyule.vip/unity/jiuwanqpandroid.xml",
+        "http://oss.aliyuncs.com/dong888/unity/jiuwanqpandroid.xml",
+    } 
+end
 
 yl.CLIENTFILE = "client_hh.info"
 yl.update_url = {

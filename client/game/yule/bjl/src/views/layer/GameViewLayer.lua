@@ -3,25 +3,22 @@
 -- Date: 2016-11-02 17:28:24
 --
 local ExternalFun               = appdf.req(appdf.EXTERNAL_SRC .. "ExternalFun")
---local GameChatLayer             = appdf.req(appdf.CLIENT_SRC.."plaza.views.layer.game.GameChatLayer")
---local ClipText                  = appdf.req(appdf.EXTERNAL_SRC .. "ClipText")
---local AnimationMgr              = appdf.req(appdf.EXTERNAL_SRC .. "AnimationMgr")
 local module_pre                = "game.yule.bjl.src"
+local HeadSprite                = appdf.req(appdf.EXTERNAL_SRC .. "HeadSprite")
 local RuleLayer                 = appdf.req(module_pre .. ".views.layer.RuleLayer")
+local SettingLayer              = appdf.req(module_pre .. ".views.layer.SettingLayer")
+local ResoultLayer              = appdf.req(module_pre .. ".views.layer.ResoultLayer")
 local BaccaratRes               = appdf.req(module_pre .. ".game.baccarat.scene.BaccaratRes")
 local BaccaratDefine            = appdf.req(module_pre .. ".game.baccarat.scene.BaccaratDefine")
-local BaccaratTrendLayer        = appdf.req(module_pre .. ".views.layer.BaccaratTrendLayer")
 local BaccaratOtherInfoLayer    = appdf.req(module_pre .. ".views.layer.BaccaratOtherInfoLayer")
-local Poker                     = appdf.req(module_pre .. ".views.layer.BaccaratPoker")
 local BaccaratDataMgr           = appdf.req(module_pre .. ".game.baccarat.manager.BaccaratDataMgr")
-local BaccaratEvent             = appdf.req(module_pre .. ".game.baccarat.scene.BaccaratEvent")
-local Effect                    = appdf.req(module_pre .. ".models.Effect")
-local PlayerInfo = appdf.req(appdf.EXTERNAL_SRC .. "PlayerInfo")
+local Effect                    = appdf.req(module_pre .. ".models.Effect");
+local PlayerInfo                = appdf.req(appdf.EXTERNAL_SRC .. "PlayerInfo")
+local scheduler                 = appdf.req("game.yule.bjl.src.models.scheduler")
 local FloatMessage              = cc.exports.FloatMessage
-local SLFacade                  = cc.exports.SLFacade
 
 local ChipCount          = 5--6 --筹码数量
-local AreaCount          = 8 --投注区域数量
+local AreaCount          = 5 --投注区域数量
 local ChipOffsetY        = 14 --选中筹码位移
 local FlyChipScale       = 0.35 --下注筹码缩放比例
 
@@ -33,20 +30,21 @@ local CHIP_ITEM_COUNT    = AreaCount --下注项数
 local CHIP_REWARD        = {2, 9, 2, 3, 3, 33, 12, 12}
 local IPHONEX_OFFSETX    = 60
 
-local ZORDER_OF_RULE = 100
-local ZORDER_OF_TREND = 100
-local ZORDER_OF_MESSAGEBOX = 101
-local ZORDER_OF_FLOATMESSAGE = 102
-
-local FNT_RESULT_WIN  = "game/baccarat/font/sz_pdk3.fnt"
-local FNT_RESULT_LOSE = "game/baccarat/font/sz_pdk4.fnt"
 
 local GameViewLayer = class("GameViewLayer",function(scene)
     local gameViewLayer = display.newLayer()
     return gameViewLayer
 end)
 
---otherplayer = {}
+local BET_STAR           = "star"
+local BET_END            = "end"
+
+local GameView = {
+       GameStatus_BET = 1,
+       GameStatus_END = 2,
+       GameStatus_FREE = 3,
+       GameStatus_WAIT = 0,
+}
 
 function GameViewLayer:ctor(scene)
     math.randomseed(os.time())
@@ -63,396 +61,29 @@ function GameViewLayer:ctor(scene)
 end
 
 function GameViewLayer:onEnter()
+    
 end
 
+function GameViewLayer:onExit()
+    --清理计时器
+    self:cleanEvent()
+end
 
 function GameViewLayer:init()
-    --初始化主ui
-    self:initUI()
-
-    --注册按钮事件
-    self:initBtnClickEvent()
-
-    --初始化变量
-    self:initConstVar()
-
     --初始化数据
     self:initVar()
-
-    --动画进入
-    self:flyIn()
-end
-
---初始化变量，此方法内变量在断线重连后，需要重置
-function GameViewLayer:initVar()
-    self.m_vJettonOfMine    = {} --自己筹码 {pSpr = sp(筹码对象), nIdx = idx(随机坐标索引)}
-    self.m_vJettonOfOther   = {} --其他筹码 {pSpr = sp(筹码对象), nIdx = idx(随机坐标索引)}
-    self.m_isPlayBetSound   = false --是否正在播放筹码音效
-    self.m_isPlayDaojishi   = false --是否在播放最后3秒倒计时动画
-    self.m_randmChipSelf    = {} --自己的随机筹码投注区
-    self.m_randmChipOthers  = {} --其他玩家的随机筹码投注区
-    self.m_flyJobVec        = {} --飞行筹码任务清空
-    self.m_sendCard         = {} --前2张发牌
-    self.m_nSoundClock      = nil
-    self.m_daluMaxCol       = 0
-    self.m_zhuluMaxCol      = 0
-    self.m_oldScore         = 0
-    --self.m_xianPointAni     = nil --闲家点数动画
-    --self.m_zhuangPointAni   = nil --庄家点数动画
-    self:resetChipPosArea() --重置筹码随机投注坐标
-    ---------------------------------------------------------------------------
-    self.m_members = {}
-    self.numList = {}
-    self.Tab_XuYa = {}
-    self.m_mybet = {}
-    self.daojishi_Num = 0
-    self.money = 0
-    self.Moneydealer = 0
-    self.lostPos = 0
-    self.ButtonJetton = 1
-    self.mywin = 0
-    self.dealer_win = 0
-    self.moneys = {}
-    self.win_zodic = {}
-    self.m_llMyBetValue = {0,0,0,0,0,0,0,0}
-    self.isShangZhuang = false
-    self.m_vecResultCard = {}
-    self.allchipList = {{},{},{},{},{},{},{},{},}
-    self.Win_Num = {}
-    self.ColorList = {}
-    self.tagxuya = true
-    for i = 1 ,#BaccaratRes.vecReleaseAnim  do
-        ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(BaccaratRes.vecReleaseAnim[i])
-    end
-    local armature = ccs.Armature:create("huanle30s_beijing")  
-    armature:setPosition(667,375)          
-    self.m_rootNode:getChildByName("Node_bg"):getChildByName("Image_bg"):addChild(armature)
-    armature:getAnimation():playWithIndex(0)
-end
-
---初始化变量，此方法内变量在断线重连后，不需要重置
-function GameViewLayer:initConstVar()
-    self.isOpenMenu       = false
-    self.m_nIndexChoose   = 0 --选中筹码的索引
-    self.m_betChipPos     = {} --筹码原始坐标    
-    self.m_flyChipPos     = {} --玩家下注飞行筹码起始坐标    
-    for i = 1, ChipCount do
-        self.m_betChipPos[i] = cc.p(self.m_pBtnBetChip[i]:getPosition())
-        self.m_flyChipPos[i] = cc.p(self.m_nodeFlyChip:getChildByName("Node_pos" .. i):getPosition())
-    end
-
-    --region 处理筹码飞行层的定位用节点，处理完后，清空筹码飞行层
-    self.m_selfChipPos   = cc.p(self.m_nodeFlyChip:getChildByName("Node_self"):getPosition())
-    self.m_otherChipPos  = cc.p(self.m_nodeFlyChip:getChildByName("Node_other"):getPosition())
-    self.m_bankerChipPos = cc.p(self.m_nodeFlyChip:getChildByName("Node_banker"):getPosition())
-    self.m_vChipArea     = {} --投注区域rect数组
-    for i = 1, AreaCount do
-        local _node = self.m_nodeFlyChip:getChildByName("Panel_flyarea" .. i)
-        local posx, posy = _node:getPosition()
-        local sz = _node:getContentSize()
-        self.m_vChipArea[i] = cc.rect(posx, posy, sz.width, sz.height )
-    end
-
-    self.m_nodeFlyChip:removeAllChildren()
-    --endregion
-
-    --region 发牌动画定位用节点，处理完后，清空节点对象
-    --[[ 区域显示结构
-
-            获胜/同点平
-            ___________
-            |  扑克牌 |
-            |         |
-            |         |
-            |天王/对子|
-            |         |
-            -----------
-               点数
-    ]]--
-
-    --发牌起始坐标点
-    self.m_sendCardBeginPos = cc.p(self.m_nodeCardAni:getChildByName("Node_fapaiqi"):getPosition())
-
-    --闲家牌结束坐标点
-    self.m_xianCardEndPos   = cc.p(self.m_nodeCardAni:getChildByName("Node_xiancard"):getPosition())
-    --闲家获胜或平的动画坐标
-    self.m_xianWinAniPos    = cc.p(self.m_xianCardEndPos.x, self.m_xianCardEndPos.y + 50)
-    --闲家牌型坐标
-    self.m_xianTypePos      = cc.p(self.m_xianCardEndPos.x + 50, self.m_xianCardEndPos.y)
-    --闲家点数坐标
-    self.m_xianPointPos     = cc.p(self.m_xianCardEndPos.x, self.m_xianCardEndPos.y - 50)
-
-    --庄家牌结束坐标点
-    self.m_zhuangCardEndPos = cc.p(self.m_nodeCardAni:getChildByName("Node_zhuangcard"):getPosition())
-    --庄家获胜或平的动画坐标
-    self.m_zhuangWinAniPos  = cc.p(self.m_zhuangCardEndPos.x, self.m_zhuangCardEndPos.y + 50)
-    --庄家牌型坐标
-    self.m_zhuangTypePos    = cc.p(self.m_zhuangCardEndPos.x + 50, self.m_zhuangCardEndPos.y)
-    --庄家点数坐标
-    self.m_zhuangPointPos   = cc.p(self.m_zhuangCardEndPos.x, self.m_zhuangCardEndPos.y - 50)
-
-    self.m_nodeCardAni:removeAllChildren()
-    --endregion
-
-    --扑克配置项
-    local offset = 40
-    self.m_sendCardConfig = {
-        beginRotate = 212, --发牌初始角度
-        beginScaleVal = 0.19, --发牌初始缩放
-        endScaleVal = 0.7, --发牌结束缩放
-        beginPos = self.m_sendCardBeginPos, --发牌起始点
-        sendTs = 0.32, --单张发牌时间
-        cardNum = 2, --发牌张数
-        openCardTs = 0.15, --开牌动画一半所需时间
-        cardOffsetX = offset, --发牌的横向间隔距离
-        cardOffsetY = -13, --补牌的纵向位移
-        pointSoundDelay = 0.6, --牌点数音效延迟
-        boneName = {
-            VALUE = "A",
-            COLOR = "heitao",
-        },
-        pointAniPos = {
-            [BaccaratDataMgr.ePlace_Xian]   = {
-                [2] = cc.p(self.m_xianCardEndPos.x + 20, self.m_xianCardEndPos.y - 75), --两张牌坐标
-                [3] = cc.p(self.m_xianCardEndPos.x + 40, self.m_xianCardEndPos.y - 75), --三张牌坐标
-            },
-            
-            [BaccaratDataMgr.ePlace_Zhuang] = {
-                [2] = cc.p(self.m_zhuangCardEndPos.x + 20, self.m_zhuangCardEndPos.y - 75),
-                [3] = cc.p(self.m_zhuangCardEndPos.x + 40, self.m_zhuangCardEndPos.y - 75),
-            },
-        },
-        --前4张牌的配置 13闲家 24庄家
-        [1] = {
-            cardType  = BaccaratDataMgr.ePlace_Xian,
-            cardIndex = 1,
-            endPos    = cc.p(self.m_xianCardEndPos.x + offset/2, self.m_xianCardEndPos.y)
-            },
-        [2] = {
-            cardType  = BaccaratDataMgr.ePlace_Zhuang,
-            cardIndex = 1,
-            endPos    = cc.p(self.m_zhuangCardEndPos.x + offset/2, self.m_zhuangCardEndPos.y)
-            },
-        [3] = {
-            cardType  = BaccaratDataMgr.ePlace_Xian,
-            cardIndex = 2,
-            endPos    = cc.p(self.m_xianCardEndPos.x + 3*offset/2, self.m_xianCardEndPos.y)
-            },
-        [4] = {
-            cardType  = BaccaratDataMgr.ePlace_Zhuang,
-            cardIndex = 2,
-            endPos    = cc.p(self.m_zhuangCardEndPos.x + 3*offset/2, self.m_zhuangCardEndPos.y)
-            },
-    }
-
-    --等待下一局动画坐标点
-    self.m_zcAniPos = cc.p(self.m_nodeZCAni:getChildByName("Node_anipos"):getPosition())
-    self.m_nodeZCAni:removeAllChildren()
-end
-
-
---初始化UI组件 此方法内变量在断线重连后，不需要重置
-function GameViewLayer:initUI()
-    self.m_rootNode    = self.m_pathUI:getChildByName("Panel_root")
-
-    self.m_nodeBottom  = self.m_rootNode:getChildByName("Node_bottom")
-    self.m_nodeLeft    = self.m_rootNode:getChildByName("Node_left")
-    self.m_nodeRight   = self.m_rootNode:getChildByName("Node_right")
-    self.m_nodeClip    = self.m_rootNode:getChildByName("Panel_node_clip")
-    self.m_nodeBet     = self.m_rootNode:getChildByName("Node_betarea")
-    self.m_nodeFlyChip = self.m_rootNode:getChildByName("Node_flychip")
-    self.m_nodeTop     = self.m_rootNode:getChildByName("Node_top")
-    self.m_nodeDlg     = self.m_rootNode:getChildByName("Panel_dialog")
-
-    --动画展示节点，包含：转场动画,发牌动画,开牌动画,等待开始动画
-    self.m_nodeAni     = self.m_rootNode:getChildByName("Node_ani")
-    
-    --转场动画节点
-    self.m_nodeZCAni   = self.m_nodeAni:getChildByName("Node_zhuanchang")
-
-    --牌动画节点 包含：发牌动画,开牌动画,牌型动画，获胜动画
-    self.m_nodeCardAni = self.m_nodeAni:getChildByName("Node_cardani")
-
-    --桌子背景
-    self.m_pImgDesk    = self.m_rootNode:getChildByName("Image_desk")
-
-    --倒计时
-    self.m_pImgTimer   = self.m_pImgDesk:getChildByName("Image_timerbg")
-    self.m_pImgState   = self.m_pImgTimer:getChildByName("Image_state")
-    self.m_pLbTimerNum = self.m_pImgTimer:getChildByName("Text_timernum")
-
-    --动画闪烁区域
-    self.m_nodeBlink   = self.m_pImgDesk:getChildByName("Node_blink")
-    self.m_pBlink = {}
-    for i = 1, AreaCount do
-        self.m_pBlink[i] = self.m_nodeBlink:getChildByName("Sprite_blink" .. i)
-    end
-
-    --玩家信息
-    self.m_selfPanel    = self.m_nodeLeft:getChildByName("Panel_self")
-    local _Image_selfbg = self.m_selfPanel:getChildByName("Image_selfbg")
-    self.m_pLbSelfName  = _Image_selfbg:getChildByName("Text_selfname")
-    self.m_pLbSelfGold  = _Image_selfbg:getChildByName("Node_scale"):getChildByName("Text_selfgold")
-    self.m_pBtnBank     = _Image_selfbg:getChildByName("Btn_bank")
-    self.m_pBtnBank:setVisible(false)
-    --庄家信息
-    local _Image_bankbg  = self.m_nodeTop:getChildByName("Image_5")
-    self.m_pLbBankerName = _Image_bankbg:getChildByName("Text_bankname")
-    self.m_pLbBankerGold = _Image_bankbg:getChildByName("Text_bankgold")
-    self.m_pLbApplyNum   = _Image_bankbg:getChildByName("Text_apply")
-    self.m_pBtnApply     = _Image_bankbg:getChildByName("Btn_applybanker")
-    self.m_pBtnDown      = _Image_bankbg:getChildByName("Btn_downbanker")
-
-    --主界面路数展示信息
-    self.m_nodeSmallroad   = self.m_nodeTop:getChildByName("Node_smallroad")
-    local _Sprite_bg       = self.m_nodeSmallroad:getChildByName("Sprite_bg")
-    self.m_pNodeTableWin   = _Sprite_bg:getChildByName("Node_win")
-    self.m_pNodeTableRoad  = _Sprite_bg:getChildByName("Node_road")
-    self.m_pLbPingNum      = _Sprite_bg:getChildByName("Text_pingnum")
-    self.m_pLbZhuangNum    = _Sprite_bg:getChildByName("Text_zhuangnum")
-    self.m_pLbXianNum      = _Sprite_bg:getChildByName("Text_xiannum")
-    self.m_pLbZhuangDuiNum = _Sprite_bg:getChildByName("Text_zhuangduinum")
-    self.m_pLbXianDuiNum   = _Sprite_bg:getChildByName("Text_xianduinum")
-
-    --其他玩家按钮
-    local _Panel_other   = self.m_nodeLeft:getChildByName("Panel_other")
-    self.m_pBtnOthers    = _Panel_other:getChildByName("Btn_qtwj")
-    self.m_pLbOtherNum   = _Panel_other:getChildByName("TXT_other_num")
-
-    --六个筹码
-    self.m_pBtnBetChip = {}
-    local _chipbg = self.m_nodeBottom:getChildByName("Image_chipbg")
-    for i = 1, ChipCount do
-        self.m_pBtnBetChip[i] = _chipbg:getChildByName("Btn_chip" .. i)
-    end
-    self.m_pBtnBetChip[6] = _chipbg:getChildByName("Btn_chip" .. 6):setVisible(false)
-    --续投按钮
-    self.m_pBtnContinue  = _chipbg:getChildByName("Btn_continue")
-
-    --全屏关闭按钮
-    self.m_pBtnFullClose = self.m_nodeClip:getChildByName("Btn_close")
-
-    --退出按钮
-    self.m_pBtnReturn    = self.m_nodeLeft:getChildByName("Btn_exit")
-
-    --路数按钮
-    self.m_pBtnRoad      = self.m_nodeRight:getChildByName("Btn_road")
-
-    --菜单按钮
-    self.m_pBtnMenuPop   = self.m_nodeRight:getChildByName("Btn_pop")
-
-    --弹出菜单
-    self.m_nodeMenu     = self.m_rootNode:getChildByName("Node_menu")
-    self.m_menuBG       = self.m_nodeMenu:getChildByName("Image_menubg")
-    self.m_pBtnSound    = self.m_menuBG:getChildByName("Btn_sound")
-    self.m_pBtnMusic    = self.m_menuBG:getChildByName("Btn_music")
-    self.m_pBtnMenuBank = self.m_menuBG:getChildByName("Btn_menubank")
-    self.m_pBtnRule     = self.m_menuBG:getChildByName("Btn_rule")
-    self.m_pBtnMenuBank:setColor(cc.c3b(127,127,127))
-    self.m_pBtnMenuBank:setEnabled(false)
-    self.m_nodeBetnum   = self.m_pImgDesk:getChildByName("Node_betnum")
-
-    --总下注
-    self.m_pLbTotalBet  = self.m_nodeBetnum:getChildByName("Text_bettotal")
-    
-    --区域下注
-    self.m_pLbAreaTotal = {}
-
-    --我的下注
-    self.m_pLbSelfTotal = {}
-
-    for i = 1, AreaCount do
-        self.m_pLbAreaTotal[i] = self.m_nodeBetnum:getChildByName("Text_betnum_total" .. i)
-        self.m_pLbSelfTotal[i] = self.m_nodeBetnum:getChildByName("Text_betnum_self" .. i)
-    end
-
-    self.m_vChipArea = {} --记录投注区域rect 用于重置随机投注点用
-
-    --庄家提示动画节点
-    self.m_pSpbankerTip = self.m_nodeAni:getChildByName("Sprite_bankertip")
-
+    --初始化主ui
+    self:initUI()
+    --注册按钮事件
+    self:initBtnClickEvent()
+    --初始化桌上玩家
+    self:initseatinfo()
+    --重置筹码随机投注坐标
+    self:resetChipPos() 
     --分辨率自适应
     self:setNodeFixPostion()
-
-    --初始化弹出菜单
-    self:initClipNode()
-    self:initMenuView()
-
-    --初始化主界面大路
-    self:initMainViewDalu()
-
-    --初始化主界面珠路
-    self:initMainViewZhulu()
-
-    --刷新珠路显示
-    self:updateMainRoadView()
-end
-
---初始化ui组件的显示内容 断线重连后应重置
-function GameViewLayer:resetNodeView()
-    --玩家信息显示
-    self:updateUsrName()
-    self:updateUsrGold()
-
-    --庄家信息显示
-    self:updateBankerInfo()
-
-    --其他玩家数量
-    self:updateOtherNum()
-
-    --倒计时
-    self:onTimeCountDown()
-
-    --下注金额显示
-    self:updateBetValueOfAll()
-
-end
-
---初始化弹出菜单剪切区域
-function GameViewLayer:initClipNode()
-    local _posx, _ =  self.m_pBtnMenuPop:getPosition()
-    local shap = cc.DrawNode:create()
-    local width = self.m_menuBG:getContentSize().width
-    local pointArr = {cc.p(0,300), cc.p(400, 300), cc.p(400, 650), cc.p(0, 650)}
-    shap:drawPolygon(pointArr, 4, cc.c4f(255, 255, 255, 255), 2, cc.c4f(255, 255, 255, 255))
-    self.m_pClippingMenu = cc.ClippingNode:create(shap)
-    
-    local diffX = 0
-    if _posx + width/2 > display.size.width then
-        diffX = display.size.width - width
-    else
-        diffX = _posx - width/2 + 10
-    end
-
-    self.m_pClippingMenu:setPosition(cc.p(diffX,0))
-    self.m_nodeClip:addChild(self.m_pClippingMenu)
-    self.m_menuBG:removeFromParent()
-    self.m_pClippingMenu:addChild(self.m_menuBG)
-end
-
---初始化音效音乐
-function GameViewLayer:initMenuView()
-    --音乐 
-    local music = GlobalUserItem.bVoiceAble   
-    if music then
-        GlobalUserItem.setVoiceAble(true)
-        ExternalFun.playGameBackgroundAudio(BaccaratRes.SOUND_OF_BG)
-        self.m_pBtnMusic:loadTextureNormal(BaccaratRes.IMG_MUSIC_ON, ccui.TextureResType.plistType)
-    else
-        GlobalUserItem.setVoiceAble(false)
-        self.m_pBtnMusic:loadTextureNormal(BaccaratRes.IMG_MUSIC_OFF, ccui.TextureResType.plistType)
-    end
-
-    --音效
-    local sound = GlobalUserItem.bSoundAble
-    if sound then
-        GlobalUserItem.setSoundAble(true)
-        self.m_pBtnSound:loadTextureNormal(BaccaratRes.IMG_SOUND_ON, ccui.TextureResType.plistType)
-    else
-        GlobalUserItem.setSoundAble(false)
-        self.m_pBtnSound:loadTextureNormal(BaccaratRes.IMG_SOUND_OFF, ccui.TextureResType.plistType)
-    end
-
+    --初始化路子
+    self:initTrendChart()
 end
 
 --分辨率适配
@@ -463,1638 +94,587 @@ function GameViewLayer:setNodeFixPostion()
     self.m_rootNode:setPositionX(diffX)
 
     if LuaUtils.isIphoneXDesignResolution() then
-        --左侧节点
-        self.m_nodeLeft:setPositionX(self.m_nodeLeft:getPositionX() - IPHONEX_OFFSETX)
-        local _node1 = self.m_nodeFlyChip:getChildByName("Node_self")
-        _node1:setPositionX(_node1:getPositionX() - IPHONEX_OFFSETX)
-        local _node2 = self.m_nodeFlyChip:getChildByName("Node_other")
-        _node2:setPositionX(_node2:getPositionX() - IPHONEX_OFFSETX)
+        self.m_ImageBg:setContentSize(display.size.width,display.size.height)
+        self.m_pPanelPlayers:setContentSize(display.size.width,display.size.height)
+        self.m_pPanelMenu:setContentSize(display.size.width,display.size.height)
+        self.m_pPanelMenu:setPositionX(-diffX)
 
-        --右侧节点
-        self.m_nodeRight:setPositionX(self.m_nodeRight:getPositionX() + IPHONEX_OFFSETX)
-
-        --顶部显示
-        self.m_nodeSmallroad:setPositionX(self.m_nodeSmallroad:getPositionX() - IPHONEX_OFFSETX/2)
-
-    end
-end
-
---endregion
-
---region 按钮事件及绑定处理
-
---按钮事件
-function GameViewLayer:initBtnClickEvent()
-    --绑定筹码点击
-    for i = 1, ChipCount do
-        self.m_pBtnBetChip[i]:addClickEventListener(handler(self,function()
-            --主动点击筹码才播放音效
-            ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_JETTON)
-            self:onBetNumClicked(i)
-        end))
-    end
-
-    self.m_pBtnReturn:addClickEventListener(handler(self,self.onReturnClicked))                 -- 退出
-    self.m_pBtnSound:addClickEventListener(handler(self,self.onSoundClicked))                   -- 音效
-    self.m_pBtnMusic:addClickEventListener(handler(self,self.onMusicClicked))                   -- 音乐
-    self.m_pBtnMenuBank:addClickEventListener(handler(self,self.onBankClicked))                 -- 银行
-    self.m_pBtnBank:addClickEventListener(handler(self,self.onBankClicked))                     -- 银行
-    self.m_pBtnRule:addClickEventListener(handler(self,self.onRuleClicked))                     -- 规则
-    self.m_pBtnMenuPop:addClickEventListener(handler(self,self.onPopClicked))                   -- 弹出
-    self.m_pBtnFullClose:addClickEventListener(handler(self,self.onPushClicked))                -- 收回
-    self.m_pBtnRoad:addClickEventListener(handler(self,self.onTrendClicked))                    -- 路子
-    self.m_pBtnOthers:addClickEventListener(handler(self,self.onOtherInfoClicked))              -- 玩家
-    self.m_pBtnApply:addClickEventListener(handler(self,self.onRequestToZhuangClicked))         -- 上庄
-    self.m_pBtnDown:addClickEventListener(handler(self,self.onCancelToZhuangClicked))           -- 下庄
-    self.m_pBtnContinue:addClickEventListener(handler(self,self.onBetContinueClicked))          -- 续投
-
-    --绑定点击投注区域
-    for i = 1, 8 do
-        local _node = self.m_nodeBet:getChildByName("Node_bet" .. i)
-        local j = 1
-        while true do
-            local _betBtn = _node:getChildByTag(j)
-            if not _betBtn then break end
-            _betBtn:addClickEventListener(handler(self,function()
-                self:onBetClicked(i)
-            end))
-            j = j + 1
-        end
-    end
-end
-
-function GameViewLayer:onPopClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    local str = self.isOpenMenu and BaccaratRes.IMG_POP or BaccaratRes.IMG_PUSH
-    self.m_pBtnMenuPop:loadTextureNormal(str, ccui.TextureResType.plistType)
-    self.m_pBtnMenuPop:loadTexturePressed(str, ccui.TextureResType.plistType)
-
-    if self.isOpenMenu then
-        self.m_menuBG:stopAllActions()
-        local seq = cc.Sequence:create(cc.MoveTo:create(0.2, cc.p(2, 740)), cc.CallFunc:create(function()
-            self.m_menuBG:setVisible(false)
-            self.m_pBtnFullClose:setVisible(false)
-        end))
-        self.m_menuBG:runAction(seq)
-    else
-        self.m_menuBG:setVisible(true)
-        self.m_menuBG:stopAllActions()
-        self.m_menuBG:setPosition(cc.p(2, 740))
-        local seq = cc.Sequence:create(cc.MoveTo:create(0.2, cc.p(2, 650)), cc.CallFunc:create(function()
-            self.m_menuBG:setVisible(true)
-            self.m_pBtnFullClose:setVisible(true)
-        end))
-        self.m_menuBG:runAction(seq)
-    end
-    self.isOpenMenu = not self.isOpenMenu
-end
-
-function GameViewLayer:onPushClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    if not self.isOpenMenu then return end
-
-    local str = BaccaratRes.IMG_POP
-    self.m_pBtnMenuPop:loadTextureNormal(str, ccui.TextureResType.plistType)
-    self.m_pBtnMenuPop:loadTexturePressed(str, ccui.TextureResType.plistType)
-    self.isOpenMenu = false
-    self.m_menuBG:stopAllActions()
-    local seq = cc.Sequence:create(cc.MoveTo:create(0.2, cc.p(2, 730)), cc.CallFunc:create(function()
-        self.m_menuBG:setVisible(false)
-        self.m_pBtnFullClose:setVisible(false)
-    end))
-    self.m_menuBG:runAction(seq)
-end
-
---其他玩家信息
-function GameViewLayer:onOtherInfoClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    --玩家列表
-    local infoLayer = BaccaratOtherInfoLayer:create()
-    self.m_nodeDlg:addChild(infoLayer,4)
-end
-
---退出
-function GameViewLayer:onReturnClicked()
-    self._scene:onQueryExitGame()
-end
-
---点击音乐
-function GameViewLayer:onMusicClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    local music = GlobalUserItem.bVoiceAble;
-    local resName = music and BaccaratRes.IMG_MUSIC_OFF or BaccaratRes.IMG_MUSIC_ON
-    GlobalUserItem.setVoiceAble(not music)
-    self.m_pBtnMusic:loadTextureNormal(resName,ccui.TextureResType.plistType)
-    if not music then
-        ExternalFun.playGameBackgroundAudio(BaccaratRes.SOUND_OF_BG)
-    end
-    
-end
-
---点击音效
-function GameViewLayer:onSoundClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    --音效
-    local sound = GlobalUserItem.bSoundAble
-    local resName = sound and BaccaratRes.IMG_SOUND_OFF or BaccaratRes.IMG_SOUND_ON
-    GlobalUserItem.setSoundAble(not sound)
-    self.m_pBtnSound:loadTextureNormal(resName,ccui.TextureResType.plistType)
-end
-
---筹码点击
-function GameViewLayer:onBetNumClicked(nIndex)
-    if not nIndex then return end
-    if self.m_nIndexChoose == nIndex then
-        return
-    end
-    if nIndex ~= 1 then
-        self.m_pBtnBetChip[1]:setPositionY(self.m_betChipPos[1].y)
-    end
-    --让先前选中的变成原始位置
-    if self.m_nIndexChoose > 0 then
-        --local posNowY = self.m_pBtnBetChip[self.m_nIndexChoose]:getPositionY()
-        self.m_pBtnBetChip[self.m_nIndexChoose]:setPositionY(self.m_betChipPos[self.m_nIndexChoose].y)
-    end
-    self.m_pBtnBetChip[nIndex]:setPositionY(self.m_betChipPos[nIndex].y + ChipOffsetY)
-    self.ButtonJetton = self.chips[nIndex]--1,5,20,50,100
-    self.m_nIndexChoose = nIndex
-end
-
---下注区域点击
-function GameViewLayer:onBetClicked(nIndex) --点击下注
-    local bet_tag = self:getRealNum(nIndex)
-    self._scene:SendBet({bet_tag,self.ButtonJetton})
-    if self.tagxuya == true then
-    table.insert(self.Tab_XuYa,{bet_tag,self.ButtonJetton})
-    else
-    self.Tab_XuYa = {}
-    table.insert(self.Tab_XuYa,{bet_tag,self.ButtonJetton})
-    self.tagxuya = true
-    end
-    
-    table.insert(self.m_mybet,bet_tag)
-end
-
-function GameViewLayer:getRealNum(nIndex)
-    local realnum = 0
-    if     nIndex == 1 then realnum = 0 
-    elseif nIndex == 2 then realnum = 6
-    elseif nIndex == 3 then realnum = 3
-    elseif nIndex == 4 then realnum = 2
-    elseif nIndex == 5 then realnum = 5
-    elseif nIndex == 6 then realnum = 7
-    elseif nIndex == 7 then realnum = 1
-    elseif nIndex == 8 then realnum = 4
-    end
-    return realnum
-end
-
---点击上庄
-function GameViewLayer:onRequestToZhuangClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    if BaccaratDataMgr.getInstance():getGameState() == 1 then
-        self:showFloatmessage("下注阶段，无法上庄")
-    end
-    self._scene:SendUpdearler()
-end
-
---点击取消上庄
-function GameViewLayer:onCancelToZhuangClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    self._scene:SendDowndealer()
-end
-
---点击续投
-function GameViewLayer:onBetContinueClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-        --庄家
-    if BaccaratDataMgr.getInstance():isBanker() then
-        self:showFloatmessage("BACCARAT_9")
-        return
-    end
-
-    --非下注状态
-    if BaccaratDataMgr.eType_Bet ~= BaccaratDataMgr.getInstance():getGameState() then
-        self:showFloatmessage("BACCARAT_11")
-        return
-    end
-
-    local index = 1   
-    if self.Tab_XuYa[index] == nil then
-        self:showFloatmessage("您还没有下注，无法续投")
-        return
-    end
-    self._XuyaFun = cc.Director:getInstance():getScheduler():scheduleScriptFunc(function()
-        if self.Tab_XuYa[index] ~= nil then
-            self._scene:SendBet(self.Tab_XuYa[index])
-        else
-            cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self._XuyaFun)  
-        end 
-        index = index+1
-    end, 0.2, false)
-end
-
---点击银行
-function GameViewLayer:onBankClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    SLFacade:dispatchCustomEvent(Hall_Events.SHOW_OPEN_BANK,"openbank")
-end
-
---点击路子
-function GameViewLayer:onTrendClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    self:showTrendLayer()
-end
-
---点击规则
-function GameViewLayer:onRuleClicked()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
-    RuleLayer.create():addTo(self.m_rootUI, ZORDER_OF_TREND)
---    local set = RuleLayer:create( self )
---    self:addToRootLayer(set, ZORDER_OF_TREND)
-end
-
---endregion
-
-function GameViewLayer:setPathValue(m_vecResultCard)
-    self.ValueList = {}
-    for i = 1 ,2 do
-        for  j = 1, 3 do
-            if m_vecResultCard[i][j] ~= nil then
-                if m_vecResultCard[i][j] < 13 and m_vecResultCard[i][j] >=0 then
-                    table.insert(self.ValueList,{m_vecResultCard[i][j],iColor = 0,iValue = m_vecResultCard[i][j] + 1})
-                elseif m_vecResultCard[i][j] >= 13 and m_vecResultCard[i][j] < 26 then
-                    table.insert(self.ValueList,{m_vecResultCard[i][j],iColor = 1,iValue = m_vecResultCard[i][j] - 12})
-                elseif m_vecResultCard[i][j] >= 26 and m_vecResultCard[i][j] < 39 then
-                    table.insert(self.ValueList,{m_vecResultCard[i][j],iColor = 2,iValue = m_vecResultCard[i][j] - 25})
-                elseif m_vecResultCard[i][j] >= 39 and m_vecResultCard[i][j] < 52 then
-                    table.insert(self.ValueList,{m_vecResultCard[i][j],iColor = 3,iValue = m_vecResultCard[i][j] - 38})
-                end
-            else
-                table.insert(self.ValueList,0)
-            end
-            
+        self.m_opBar:setPositionX(diffX)
+--        self.m_NodebetTip:setPositionX(self.m_NodebetTip:getPositionX() + diffX)
+        self.m_pNodestu:setPositionX(self.m_pNodestu:getPositionX() + diffX)
+        for i = 1 , 5  do
+            self.m_PanelBetPos[i]:setPositionX(self.m_PanelBetPos[i]:getPositionX() + diffX)
+            self.m_BtnChooseBet[i]:setPositionX(self.m_BtnChooseBet[i]:getPositionX() + diffX)
         end
         
     end
 end
+--初始化变量，此方法内变量在断线重连后，需要重置
+function GameViewLayer:initVar()
+    self.m_vJettonOfMine        = {} --自己筹码 {pSpr = sp(筹码对象), nIdx = idx(随机坐标索引)}
+    self.m_vJettonOfOther       = {} --其他筹码 {pSpr = sp(筹码对象), nIdx = idx(随机坐标索引)}
+    self.m_isPlayBetSound       = false --是否正在播放筹码音效
+    self.m_isPlayDaojishi       = false --是否在播放最后3秒倒计时动画
+    self.m_randmChipSelf        = {} --自己的随机筹码投注区
+    self.m_randmChipOthers      = {} --其他玩家的随机筹码投注区
+    self.m_flyJobVec            = {} --飞行筹码任务清空
+    self.m_sendCard             = {} --前2张发牌
+    self.m_nSoundClock          = nil
+    self.m_daluMaxCol           = 0
+    self.m_zhuluMaxCol          = 0
+    self.m_oldScore             = 0
+    self.m_flychipidx           = 0
+    self.isOpenMenu             = false
+    self.nIndexChoose           = 0 --选中筹码的索引
+    self.m_pControlButtonJetton = {}
+    self.Betitem                = {}
+    self.m_pNodeSeat            = {}
+    self.Node_seatPos           = {}
+    self.m_tabPos               = {}
+    self.m_userBtnVec           = {}
+    self.m_userBtnResPosVec     = {}
+    self.m_Seatcoin             = {}
+    self.m_chipAreaRect         = {} --筹码放置范围
 
-----------------------------------------------------游戏状态--------------------------------------------------
-function GameViewLayer:LeiXing(numList)
-    local records = {}
-    for i = 1, #numList do
-        local record = 
-        {
-            cbKingWinner    = self:isTianWan(numList[i])   ,    -- 天王赢家 -- 0,3,4
-            bPlayerTwoPair  = self:isXianDuiZi(numList[i])   ,-- 对子标识
-            bBankerTwoPair  = self:isZhuangDuiZi(numList[i])   ,-- 对子标识
-            cbPlayerCount   = self:setNum(numList[i])[1]   ,--闲家点数
-            cbBankerCount   = self:setNum(numList[i])[2]   ,--庄家点数
-        }
-        table.insert(records, record)
-    end
+    self.img_xianCard           = {}
+    self.img_xianCardBg         = {}
+    self.img_zhuangCard         = {}
+    self.img_zhuangCardBg       = {}
 
-    --保存
-    for k, v in pairs(records) do
-        BaccaratDataMgr.getInstance():addGameRecord(records[k])
-    end
-    BaccaratDataMgr.getInstance():synCacheRecord()
-    self:notifyTrendRefresh()
-end
-function GameViewLayer:isZhuangDuiZi(duizi)
-    local count = #duizi[2]
-    if count < 2 then
-        return false
-    end
-    self:setPathValue(duizi)
-    local cards = {}
-    for i = 1, count do
-        cards[i] = self.ValueList[i+3]
-    end
-    if not cards[1] or not cards[2] then
-        return false
-    end
-    local ret = cards[1].iValue == cards[2].iValue
-    return ret
-end
-function GameViewLayer:isXianDuiZi(duizi)
-    local count = #duizi[1]
-    if count < 2 then
-        return false
-    end
-    self:setPathValue(duizi)
-    local cards = {}
-    for i = 1, count do
-        cards[i] = self.ValueList[i]
-    end
-    if not cards[1] or not cards[2] then
-        return false
-    end
-    local ret = cards[1].iValue == cards[2].iValue
-    return ret
-end
+    self.m_PanelBetPos          = {}
+    self.m_BtnChooseBet         = {}
+    self.m_textPoolnum          = {}
+    self.m_textSelfnum          = {}
 
-function GameViewLayer:isTianWan(king)
-    local nKingWinner = 0
-    local nPoints = self:setNum(king)
-    if nPoints[1] > 7 and nPoints[1] > nPoints[2] then
-        nKingWinner = 3
-    end
-    if nPoints[2] > 7 and nPoints[2] > nPoints[1] then
-        nKingWinner = 4
-    end
-    return nKingWinner
-end
+    self.win_zodic              = {}
 
-function GameViewLayer:event_GameState(msg)
-    --将所有玩家信息存入
+    self.m_betChipSpSelf   = {} -- 自己的5个地区投注筹码精灵 { jettonIndex =  筹码索引, pChipSpr =  筹码精灵对象, pos = 坐标 }
+    self.m_betChipSpOthers = {} -- 他人的5个地区投注筹码精灵
+    self.m_myBetMoney      = {}
+    for i = 1 , 5 do
+        self.m_betChipSpSelf[i]   = {} -- 自己的5个地区投注筹码精灵 { jettonIndex =  筹码索引, pChipSpr =  筹码精灵对象, pos = 坐标 }
+        self.m_betChipSpOthers[i] = {} -- 他人的5个地区投注筹码精灵
+        self.m_myBetMoney[i]      = 0
+    end
+    
+    self:initUserData()
+    self.m_mymoney = GlobalUserItem.tabAccountInfo.into_money
+    ---------------------------------------------------------------------------
+end
+-- 初始化数据
+function GameViewLayer:initUserData()
     PlayerInfo.getInstance():setChairID(GlobalUserItem.tabAccountInfo.userid)
     PlayerInfo.getInstance():setUserScore(GlobalUserItem.tabAccountInfo.into_money)
+    PlayerInfo.getInstance():setUserName(GlobalUserItem.tabAccountInfo.nickname)
+end
 
-    self.chips = {}
-    self.chips = msg.chips
-    for i = 1 , #self.chips do
-        BaccaratDataMgr.getInstance():setJettonScoreByIndex(i,self.chips[i])
+--初始化UI组件 此方法内变量在断线重连后，不需要重置
+function GameViewLayer:initUI()
+    self.m_rootNode          = self.m_pathUI
+    self.m_ImageBg           = self.m_pathUI:getChildByName("image_bg")
+    self.m_pNodeChipSpr      = self.m_pathUI:getChildByName("nodeFlyChip")
+    -- 1. 闲对子 ； 2，庄对子 ；3 ，闲； 4 ，和 ； 5 ， 庄
+    for i = 1, 5 do
+        self.m_PanelBetPos[i]  = self.m_pNodeChipSpr:getChildByName("panel_betPos"..i)
+        local x, y = self.m_PanelBetPos[i]:getPosition()
+        self.m_chipAreaRect[i] = cc.rect(x, y, self.m_PanelBetPos[i]:getContentSize().width, self.m_PanelBetPos[i]:getContentSize().height)
+
+        self.m_BtnChooseBet[i] = self.m_ImageBg:getChildByName("button_choosebet"..i)
+        self.m_BtnChooseBet[i]:addClickEventListener(handler(self,function() self:onAnimalClicked(i) end))
+
+        self.m_textPoolnum[i] = self.m_ImageBg:getChildByName("button_choosebet"..i):getChildByName("Sprite_60"):getChildByName("text_poolNum"..i)
+        self.m_textSelfnum[i] = self.m_ImageBg:getChildByName("button_choosebet"..i):getChildByName("Sprite_60"):getChildByName("text_selfBetCnt"..i)
     end
+    --
+    self.m_pNodestu = self.m_ImageBg:getChildByName("Node_1")
+    -- 菜单
+    self.m_pBtnMenuPop = self.m_ImageBg:getChildByName("button_back")   
+    self.m_pBtnMenuPop:setLocalZOrder(1)
+    self.m_pImgMenu    = self.m_pBtnMenuPop:getChildByName("Image_5")
+    -- 菜单层
+    self.m_pPanelMenu    = self.m_rootNode:getChildByName("panel_backMenu"):setVisible(false)
+    self.m_psettingPanel = self.m_pPanelMenu:getChildByName("image_settingPanel")
+    self.m_pBtnExit      = self.m_psettingPanel:getChildByName("button_exit")
+    self.m_pBtnSetting   = self.m_psettingPanel:getChildByName("button_setting")
+    self.m_pBtnHelp      = self.m_psettingPanel:getChildByName("button_helpX")  
+    self.m_pBtnFullClose = self.m_pPanelMenu:getChildByName("btn_close")
+    -- 牌层
+    self.m_ImagedealCards  = self.m_pathUI:getChildByName("image_dealCards"):setVisible(false)
+    self.m_resultType      =  self.m_ImagedealCards:getChildByName("image_resultType"):setVisible(false)  -- 和局，庄赢，闲赢
 
-    self.numList = msg.handpath
-    self:LeiXing(self.numList)
-    BaccaratDataMgr.getInstance():setBankerId(msg.dealer)
-    for k, v in ipairs(msg.members) do
-        if v[1] == msg.dealer then
-            BaccaratDataMgr.getInstance():setBankerName(v[2])
-            BaccaratDataMgr.getInstance():setBankerScore(v[6])
-        end
-        BaccaratDataMgr.getInstance():setMembers(v)
-        table.insert(self.m_members,v)
+    for i = 1, 3 do
+        self.img_xianCard[i]     = self.m_ImagedealCards:getChildByName("node_xianCards"):getChildByName("image_xianCard"..i):setVisible(false)
+        self.img_xianCardBg[i]   = self.m_ImagedealCards:getChildByName("node_xianCards"):getChildByName( string.format("image_xianCard%d_bg",i)):setVisible(false)
+
+        self.img_zhuangCard[i]   = self.m_ImagedealCards:getChildByName("node_zhuangCards"):getChildByName("image_zhuangCard"..i):setVisible(false)
+        self.img_zhuangCardBg[i] = self.m_ImagedealCards:getChildByName("node_zhuangCards"):getChildByName( string.format("image_zhuangCard%d_bg",i)):setVisible(false)
     end
-    for k, v in ipairs(msg.dealers) do
-        BaccaratDataMgr.getInstance():addBankerList(v[1])
-    end
-    --更新庄家
-    self:updateBankerInfo()
-    self.m_pLbOtherNum:setString("("..#msg.members..")")
-    self.m_pBtnBetChip[1]:setPositionY(self.m_betChipPos[1].y + ChipOffsetY)
+    self.m_NodexiangCards  = self.m_ImagedealCards:getChildByName("node_xianCards")
+    self.m_NodezhuangCards = self.m_ImagedealCards:getChildByName("node_zhuangCards")
+    -- 路子层
+    self.m_ImagebgTrendChart = self.m_pathUI:getChildByName("image_bgTrendChart")   
+    -- 开始下注and结束下注
+    self.m_NodebetTip = self.m_pathUI:getChildByName("fileNode_betTip"):setVisible(false)
+    -- 桌上玩家
+    self.m_pPanelPlayers = self.m_rootNode:getChildByName("panel_panelPlayers")
+    self.m_btnPlayer     = self.m_pPanelPlayers:getChildByName("node_seatPos7"):getChildByName("button_allPlayersBtn")
+    local x1, y1 = self.m_pPanelPlayers:getChildByName("node_seatPos7"):getPosition()
+    self.m_otherChipPos = cc.p(x1, y1)
 
-    self.m_pLbTotalBet:setString(msg.pot)
-
-    --重置随机下注点
-    self:resetChipPosArea()
+    self.m_btnPlayerNum  = self.m_pPanelPlayers:getChildByName("node_seatPos7"):getChildByName("button_allPlayersBtn"):getChildByName("text_allPlayerText")
+    -- 个人信息
+    self.m_opBar    = self.m_ImageBg:getChildByName("image_opBar")
+    self.m_pmyHead  = self.m_opBar:getChildByName("Node_selfInfomation"):getChildByName("image_selfAvatar")
+    self.m_pmyName  = self.m_opBar:getChildByName("Node_selfInfomation"):getChildByName("text_selfName")
+    self.m_pmyMoney = self.m_opBar:getChildByName("Node_selfInfomation"):getChildByName("text_selfMoneyNum")
     
-    local state = msg.step
-    BaccaratDataMgr.getInstance():setGameState(state)
-    if state == 3 then -- 空闲
-        self:clearn()
-    elseif state == 1 then -- 下注
-        if msg.mymoney < 500  then
-            self:BtnBetChip(6,false)
-        end
-        if msg.mymoney < 100  then
-            self:BtnBetChip(5,false)
-        end
-        if msg.mymoney < 50  then
-            self:BtnBetChip(4,false)
-        end
-        if msg.mymoney < 20  then
-            self:BtnBetChip(3,false)
-        end
-        if msg.mymoney < 5  then
-            self:BtnBetChip(2,false)
-        end
-        if msg.mymoney < 1  then
-            self:BtnBetChip(1,false)
-        end
-        
-        self.m_pImgState:loadTexture(BaccaratRes.IMG_GAMECHIP,ccui.TextureResType.plistType)
-
-        local betmoney = msg.betmoneys
-        for i=1,#betmoney do
-            self.m_pLbAreaTotal[i]:setString(betmoney[self:getRealNum(i)+1]):setVisible(true)
-            self.m_pLbSelfTotal[i]:setVisible(false)
-        end
-        
-    elseif state == 2 then -- 开奖
-        --钱与筹码
-        self:playWaitAni()
-        for i = 1, 6 do --筹码
-            self:BtnBetChip(i,false)
-        end
-        --状态图片
-        self.m_pImgState:loadTexture(BaccaratRes.IMG_GAMEOPEN,ccui.TextureResType.plistType)
-        --
-        local timeout = self:getIntValue( msg.timeout )
-
-        for i=1,8 do
-            self.m_pLbAreaTotal[i]:setVisible(false)
-            self.m_pLbSelfTotal[i]:setVisible(false)
-        end
-    end
-    self.daojishi_Num = msg.timeout
-    local tt = 0
-    self.daojishi_Num,tt = math.modf(self.daojishi_Num/1);
-    self.m_pLbTimerNum:setText(tostring(self.daojishi_Num))
-
---    --时间调度，更新桌面中间倒计时
-    local this = self
-    self._ClockFun = cc.Director:getInstance():getScheduler():scheduleScriptFunc(function()
-                this:OnClockUpdata()
-            end, 1, false)
+    self.m_pNodecoin = self.m_opBar:getChildByName("Node_selfInfomation"):getChildByName("node_coinAnimNode")   -- 飞筹码
+    local x, y = self.m_pNodecoin:getPosition()
+    self.m_pmyCoin = cc.p(x, y)
+    self.m_pwinCoinNum = self.m_opBar:getChildByName("Node_selfInfomation"):getChildByName("atlas_winCoinNum")   -- 赢钱
+    self.m_ploseCoinNum = self.m_opBar:getChildByName("Node_selfInfomation"):getChildByName("atlas_loseCoinNum")   -- 输钱
+    
 end
-
-function GameViewLayer:BtnBetChip(index ,istype)
-    self.m_pBtnBetChip[index]:setBright(istype)
-    self.m_pBtnBetChip[index]:setTouchEnabled(istype)
-    if istype == true then
-        self.m_pBtnBetChip[index]:setColor(cc.c3b(255,255,255))
+-- 初始化按钮回调
+function GameViewLayer:initBtnClickEvent()
+    self.m_pBtnExit:addClickEventListener(handler(self,self.onReturnClicked))        -- 退出
+    self.m_pBtnSetting:addClickEventListener(handler(self,self.onSettingClicked))    -- 设置
+    self.m_pBtnHelp:addClickEventListener(handler(self,self.onHelpClicked))          -- 规则
+    self.m_pBtnFullClose:addClickEventListener(handler(self,self.onPushClicked))     -- 关闭
+    self.m_pBtnMenuPop:addClickEventListener(handler(self,self.onPopClicked))        -- 弹出
+    self.m_btnPlayer:addClickEventListener(handler(self,self.onOtherInfoClicked))    -- 玩家
+end
+-- 开始下注and结束下注
+function GameViewLayer:initStarAndEnd(iswhat)
+--    local ani = cc.CSLoader:createNode("Baccarat/Node_RBWarBetTip.csb")
+--    ani:setPosition(display.width/2,display.height/2)
+--    self.m_pathUI:addChild(ani,100)
+    self.m_NodebetTip:setVisible(true)
+    local action = cc.CSLoader:createTimeline("Baccarat/BaccaratBetTip.csb")
+    self.m_NodebetTip:runAction(action)
+    if iswhat == BET_STAR then
+        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_WAGER_START)
+        action:gotoFrameAndPlay(0,25, false)  --true循环播放，false 播放一次
+        self:doSomethingLater(function()
+            self.m_NodebetTip:setVisible(false)
+        end, 1)
+    elseif iswhat == BET_END then
+        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_WAGER_STOP)
+        action:gotoFrameAndPlay(30,55, false)  --true循环播放，false 播放一次
+        self:doSomethingLater(function()
+            self.m_NodebetTip:setVisible(false)
+        end, 1)
     else
-        self.m_pBtnBetChip[index]:setColor(cc.c3b(127,127,127))
+        print("播放失败！")
     end
 end
+-- 初始化桌上玩家
+function GameViewLayer:initseatinfo()
 
---更新自身icon，昵称等信息
-function GameViewLayer:updataPlayerPanpel(player_)
-    local isHavePlayer = false
-    for key, player in ipairs(self.m_members) do
-        if player[1] == player_[1] then
-            isHavePlayer = true
+    for i = 1, 6  do
+        local ani = cc.CSLoader:createNode("Baccarat/BaccaratSeat.csb")
+        ani:setScale(0.8)
+        self.Node_seatPos[i] = self.m_pPanelPlayers:getChildByName("node_seatPos"..i)
+        ani:addTo(self.Node_seatPos[i])
+        self.m_pNodeSeat[i] = ani
+        table.insert(self.m_userBtnVec,self.Node_seatPos[i])
+        local x,y = self.Node_seatPos[i]:getPosition()
+        table.insert(self.m_userBtnResPosVec,{x = x,y = y })
+        local pos = cc.p(x,y);
+        table.insert(self.m_tabPos,pos)
+    end
+
+end
+-- 更新桌上玩家
+function GameViewLayer:updataTableMan()
+    for k,v in ipairs(self.seatuser) do
+        for key,vec in ipairs( BaccaratDataMgr.getInstance():getMembers()) do
+            if vec[1] == v then
+                local icon = self.m_pNodeSeat[k]:getChildByName("node_nodeAvatar")
+                local head = HeadSprite:createClipHead({userid = vec[1], nickname = vec[2], avatar_no = vec[3]},124)
+                head:setAnchorPoint(cc.p(0.5,0.5))
+                head:setPositionY(head:getPositionY() + 10)
+                icon:addChild(head)     
+                
+                local name = self.m_pNodeSeat[k]:getChildByName("image_infoBg"):getChildByName("text_nickname")
+                name:setString(vec[2])
+                local money = self.m_pNodeSeat[k]:getChildByName("image_infoBg"):getChildByName("text_coin")
+                money:setString(vec[6])
+                self.m_Seatcoin[k] = vec[6]
+            end
+        end   
+    end
+end
+-- 更新自己信息
+function GameViewLayer:initMyinfo()
+    self.m_pmyName:setString(GlobalUserItem.tabAccountInfo.nickname)
+    self.m_pmyMoney:setString(GlobalUserItem.tabAccountInfo.into_money)
+end
+-- 初始化筹码
+function GameViewLayer:initChips()
+    self.betListView  = self.m_opBar:getChildByName("Image_10"):getChildByName("listView_betListView")
+    self.betListView:setScrollBarEnabled(false)
+    self.itemModelBet = self.m_pathUI:getChildByName("panel_itemModelBet")
+
+    for k,v in ipairs(self.chips) do
+        local item = self.itemModelBet:clone()
+        item:addTo(self.betListView)
+        self.Betitem[k] = item
+        self.m_pControlButtonJetton[k]  = item:getChildByName("button_btn")
+        if v >= 10000 then
+            v = tostring(v/10000).."w"
         end
+        self.m_pControlButtonJetton[k]:loadTextureNormal( string.format("common/game_common/chip/chip_%s.png",v),ccui.TextureResType.localType)
+        self.m_pControlButtonJetton[k]:addClickEventListener(handler(self,function ()
+        self:onBetNumClicked(k, true)
+        end))
+        local sel  = item:getChildByName("image_sel")
+        sel:setVisible(false)
+        local seq = cc.RotateBy:create(2,360)
+        sel:runAction(cc.RepeatForever:create(seq))
+        local gray = item:getChildByName("button_gray")
+        gray:setVisible(false)
     end
-    if isHavePlayer == false then
-        table.insert(self.m_members,player_)
-        self.m_pLbOtherNum:setString("("..#self.m_members..")")
---        table.insert(otherplayer,player_)
+    self.Betitem[1]:getChildByName("image_sel"):setVisible(true)
+end
+----------------------------------------------------游戏状态--------------------------------------------------
+
+function GameViewLayer:event_GameState(msg)--msg.path
+    ExternalFun.playGameBackgroundAudio("Baccarat/sound/bg.mp3")
+    BaccaratDataMgr.getInstance():setGameState(msg.step)
+    -- 玩家列表
+    self.m_btnPlayerNum:setString(#msg.members)
+    for k,v in ipairs(msg.members) do
+        BaccaratDataMgr.getInstance():setMembers(v)
     end
-    if player_[1] == GlobalUserItem.tabAccountInfo.userid then
+    -- 路子
+    self.m_pathZodics = msg.handpath
+    self:initpathzodics()
+    self:updateTrendChart()
+    -- 桌上玩家
+    self.seatuser = {}
+    for i = 1,6 do
+        self.seatuser[i] = msg.rank8[i][1] -- 桌上玩家
+    end 
+    self:updataTableMan()
+    -- 初始化筹码
+    self.chips = msg.chips
+    for k,v in ipairs(self.chips) do
+        BaccaratDataMgr.getInstance():setJettonScoreByIndex(k,v)
+    end  
+    BaccaratDataMgr.getInstance().m_eLotteryBaseScore = msg.chips[1]
+    self:initChips()
+    -- 个人信息
+    self:initMyinfo()
 
-        --设置玩家金币数
-        local money_num = player_[6]
-        self.m_pLbSelfGold:setString(tostring(money_num))
-
-        local my_name = player_[2]
-        self.m_pLbSelfName:setString(tostring(my_name))
+    if msg.step == GameView.GameStatus_BET then
+        self:initBetView(1)
+    elseif msg.step == GameView.GameStatus_END then
+        self:initBetView(3)
+ 
+    elseif msg.step == GameView.GameStatus_FREE then
+        self:initBetView(2)
     end
 end
-
 
 ------------------------------------------------------------下注阶段---------------------------------------------------------------
-function GameViewLayer:intoBetMoney(Data)        
-   
-    BaccaratDataMgr.getInstance():setGameState(1)
-    self:playBeginChipAni()
-    self.daojishi_Num = self:getIntValue(Data.timeout)
-
-    self.m_pImgState:loadTexture(BaccaratRes.IMG_GAMECHIP,ccui.TextureResType.plistType)
-
-    if self.isShangZhuang == false then
-
-        for i = 1, 6 do --筹码
-            self:BtnBetChip(i,true)
-        end
-        if PlayerInfo.getInstance():getUserScore() < 500  then
-            self:BtnBetChip(6,false)
-        end
-        if PlayerInfo.getInstance():getUserScore() < 100  then
-            self:BtnBetChip(5,false)
-        end
-        if PlayerInfo.getInstance():getUserScore() < 50  then
-            self:BtnBetChip(4,false)
-        end
-        if PlayerInfo.getInstance():getUserScore() < 20  then
-            self:BtnBetChip(3,false)
-        end
-        if PlayerInfo.getInstance():getUserScore() < 5  then
-            self:BtnBetChip(2,false)
-        end
-        if PlayerInfo.getInstance():getUserScore() < 1  then
-            self:BtnBetChip(1,false)
-        end
-
-    end
-    
-end
-
-
-function GameViewLayer:getFileNum(num)
-    local realnum = 0
-    if     num == 0 then realnum = 1 
-    elseif num == 1 then realnum = 7
-    elseif num == 2 then realnum = 4
-    elseif num == 3 then realnum = 3
-    elseif num == 4 then realnum = 8
-    elseif num == 5 then realnum = 5
-    elseif num == 6 then realnum = 2
-    elseif num == 7 then realnum = 6
-    end
-    return realnum
-end
-
-function GameViewLayer:otherBetMoney(Data)         --其他人下注
-
-    local numMoney = Data[1]                       --下注区域
-    local otherMoney = Data[2]                     --该区域总钱数
-    local heMoney = Data[4]                        --下注钱数
-    local IDMoney = Data[3]
-
-    print("\nID:\t"..Data[3].."\n在\t"..self:getFileNum(numMoney).."\t区域下注\t"..heMoney.."\n该区域共\t"..otherMoney)
-    if numMoney ~= nil or "" then
-       self.m_pLbAreaTotal[self:getFileNum(numMoney)]:setText(otherMoney):setVisible(true)
-    end
-    self:updataAllMoney(heMoney)
-
-    self:playBetChipAni(self:getFileNum(numMoney),heMoney,IDMoney)
-end
-
-function GameViewLayer:myBetMoney(Data)            --等待自己下注
-
-    local numMoney = Data[2]    --下注区域
-    local heMoney  = Data[1]
-    self.m_llMyBetValue[self:getFileNum(numMoney)] = Data[1] + self.m_llMyBetValue[self:getFileNum(numMoney)]
-    self.m_pLbSelfTotal[self:getFileNum(numMoney)]:setText(self.m_llMyBetValue[self:getFileNum(numMoney)]):setVisible(true)
-    self.m_pLbAreaTotal[self:getFileNum(numMoney)]:setText(Data[3]):setVisible(true)
-    self.m_pLbSelfGold:setString(tostring(PlayerInfo.getInstance():getUserScore() - Data[1])) 
-    PlayerInfo.getInstance():setUserScore(PlayerInfo.getInstance():getUserScore() - Data[1])
-    BaccaratDataMgr.getInstance():setMyBetValue(self:getFileNum(numMoney),heMoney)
-    self:playBetChipAni(self:getFileNum(numMoney),heMoney,GlobalUserItem.tabAccountInfo.userid)
-end
-
-function GameViewLayer:updataAllMoney(num)
-    self.money = tonumber(tonumber(num) + tonumber(self.money))
-    self.m_pLbTotalBet:setString(tostring(self.money)):setVisible(true)
-end
-
-
-function GameViewLayer:onUserLeave(userId)      --该uid玩家离开房间
-    for key, player in ipairs(self.m_members) do
-        if player[1] == userId then
-            print(player[2].."------------------->已离开房间")
-            table.remove(self.m_members,key)
-            self.m_pLbOtherNum:setString("("..#self.m_members..")")
-        end
-    end
+function GameViewLayer:intoBetMoney(Data)         
+    BaccaratDataMgr.getInstance():setGameState(GameView.GameStatus_BET)
+    self.TimeCount = Data.timeout
+    self:initTimer()
+    self:onMsgUpdateGameStatue()
 end
 
 ---游戏结算--（需要加判断自身玩家是否参与本局游戏）------------------------------------------------
-function GameViewLayer:changehands(hands)
-    local ret = {};
-    for i = 1, 2 do
-        ret[i] = {}
-        for j = 1, #hands[i] do
-            if hands[i][j] <= 12 then ret[i][j] = hands[i][j] + 1            
-            elseif hands[i][j] <= 25 and hands[i][j] >= 13 then ret[i][j] = hands[i][j] + 4
-            elseif hands[i][j] <= 38 and hands[i][j] >= 26 then ret[i][j] = hands[i][j] + 7
-            elseif hands[i][j] <= 51 and hands[i][j] >= 39 then ret[i][j] = hands[i][j] + 10
-            end 
-        end
-    end
-    return ret
-end 
 function GameViewLayer:onGameEnd(args)
     print("结算！！！")
-    self.tagxuya = false
-    self.daojishi_Num = self:getIntValue(args.timeout)
-    --状态图片
-    self.m_pImgState:loadTexture(BaccaratRes.IMG_GAMEOPEN,ccui.TextureResType.plistType)
-
-    if self.isShangZhuang == false then
-        for i = 1, 6 do --筹码
-            self:BtnBetChip(i,false)
+    BaccaratDataMgr.getInstance():setGameState(GameView.GameStatus_END)
+    for i = 1 ,#args.win_zodic do
+        if args.win_zodic[i] == 1 then
+            table.insert(self.win_zodic , 1)
+        end
+        if args.win_zodic[i] == 4 then
+            table.insert(self.win_zodic , 2)
+        end
+        if args.win_zodic[i] == 0 then
+            table.insert(self.win_zodic , 3)
+        end
+        if args.win_zodic[i] == 6 then
+            table.insert(self.win_zodic , 4)
+        end
+        if args.win_zodic[i] == 3 then
+            table.insert(self.win_zodic , 5)
         end
     end
-    local win_hands = self:changehands(args.win_hands)
-
-    -- 数据
-    local msg = {}
-    ---- 下局信息
-    msg.cbTimeLeave = args.timeout -- 剩余时间
-    ---- 扑克信息
-    msg.cbCardCount = {}                  -- 扑克数目
-    for i = 1, 2 do
-        msg.cbCardCount[i] = #win_hands[i]
-    end
-    msg.cbTableCardArray = {}             -- 桌面扑克
-    for i = 1, 2 do
-        msg.cbTableCardArray[i] = {}
-        for j = 1, #win_hands[i] do
---            if args.win_hands[i][j] == nil then break end
-            msg.cbTableCardArray[i][j] = win_hands[i][j]
-        end
-    end
-     ---- 庄家信息
-     msg.lBankerScore = args.dealer_win        -- 庄家成绩
-     msg.lBankerTotallScore = args.dealer_win  -- 庄家成绩
---     msg.nBankerTime = _buffer:readInt()              -- 做庄次数
-     msg.lPlayAllScore = 0                        --玩家成绩
-     msg.lPlayAllScore = args.mywin
-
-    -- 保存
-    BaccaratDataMgr.getInstance():setGameState(BaccaratDataMgr.eType_Award)
-    BaccaratDataMgr.getInstance():setBankerResult(msg.lBankerScore)
-    BaccaratDataMgr.getInstance():cleanCard()   --牌面
-    for i = 1, 2 do
-        for n = 1, 3 do
-            if n <= msg.cbCardCount[i] then
-                local card = {}
-                card.iValue = BaccaratDataMgr.getInstance():GetCardValue(msg.cbTableCardArray[i][n])
-                card.iColor = BaccaratDataMgr.getInstance():GetCardColor(msg.cbTableCardArray[i][n])
-                BaccaratDataMgr.getInstance():setCard(i, n, card)
+    --更新玩家列表
+    for k,v in ipairs(BaccaratDataMgr.getInstance():getMembers()) do
+        for key,player in ipairs(args.moneys) do
+            if v[1] == player[1] then
+                v[6] = player[2]
             end
         end
     end
-
-    if BaccaratDataMgr.getInstance():isBanker() then    --庄家
-        BaccaratDataMgr.getInstance():setMyResult(msg.lBankerScore)
+    BaccaratDataMgr.getInstance():setMyResult(args.mywin)
+    -- 桌上玩家
+--    self.seatuser = {}
+    if #args.rank8_wins >= 6 then
+        for i = 1,6 do
+            self.seatuser[i] = args.rank8_wins[i][1] -- 桌上玩家
+        end 
     else
-        BaccaratDataMgr.getInstance():setMyResult(msg.lPlayAllScore)
-    end
-
-    self:playStopChipAni()
-end
-
-function GameViewLayer:setColorValue()
-    for i = 1 ,2 do
-        for  j = 1, 3 do
-            if self.m_vecResultCard[i][j] ~= nil then
-                if self.m_vecResultCard[i][j] < 13 and self.m_vecResultCard[i][j] >=0 then
-                    table.insert(self.ColorList,{color = 0,iValue = self.m_vecResultCard[i][j] + 1})
-
-                elseif self.m_vecResultCard[i][j] >= 13 and self.m_vecResultCard[i][j] < 26 then
-                    table.insert(self.ColorList,{color = 1,iValue = self.m_vecResultCard[i][j] - 12})
-
-                elseif self.m_vecResultCard[i][j] >= 26 and self.m_vecResultCard[i][j] < 39 then
-                    table.insert(self.ColorList,{color = 2,iValue = self.m_vecResultCard[i][j] - 25})
-
-                elseif self.m_vecResultCard[i][j] >= 39 and self.m_vecResultCard[i][j] < 52 then
-                    table.insert(self.ColorList,{color = 3,iValue = self.m_vecResultCard[i][j] - 38})
-
-                end
-            else
-                table.insert(self.ColorList,0)
-            end
+        for i = 1 ,#args.rank8_wins do
+            self.seatuser[i] = args.rank8_wins[i][1]
         end
     end
+    
+    
+    --清理计时器
+    self:cleanEvent()
+    
+    self.win_hands = args.win_hands
+    BaccaratDataMgr.getInstance():setData(self.win_hands)
+    table.insert(self.m_pathZodics,args.win_hands)
+    self:initpathzodics()
+    
+    self:onMsgUpdateGameStatue()
 end
-
---更新自己金钱
-function GameViewLayer:updataMyMoney(args)
-    self.m_pLbSelfGold:setString(tostring(args))
-    PlayerInfo.getInstance():setUserScore(args)
-end
-
-function GameViewLayer:updealer(dataBuffer)                   -- 加入上庄列表
-    if dataBuffer[1] == GlobalUserItem.tabAccountInfo.userid then
-        self:showFloatmessage("您已加入上庄列表！")
-        self.m_pBtnApply:setVisible(false)
-        self.m_pBtnDown:setVisible(true)
-    end
-    BaccaratDataMgr.getInstance():addBankerList(dataBuffer[1])
-    self.m_pLbApplyNum:setString("申请人数："..BaccaratDataMgr.getInstance():getBankerListSize())
-end
-
-function GameViewLayer:updataDealers(dataBuffer)               -- 换庄
-    for key,player in ipairs(BaccaratDataMgr.getInstance():getMembers()) do
-        if player[1] == dataBuffer[1][1] then
-            BaccaratDataMgr.getInstance():setBankerId(player[1])
-            self.m_pLbBankerGold:setString(player[6])
-            self.m_pLbBankerName:setString(player[2])
-            self.Moneydealer = player[6]
-        end
-        if player[1] == GlobalUserItem.tabAccountInfo.userid then
-            self.isShangZhuang = true
-        end
-        self.isShangZhuang = false
-    end
-
-    self.m_pLbZhuangNum:setString("申请人数："..BaccaratDataMgr.getInstance():getBankerListSize())
-    local spchipbg = cc.Sprite:createWithSpriteFrameName("gui-baccarat-huanzhuang.png"):setPosition(self.m_pSpbankerTip:getPosition()):addTo(self.m_pSpbankerTip,100)
-    spchipbg:runAction(cc.Sequence:create( cc.DelayTime:create(2),cc.CallFunc:create(function()
-                spchipbg:removeFromParent()
-            end) ))
-end
-
-function GameViewLayer:onPlayerShow()                     -- 系统坐庄
---    self.m_pLbBankerGold:setString("999999999")
---    self.m_pLbBankerName:setString("系统坐庄")
---    self.Moneydealer = 999999999
---    self.m_pLbZhuangNum:setString("申请人数：0")
-end
-
-function GameViewLayer:downDealers(dataBuffer)             -- 下庄
-
-    BaccaratDataMgr.getInstance():delBankerList(dataBuffer[1])
-    if dataBuffer[1] == GlobalUserItem.tabAccountInfo.userid then
-        self:showFloatmessage("您已下庄！")
-        self.isShangZhuang = false
-        self.m_pBtnDown:setVisible(false)
-        self.m_pBtnApply:setVisible(true)
-    end
-    self.m_pLbZhuangNum:setString("申请人数："..BaccaratDataMgr.getInstance():getBankerListSize())
-end
-
-function GameViewLayer:Nomoney(dataBuffer)                            -- 上庄失败
-    self:showFloatmessage("金币不足"..dataBuffer.."无法上庄！")
-end
-
 
 --本局游戏结束-------------------------------------------------空闲--------------------------------------
 function GameViewLayer:onDeskOver(args)
     print("空闲！！！")
-    BaccaratDataMgr.getInstance():setGameState(3)
-    self.daojishi_Num = self:getIntValue(args)
-    self:clearn()
+    BaccaratDataMgr.getInstance():setGameState(GameView.GameStatus_FREE)
+    self.TimeCount = args
+    self:onMsgUpdateGameStatue()
 end
 
+function GameViewLayer:otherBetMoney(Data)         --其他人下注
+
+    local numMoney   = Data[1]                        --下注区域
+    local otherMoney = Data[2]                        --该区域总钱数
+    local heMoney    = Data[4]                        --下注钱数
+    local IDMoney    = Data[3]                        --下注id
+
+    print("\nID:\t"..Data[3].."\n在\t"..numMoney.."\t区域下注\t"..heMoney.."\n该区域共\t"..otherMoney)
+    local areanum = 0;
+    if numMoney == 1 or numMoney == 4 or numMoney == 0 or numMoney == 6 or numMoney == 3 then
+        areanum = numMoney == 1 and 1 or numMoney == 4 and 2 or numMoney == 0 and 3 or numMoney == 6 and 4 or numMoney == 3 and 5 or "失败"
+    else
+        return
+    end
+    if areanum == "失败" then return end
+    self.m_textPoolnum[areanum]:setString(otherMoney)
+    self.m_flychipidx = self.m_flychipidx + 1
+    if self.m_flychipidx > 2 then self.m_flychipidx = 0 end
+    for k,v in  ipairs( self.seatuser ) do
+        if v == IDMoney then
+            self.m_Seatcoin[k] = self.m_Seatcoin[k] - heMoney
+            self.m_pNodeSeat[k]:getChildByName("image_infoBg"):getChildByName("text_coin"):setString(self.m_Seatcoin[k])
+            self:playTableUserChipAni(k)
+            self:createFlyChipSprite(heMoney,areanum,self.m_tabPos[k],false,k,0.35,true)
+            return
+        end
+    end 
+    self:createFlyChipSprite(heMoney,areanum,self.m_otherChipPos,false,false,0.35,true)
+end
+
+function GameViewLayer:myBetMoney(Data)            --等待自己下注
+    local heMoney     = Data[1]    --下注钱数
+    local numMoney    = Data[2]    --下注区域
+    local otherMoney  = Data[3]    --该区域总钱数
+
+    local areanum = 0;
+    if numMoney == 1 or numMoney == 4 or numMoney == 0 or numMoney == 6 or numMoney == 3 then
+        areanum = numMoney == 1 and 1 or numMoney == 4 and 2 or numMoney == 0 and 3 or numMoney == 6 and 4 or numMoney == 3 and 5 or "失败"
+    else
+        return
+    end
+    if areanum == "失败" then return end
+    self.m_textSelfnum[areanum]:setVisible(true)
+    self.m_textPoolnum[areanum]:setString(otherMoney)   
+    self.m_myBetMoney[areanum] = self.m_myBetMoney[areanum] + heMoney
+    BaccaratDataMgr.getInstance():setPlayScore(areanum,self.m_myBetMoney[areanum])
+    self.m_textSelfnum[areanum]:setString(self.m_myBetMoney[areanum])   
+    self.m_mymoney = self.m_mymoney - heMoney
+    self.m_pmyMoney:setString(self.m_mymoney)
+    self.m_flychipidx = self.m_flychipidx + 1
+    if self.m_flychipidx > 2 then self.m_flychipidx = 0 end
+    self:createFlyChipSprite(heMoney,areanum,self.m_pmyCoin,true,false,0.35,true)
+end
+--更新自身icon，昵称等信息
+function GameViewLayer:updataPlayerPanpel(player_,plyertype)
+    if plyertype then
+        if player_[1] == GlobalUserItem.tabAccountInfo.userid then
+            return
+        end
+        local isHavePlayer = false
+        for key, player in ipairs(BaccaratDataMgr.getInstance():getMembers()) do
+            if player[1] == player_[1] then
+                isHavePlayer = true
+            end
+        end
+        local remeber = {};
+        remeber = player_
+--        table.insert(remeber,4,0)
+        if isHavePlayer == false then
+            BaccaratDataMgr.getInstance():setMembers(remeber)
+            self.m_btnPlayerNum:setString(BaccaratDataMgr.getInstance():getMembersSize())
+        end
+    else
+        for key, player in ipairs(BaccaratDataMgr.getInstance():getMembers()) do
+            if player[1] == player_ then
+                table.remove(BaccaratDataMgr.getInstance():getMembers(),key)
+                self.m_btnPlayerNum:setString(BaccaratDataMgr.getInstance():getMembersSize())
+            end
+        end
+    end
+    
+end
+
+--更新自己金钱
+function GameViewLayer:updataMyMoney(args)
+    self.m_pmyMoney:setString(self:getIntValue(args))
+    PlayerInfo.getInstance():setUserScore(self:getIntValue(args))
+end
 
 --金币不足
 function GameViewLayer:Badbetmoney(dataBuffer)
-    if dataBuffer == 0 then     self:showFloatmessage("到庄家上限！")
+    if     dataBuffer == 0 then self:showFloatmessage("到庄家上限！")
     elseif dataBuffer == 1 then self:showFloatmessage("到达玩家上限！")
     elseif dataBuffer == 2 then self:showFloatmessage("钱不够了！")
     elseif dataBuffer == 3 then self:showFloatmessage("到达盘面上限！")
+    else self:showFloatmessage("下注失败")
     end
-end
-
-function GameViewLayer:setNum(Data)
-    local num = Data
-    self.numxian = {}
-    for i=1,#num do
-        self.xian = 0
-        for j=1,#num[i] do
-            local xian = num[i][j]
-            if xian<9 then
-                self.xian = self.xian + xian + 1
-            elseif 12<xian and xian<22 then
-                self.xian = self.xian + xian - 12
-            elseif 25<xian and xian<35 then
-                self.xian = self.xian + xian - 25
-            elseif 38<xian and xian<48 then
-                self.xian = self.xian + xian - 38
-            else
-                self.xian = self.xian + 0
-            end
-        end
-        self.numxian[i] = self.xian%10
-    end
-    return self.numxian
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------
---endregion
---region 动画相关
+--游戏状态切换
+function GameViewLayer:onMsgUpdateGameStatue()
+    local status = BaccaratDataMgr.getInstance():getGameState()
+    if status == BaccaratDataMgr.eType_Wait then
+        print("空闲时间..........................")
+        self:clear()
+        self:resetChipPos()
+        self:initBetView(2)
+        self:resetCard()
+    elseif status == BaccaratDataMgr.eType_Bet then
+        print("投注时间..........................")
+        self:updateJettonState()
+        self:initStarAndEnd(BET_STAR)
+        self:initBetView(1)
 
---开场动画进入
-function GameViewLayer:flyIn()
-    local deskAniTime  = 0.3
-    local otherAniTime = 0.4
-    local offset = 15
-
-    --桌子下方进入
-    local posx, posy = self.m_pImgDesk:getPosition()
-    self.m_pImgDesk:setPositionY(posy - 400)
-    self.m_pImgDesk:setScale(1.3)
-    local tableMove = cc.MoveTo:create(deskAniTime, cc.p(posx,posy))
-    local tableScale = cc.ScaleTo:create(deskAniTime, 1)
-    local tableSpawn = cc.Spawn:create(tableScale, tableMove)
-    local callfun = cc.CallFunc:create(function()
-                        self:viewBetChip()
-                    end)
-    self.m_pImgDesk:runAction(cc.Sequence:create(tableSpawn, callfun))
-
-    --筹码区下方进入
-    posx, posy = self.m_nodeBottom:getPosition()
-    self.m_nodeBottom:setPositionY(posy - 400)
-    self.m_nodeBottom:setOpacity(0)
-    local bottomMove = cc.MoveTo:create(otherAniTime, cc.p(posx,posy + offset))
-    local bottomMove2 = cc.MoveTo:create(0.2, cc.p(posx,posy))
-    local spawn = cc.Spawn:create(cc.FadeIn:create(0.2), bottomMove)
-    local seq = cc.Sequence:create(spawn, bottomMove2)
-    self.m_nodeBottom:runAction(seq)
-
-    --玩家信息区域
-    posx, posy = self.m_selfPanel:getPosition()
-    self.m_selfPanel:setPositionY(posy - 400)
-    self.m_selfPanel:setOpacity(0)
-    self.m_selfPanel:runAction(seq:clone())
-
-    --上部节点
-    posx, posy = self.m_nodeTop:getPosition()
-    self.m_nodeTop:setPositionY(posy + 400)
-    self.m_nodeTop:setOpacity(0)
-    local topMove = cc.MoveTo:create(otherAniTime, cc.p(posx,posy - offset))
-    local topMove2 = cc.MoveTo:create(0.2, cc.p(posx,posy))
-    spawn = cc.Spawn:create(cc.FadeIn:create(0.2), topMove)
-    seq = cc.Sequence:create(spawn, topMove2)
-    self.m_nodeTop:runAction(seq)
-
-    --右侧节点
-    posx, posy = self.m_nodeRight:getPosition()
-    self.m_nodeRight:setPositionY(posy + 400)
-    self.m_nodeRight:setOpacity(0)
-    self.m_nodeRight:runAction(seq:clone())
-
-    --退出和其他玩家按钮
-    posx, posy = self.m_pBtnReturn:getPosition()
-    self.m_pBtnReturn:setPositionY(posy + 400)
-    self.m_pBtnReturn:setOpacity(0)
-    topMove = cc.MoveTo:create(otherAniTime, cc.p(posx,posy - offset))
-    topMove2 = cc.MoveTo:create(0.2, cc.p(posx,posy))
-    spawn = cc.Spawn:create(cc.FadeIn:create(0.2), topMove)
-    seq = cc.Sequence:create(spawn, topMove2)
-    self.m_pBtnReturn:runAction(seq)
-
-    posx, posy = self.m_pBtnOthers:getPosition()
-    self.m_pBtnOthers:setPositionY(posy + 400)
-    self.m_pBtnOthers:setOpacity(0)
-    topMove = cc.MoveTo:create(otherAniTime, cc.p(posx,posy - offset))
-    topMove2 = cc.MoveTo:create(0.2, cc.p(posx,posy))
-    spawn = cc.Spawn:create(cc.FadeIn:create(0.2), topMove)
-    seq = cc.Sequence:create(spawn, topMove2)
-    self.m_pBtnOthers:runAction(seq)
-end
-
-function GameViewLayer:viewBetChip()
-
-end
-
---开始下注动画
-function GameViewLayer:playBeginChipAni()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_WAGER_START)
---    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(kaishixiazhu_kaijiang) 
-    local armature = ccs.Armature:create("kaishixiazhu_kaijiang")  
-    armature:setPosition(667,375)                   
-    self.m_nodeZCAni:addChild(armature)                      
-    armature:getAnimation():playWithIndex(1)
-    armature:runAction(cc.Sequence:create(cc.DelayTime:create(2),cc.CallFunc:create(function()
-		                                            armature:removeFromParent()
-	                                            end)))
-end
-
---停止下注动画
-function GameViewLayer:playStopChipAni()
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_WAGER_STOP)
---    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(kaishixiazhu_kaijiang) 
-    local armature = ccs.Armature:create("kaishixiazhu_kaijiang")  
-    armature:setPosition(667,375)                   
-    self.m_nodeZCAni:addChild(armature)                      
-    armature:getAnimation():playWithIndex(0)
-    armature:runAction(cc.Sequence:create(cc.DelayTime:create(2),cc.CallFunc:create(function()
-		                                            armature:removeFromParent()
-                                                    self:sendCard(1)
-	                                            end)))
-end
-
---下注筹码动画
-function GameViewLayer:playBetChipAni(betArea, betScore, chairId)
-    if betScore <= 0 then
-        return
-    end
-    if BaccaratDataMgr.getInstance():getGameState() == BaccaratDataMgr.eType_Bet then
-        local isSelf = PlayerInfo.getInstance():getChairID() == chairId
-        local beginPos = isSelf and self:getSelfChipBeginPos(betScore) or self:getOtherChipBeginPosition()
-        local idx, endPos = self:getChipEndPosition(betArea, isSelf)
-        local sp = self:flyJetton(beginPos, endPos, betScore, isSelf)
-        sp:setTag(betScore)
-        if isSelf then
-            table.insert(self.m_vJettonOfMine, { pChipSpr = sp, nIdx = idx, wChipIndex = betArea})
-        else
-            table.insert(self.m_vJettonOfOther, { pChipSpr = sp, nIdx = idx, wChipIndex = betArea })
-        end
+    elseif status == BaccaratDataMgr.eType_Award then
+        print("开奖时间..........................")
+        self:updateJettonState()
+        self:initStarAndEnd(BET_END)
+        self:initBetView(3)
+        self:OpenCard()
     end
 end
 
---筹码飞行
-function GameViewLayer:flyJetton(beginPos, endPos, betScore, isSelf)
-    local sp = self:getSpriteOfJetton(betScore)
-            :setName(betScore)
-            :setScale(FlyChipScale)
-            :setAnchorPoint(cc.p(0.5, 0.5))
-            :setPosition(beginPos)
-            :addTo(self.m_nodeFlyChip)
+--[Comment]
+-- 创建一个飞筹码动画并保存
+-- jettonIndex: 筹码索引
+-- wChipIndex: 押注区索引
+-- startPos: 动画起始点
+-- isMyFly: 是否我下的筹码
+-- isAndroid: 是否机器人
+-- iFinishTime: 动画持续时间
+-- isNeedDelay: 是否需要随机延迟执行
+function GameViewLayer:createFlyChipSprite(jettonIndex,wChipIndex,startPos,isMyFly,isAndroid,iFinishTime,isNeedDelay)
+    -- 动态创建飞筹码对象
+    local pSpr = cc.Sprite:create(self:getJettonIconFile(jettonIndex))
+    if pSpr == nil then 
+       pSpr = cc.Sprite:create("common/game_common/chip/chip_100.png")
+    end
+    local scale = FlyChipScale
+    pSpr:setScale(scale)
+    pSpr:setPosition(startPos)
+    pSpr:setTag(jettonIndex)
+    self.m_pNodeChipSpr:addChild(pSpr,1)
 
-    local soundPath = betScore > 100 and BaccaratRes.SOUND_OF_BETHIGH or BaccaratRes.SOUND_OF_BETLOW
-
-    local call = cc.CallFunc:create(function ()
-        if isSelf then -- 自己的音效立刻播放
-             ExternalFun.playGameEffect(soundPath)
+    local oldSp = nil
+    local idx, endPos = self:getChipEndPosition(wChipIndex, isMyFly)
+    if isMyFly then
+        local chiptg = self.m_betChipSpSelf[wChipIndex][idx]
+        if nil ~= chiptg then
+            oldSp = chiptg.pChipSpr
+            self.m_betChipSpSelf[wChipIndex][idx].pChipSpr = pSpr
+            self.m_betChipSpSelf[wChipIndex][idx].wJettonIndex = jettonIndex
+            self.m_betChipSpSelf[wChipIndex][idx].wChipIndex = wChipIndex
+            self.m_betChipSpSelf[wChipIndex][idx].nIdx = idx
         else
-            if not self.m_isPlayBetSound then
-                ExternalFun.playGameEffect(soundPath)
-                -- 尽量避免重复播放
-                self:doSomethingLater(function() self.m_isPlayBetSound  = false end, math.random(2,4)/10)
-                self.m_isPlayBetSound = true
-            end
+            chiptg = {}
+            chiptg.pChipSpr = pSpr
+            chiptg.wJettonIndex = jettonIndex
+            chiptg.wChipIndex = wChipIndex
+            chiptg.nIdx = idx
+            self.m_betChipSpSelf[wChipIndex][idx] = chiptg
         end
-    end)
-
-    local forward = cc.MoveTo:create(0.35, endPos)
-    local eMove = cc.EaseSineOut:create(forward)
-    --local Value = isNeedDelay and ( math.random(0,10) % 100)/100.0 or 0 
-    local seq = cc.Sequence:create(call, eMove)
-    sp:runAction(seq)
-
-    return sp
-end
---单张发牌和开牌
-function GameViewLayer:sendCard(nIndex)
-
-    local card = BaccaratDataMgr.getInstance():getCardAtIndex(self.m_sendCardConfig[nIndex].cardType, self.m_sendCardConfig[nIndex].cardIndex)
-    if not card then return end
-    local poker = Poker:create()
-    poker:setData(card.iColor, card.iValue)
-    poker:setPosition(self.m_sendCardConfig.beginPos)
-    poker:setBack()
-    poker:setRotation(self.m_sendCardConfig.beginRotate)
-    poker:setScale(self.m_sendCardConfig.beginScaleVal)
-    poker:addTo(self.m_nodeCardAni)
-
-    local moveTo = cc.MoveTo:create(self.m_sendCardConfig.sendTs, self.m_sendCardConfig[nIndex].endPos)
-    local rotateBy = cc.RotateBy:create(self.m_sendCardConfig.sendTs, 360 - self.m_sendCardConfig.beginRotate)
-    local scaleTo = cc.ScaleTo:create(self.m_sendCardConfig.sendTs, self.m_sendCardConfig.endScaleVal)
-    local spawn = cc.Spawn:create(moveTo, rotateBy, scaleTo)
-
-    local callBack1 = cc.CallFunc:create(
-        function ()
-            if nIndex < self.m_sendCardConfig.cardNum then
-                self:sendCard(nIndex + 1)
-            else
-                --if 2 == nIndex then --闲家发第二张牌
-                    self:xianAddCardAni(1)
---                    local point = BaccaratDataMgr.getInstance():getResultPoints(BaccaratDataMgr.ePlace_Zhuang, 2)
---                    self.m_zhuangPointAni = self:playCardPointAni(self.m_sendCardConfig.pointAniPos[BaccaratDataMgr.ePlace_Zhuang][3], point)
---                    ExternalFun.playGameEffect( string.format( BaccaratRes.SOUND_OF_ZPOINT, point))
-                --end
-            end
-        end
-    )
-
-    local callBack2 = cc.CallFunc:create(function ()
-        poker:showCard()
-    end)
-
-    local seq = cc.Sequence:create(spawn,
-        cc.ScaleTo:create(self.m_sendCardConfig.openCardTs, 0.03, self.m_sendCardConfig.endScaleVal),
-        callBack2,
-        cc.ScaleTo:create(self.m_sendCardConfig.openCardTs, self.m_sendCardConfig.endScaleVal, self.m_sendCardConfig.endScaleVal),
-        callBack1)
-
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_CARD)
-    self.m_sendCard[nIndex] = poker
-    poker:runAction(seq)
-end
-
---补牌动画
-function GameViewLayer:playAddCardAni()
-    --是否显示加牌
-    if BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Xian) > 2 then
-        --self:doSomethingLater(function() self:xianAddCardAni(2) end, self.m_sendCardConfig.pointSoundDelay)
-        self:xianAddCardAni(2)
-    elseif BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Zhuang) > 2 then
-        --self:doSomethingLater(function() self:zhuangAddCardAni(2) end, self.m_sendCardConfig.pointSoundDelay)
-        self:zhuangAddCardAni(2)
     else
-        --不需要补牌 直接播放结果动画
-        --self:doSomethingLater(function() self:playCardResultAni() end, 1.2)
-        self:playCardResultAni()
-    end
-end
-
---闲家补牌
-function GameViewLayer:xianAddCardAni(nIndex)
-    --补的牌在发完后以牌背方式横向显示
-    local poker = Poker:create()
-    poker:setPosition(self.m_sendCardConfig.beginPos)
-    poker:setBack()
-    poker:setRotation(self.m_sendCardConfig.beginRotate)
-    poker:setScale(self.m_sendCardConfig.beginScaleVal)
-    poker:addTo(self.m_nodeCardAni)
-
-    local endpos = cc.p(self.m_xianCardEndPos.x + nIndex*self.m_sendCardConfig.cardOffsetX, self.m_xianCardEndPos.y + self.m_sendCardConfig.cardOffsetY)
-
-    local moveTo = cc.MoveTo:create(self.m_sendCardConfig.sendTs, endpos)
-    local rotateBy = cc.RotateBy:create(self.m_sendCardConfig.sendTs, 90 - self.m_sendCardConfig.beginRotate)
-    local scaleTo = cc.ScaleTo:create(self.m_sendCardConfig.sendTs, self.m_sendCardConfig.endScaleVal)
-    local spawn = cc.Spawn:create(moveTo, rotateBy, scaleTo)
-
-    local callBack1 = cc.CallFunc:create(
-        function ()
-            poker:removeFromParent()
-            self:xianOpenCard(nIndex)
-        end
-    )
-
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_CARD)
-    local seq = cc.Sequence:create(spawn, callBack1)
-    poker:runAction(seq)
-    if 2 == nIndex then
-        self.m_sendCard[1]:runAction(cc.MoveBy:create(self.m_sendCardConfig.sendTs, cc.p(-self.m_sendCardConfig.cardOffsetX/2, 0)))
-        self.m_sendCard[3]:runAction(cc.MoveBy:create(self.m_sendCardConfig.sendTs, cc.p(-self.m_sendCardConfig.cardOffsetX/2, 0)))
-    end
-end
-
---闲家开最后一张牌
-function GameViewLayer:xianOpenCard(nIndex)
-    local card = BaccaratDataMgr.getInstance():getCardAtIndex(BaccaratDataMgr.ePlace_Xian, nIndex + 1)
-    if not card then return end
-
-    local armature = ccs.Armature:create(BaccaratRes.ANI_FILE_FANPAI)
-    if armature == nil then
-        return
-    end
-    local pos = cc.p(self.m_xianCardEndPos.x + nIndex*self.m_sendCardConfig.cardOffsetX, self.m_xianCardEndPos.y + self.m_sendCardConfig.cardOffsetY)
-    armature:setPosition(pos) 
-    self.m_nodeCardAni:addChild(armature)
-
-    local pathVal = string.format("value-%d-%d.png", card.iValue, card.iColor%2)
-    local pathColor = string.format("color-%d.png", card.iColor), ccui.TextureResType.plistType
-    self:replaceArmatureSprite(armature, self.m_sendCardConfig.boneName.VALUE, pathVal)
-    self:replaceArmatureSprite(armature, self.m_sendCardConfig.boneName.COLOR, pathColor)
-    local animationEvent = function(armatureBack, movementType, movementID)
-        if movementType == ccs.MovementEventType.complete 
-        or movementType == ccs.MovementEventType.loopComplete
-        then
-            armature:removeFromParent()
-            self:xianViewCard(nIndex)
+        local chiptg = self.m_betChipSpOthers[wChipIndex][idx]
+        if nil ~= chiptg then
+            oldSp = chiptg.pChipSpr
+            self.m_betChipSpOthers[wChipIndex][idx].pChipSpr = pSpr
+            self.m_betChipSpOthers[wChipIndex][idx].wJettonIndex = jettonIndex
+            self.m_betChipSpOthers[wChipIndex][idx].wChipIndex = wChipIndex
+            self.m_betChipSpOthers[wChipIndex][idx].nIdx = idx
+            self.m_betChipSpOthers[wChipIndex][idx].tab = isAndroid
+        else
+            chiptg = {}
+            chiptg.pChipSpr = pSpr
+            chiptg.wJettonIndex = jettonIndex
+            chiptg.wChipIndex = wChipIndex
+            chiptg.nIdx = idx
+            chiptg.tab = isAndroid
+            self.m_betChipSpOthers[wChipIndex][idx] = chiptg
         end
     end
-    armature:getAnimation():setMovementEventCallFunc(animationEvent)
-    armature:getAnimation():playWithIndex(0)
-end
 
---闲家最后一张牌显示
-function GameViewLayer:xianViewCard(nIndex)
-    local card = BaccaratDataMgr.getInstance():getCardAtIndex(BaccaratDataMgr.ePlace_Xian, nIndex + 1)
-    if not card then return end
-    local poker = Poker:create()
-    poker:setData(card.iColor, card.iValue)
-    poker:setPosition(cc.p(self.m_xianCardEndPos.x + (2 + nIndex)*self.m_sendCardConfig.cardOffsetX/2, self.m_xianCardEndPos.y))
-    poker:showCard()
-    poker:addTo(self.m_nodeCardAni)
-
-    --牌的抖动动画
-    poker:setScale(1)
-    poker:setRotation(-40)
-
-    local rotae1 = cc.RotateTo:create(3 * 0.017, -15)
-    local rotae2 = cc.RotateTo:create(4 * 0.017, 10)
-    local rotae3 = cc.RotateTo:create(6 * 0.017, 0)
-    local scale1 = cc.ScaleTo:create(3 * 0.017, self.m_sendCardConfig.endScaleVal)
-    local callBack = cc.CallFunc:create(
-        function ()
-            self:zhuangAddCardAni(nIndex)
-        end
-    )
-    local seq = cc.Sequence:create(cc.Spawn:create(rotae1, scale1), rotae2, rotae3, callBack)
-    poker:runAction(seq)
-    if 1 == nIndex then
-        self.m_sendCard[3] = poker
-    end
-end
-
---庄家补牌
-function GameViewLayer:zhuangAddCardAni(nIndex)
-    if 2 == nIndex and BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Zhuang) < 3 then
-        self:playCardResultAni()
-        return
+    if nil ~= oldSp then
+        oldSp:runAction(self:createAutoDelAnim(oldSp))
     end
 
-    local poker = Poker:create()
-    poker:setPosition(self.m_sendCardConfig.beginPos)
-    poker:setBack()
-    poker:setRotation(self.m_sendCardConfig.beginRotate)
-    poker:setScale(self.m_sendCardConfig.beginScaleVal)
-    poker:addTo(self.m_nodeCardAni)
-
-    local endpos = cc.p(self.m_zhuangCardEndPos.x + nIndex*self.m_sendCardConfig.cardOffsetX, self.m_zhuangCardEndPos.y + self.m_sendCardConfig.cardOffsetY)
-    local moveTo = cc.MoveTo:create(self.m_sendCardConfig.sendTs, endpos)
-    local rotateBy = cc.RotateBy:create(self.m_sendCardConfig.sendTs, 90 - self.m_sendCardConfig.beginRotate)
-    local scaleTo = cc.ScaleTo:create(self.m_sendCardConfig.sendTs, self.m_sendCardConfig.endScaleVal)
-    local spawn = cc.Spawn:create(moveTo, rotateBy, scaleTo)
-
-    local callBack1 = cc.CallFunc:create(
-        function ()
-            poker:removeFromParent()
-            self:zhuangOpenCard(nIndex)
-        end
-    )
-
-    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_CARD)
-    local seq = cc.Sequence:create(spawn, callBack1)
-    poker:runAction(seq)
-    if 2 == nIndex then
-        self.m_sendCard[2]:runAction(cc.MoveBy:create(self.m_sendCardConfig.sendTs, cc.p(-self.m_sendCardConfig.cardOffsetX/2, 0)))
-        self.m_sendCard[4]:runAction(cc.MoveBy:create(self.m_sendCardConfig.sendTs, cc.p(-self.m_sendCardConfig.cardOffsetX/2, 0)))
+    local forward = cc.MoveTo:create(iFinishTime,endPos)
+    local eMove = cc.EaseSineOut:create(forward) 
+    local Value = 0
+    if (not isMyFly) and isNeedDelay then
+        Value = self.m_flychipidx * 0.4 + ( math.random(0,10) % 100)/100.0
     end
-end
 
---庄家开最后一张牌
-function GameViewLayer:zhuangOpenCard(nIndex)
-    local card = BaccaratDataMgr.getInstance():getCardAtIndex(BaccaratDataMgr.ePlace_Zhuang, nIndex + 1)
-    if not card then
-        return
-    end
-    
-    local armature = ccs.Armature:create(BaccaratRes.ANI_FILE_FANPAI)
-    if armature == nil then
-        return
-    end
-    local pos = cc.p(self.m_zhuangCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX, self.m_zhuangCardEndPos.y + self.m_sendCardConfig.cardOffsetY)
-    armature:setPosition(pos) 
-    self.m_nodeCardAni:addChild(armature)
-
-
-    local pathVal = string.format("value-%d-%d.png", card.iValue, card.iColor%2)
-    local pathColor = string.format("color-%d.png", card.iColor), ccui.TextureResType.plistType
-    self:replaceArmatureSprite(armature, self.m_sendCardConfig.boneName.VALUE, pathVal)
-    self:replaceArmatureSprite(armature, self.m_sendCardConfig.boneName.COLOR, pathColor)
-
-    local animationEvent = function(armatureBack, movementType, movementID)
-        if movementType == ccs.MovementEventType.complete 
-        or movementType == ccs.MovementEventType.loopComplete
-        then
-            armature:removeFromParent()
-            self:zhuangViewCard(nIndex)
-        end
-    end
-    armature:getAnimation():setMovementEventCallFunc(animationEvent)
-    armature:getAnimation():playWithIndex(0)
-end
-
---庄家最后一张牌显示
-function GameViewLayer:zhuangViewCard(nIndex)
-    local card = BaccaratDataMgr.getInstance():getCardAtIndex(BaccaratDataMgr.ePlace_Zhuang, nIndex + 1)
-    if not card then return end
-    local poker = Poker:create()
-    poker:setData(card.iColor, card.iValue)
-    poker:setPosition(cc.p(self.m_zhuangCardEndPos.x + (2 + nIndex)*self.m_sendCardConfig.cardOffsetX/2, self.m_zhuangCardEndPos.y))
-    poker:showCard()
-
-    poker:addTo(self.m_nodeCardAni)
-
-    --牌的抖动动画
-    poker:setScale(1)
-    poker:setRotation(-40)
-
-    local rotae1 = cc.RotateTo:create(3 * 0.017, -15)
-    local rotae2 = cc.RotateTo:create(4 * 0.017, 10)
-    local rotae3 = cc.RotateTo:create(6 * 0.017, 0)
-    local scale1 = cc.ScaleTo:create(3 * 0.017, self.m_sendCardConfig.endScaleVal)
-    local callBack = cc.CallFunc:create(
-        function ()
-            if 1 == nIndex then
-                self:playAddCardAni()
+    local func = function()
+        if not self.m_isPlayBetSound then
+            if jettonIndex > 3 then -- 分段播放音效
+                ExternalFun.playGameEffect("Baccarat/sound/throw_chips.mp3")
             else
-                self:playCardResultAni()
+                ExternalFun.playGameEffect("Baccarat/sound/throw_chip.mp3")
             end
+            -- 尽量避免重复播放
+            self:doSomethingLater(function() self.m_isPlayBetSound  = false end, math.random(2,4)/10)
+            self.m_isPlayBetSound = true
         end
-    )
-    local seq = cc.Sequence:create(cc.Spawn:create(rotae1, scale1), rotae2, rotae3, callBack)
-    poker:runAction(seq)
-    if 1 == nIndex then
-        self.m_sendCard[4] = poker
     end
+
+    local seq = cc.Sequence:create(cc.Hide:create(), cc.DelayTime:create( Value ),cc.Show:create(), cc.CallFunc:create(func), eMove)
+    pSpr:runAction(seq)
+
 end
+-- 飞筹码
+function GameViewLayer:FlyChip()
 
---播放点数 牌型 和胜利动画
-function GameViewLayer:playCardResultAni()
-    local countxian   = 0
-    local countzhuang = 0
-    local pointxian   = 0
-    local pointzhuang = 0
-    local isDuiZi     = false
-    local isTianWang  = false
-    local posx        = 0
-    local posy        = 0
-    local imgWidth    = 66 + 10
-
-    --region 闲家
-    --点数
-    countxian = BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Xian)
-    pointxian = BaccaratDataMgr.getInstance():getResultPoints(BaccaratDataMgr.ePlace_Xian, countxian)
-
-    --牌型
-    isDuiZi = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Xian)
-    isTianWang = pointxian > 7
-
-    --计算牌型动画的展示原点
-    posx = self.m_xianCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-    posy = self.m_xianCardEndPos.y - 10
-
-    if isDuiZi and isTianWang then
-        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_TIANWANG)
-        local pos1 = cc.p(posx - imgWidth/2, posy)
-        local pos2 = cc.p(posx + imgWidth/2, posy)
-        self:playCardTypeAni(pos1, BaccaratRes.ANI_CARDTYPE_NAME.NAME_DUIZI)
-        self:playCardTypeAni(pos2, BaccaratRes.ANI_CARDTYPE_NAME.NAME_TIANWANG)
-    elseif isDuiZi then
-        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_TIANWANG)
-        self:playCardTypeAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_DUIZI)
-    elseif isTianWang then
-        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_TIANWANG)
-        self:playCardTypeAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_TIANWANG)
-    end
-
-    self:playCardPointAni(self.m_sendCardConfig.pointAniPos[BaccaratDataMgr.ePlace_Xian][3], pointxian)
-    --endregion
-
-    --region 庄家
-    --点数
-    countzhuang = BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Zhuang)
-    pointzhuang = BaccaratDataMgr.getInstance():getResultPoints(BaccaratDataMgr.ePlace_Zhuang, countzhuang)
-
-    --牌型
-    isDuiZi = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Zhuang)
-    isTianWang = pointzhuang > 7
-
-    --计算牌型动画的展示原点
-    posx = self.m_zhuangCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-    posy = self.m_zhuangCardEndPos.y - 10
-
-    if isDuiZi and isTianWang then
-        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_TIANWANG)
-        local pos1 = cc.p(posx - imgWidth/2, posy)
-        local pos2 = cc.p(posx + imgWidth/2, posy)
-        self:playCardTypeAni(pos1, BaccaratRes.ANI_CARDTYPE_NAME.NAME_DUIZI)
-        self:playCardTypeAni(pos2, BaccaratRes.ANI_CARDTYPE_NAME.NAME_TIANWANG)
-    elseif isDuiZi then
-        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_TIANWANG)
-        self:playCardTypeAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_DUIZI)
-    elseif isTianWang then
-        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_TIANWANG)
-        self:playCardTypeAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_TIANWANG)
-    end
-    self:playCardPointAni(self.m_sendCardConfig.pointAniPos[BaccaratDataMgr.ePlace_Zhuang][3], pointzhuang)
-    --endregion
-
-    --获胜动画
-    local soundStr = ""
-    if BaccaratDataMgr.getInstance():getResultIsTongDianPing() then --同点平
-        posx = self.m_xianCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-        posy = self.m_xianCardEndPos.y + 75
-        self:playResultPingAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_SAMEPING)
-
-        posx = self.m_zhuangCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-        posy = self.m_zhuangCardEndPos.y + 75
-        self:playResultPingAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_SAMEPING)
-
-        soundStr = BaccaratRes.SOUND_OF_PING
-        --ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_PING)
-    elseif pointxian == pointzhuang then --平
-        posx = self.m_xianCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-        posy = self.m_xianCardEndPos.y + 75
-        self:playResultPingAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_PING)
-
-        posx = self.m_zhuangCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-        posy = self.m_zhuangCardEndPos.y + 75
-        self:playResultPingAni(cc.p(posx, posy), BaccaratRes.ANI_CARDTYPE_NAME.NAME_PING)
-
-        soundStr = BaccaratRes.SOUND_OF_PING
-        --ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_PING)
-    elseif pointxian > pointzhuang then--闲赢
-        posx = self.m_xianCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-        posy = self.m_xianCardEndPos.y + 75
-        self:playResultWinAni(cc.p(posx, posy))
-        soundStr = BaccaratRes.SOUND_OF_XIANWIN
-        --ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_XIANWIN)
-    else --庄赢
-        posx = self.m_zhuangCardEndPos.x + 2*self.m_sendCardConfig.cardOffsetX/2
-        posy = self.m_zhuangCardEndPos.y + 75
-        self:playResultWinAni(cc.p(posx, posy))
-        soundStr = BaccaratRes.SOUND_OF_ZHUANGWIN
-        --ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_ZHUANGWIN)
-    end
-
-    --闲家点数
-    ExternalFun.playGameEffect( string.format( BaccaratRes.SOUND_OF_XPOINT, pointxian))
-
-    --闲家
-    self:doSomethingLater(function() ExternalFun.playGameEffect( string.format( BaccaratRes.SOUND_OF_ZPOINT, pointzhuang)) end, 1.2)
-    
-    --结果音效
-    self:doSomethingLater(function() ExternalFun.playGameEffect(soundStr) end, 2.4)
-
-    -- 0胜 1负 2平
     local winArea = {
-        [1] = pointzhuang < pointxian, --闲
-        [2] = pointzhuang == pointxian, --平
-        [3] = pointzhuang > pointxian, --庄
-        [4] = pointxian > 7, --闲天王
-        [5] = pointzhuang > 7, --庄天王
-        [6] = BaccaratDataMgr.getInstance():getResultIsTongDianPing(), --同点平
-        [7] = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Xian), --闲对
-        [8] = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Zhuang), --庄对
+            [1] = false,
+            [2] = false,
+            [3] = false,
+            [4] = false,
+            [5] = false,
     }
-
-    for i = 1, AreaCount do
-        if winArea[i] then self:playAreaBlink(i) end
+    for i = 1 , #self.win_zodic do
+        winArea[self.win_zodic[i]] = true
     end
-
-    --更新历史记录
-    BaccaratDataMgr.getInstance():addGameRecordByOpen()
-    self:notifyTrendRefresh()
-
-    --延迟1秒后 播放飞筹码动画
-    self:doSomethingLater(function() self:flychipex() end, 1)
-
-    --提示本局有无下注
-    self:showResultTips()
-end
-
---提示本局有无下注
-function GameViewLayer:showResultTips()
-    if BaccaratDataMgr.getInstance():isBanker() then
-        return
-    end
-
-    if BaccaratDataMgr.getInstance():getMyAllBetValue() > 0 then
-        return
-    end
-
-    FloatMessage.getInstance():pushMessageForString("本局您没有下注!")
-end
-
---显示牌点动画
-function GameViewLayer:playCardPointAni(pos, point)
---    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(huanle30s_kaipai) 
-    local armature = ccs.Armature:create("huanle30s_kaipai")
-    armature:setPosition(pos) 
-    self.m_nodeCardAni:addChild(armature)
-
-    if point < 8 then
-        self:replaceArmatureSprite(armature, BaccaratRes.ANI_CARDTYPE_NAME.BONE_LOWPOINT, string.format( BaccaratRes.IMG_CARDPOINT, point))
-    else
-        self:replaceArmatureSprite(armature, BaccaratRes.ANI_CARDTYPE_NAME.BONE_HIGHPOINT, string.format( BaccaratRes.IMG_CARDPOINT, point))
-    end
-
-    armature:getAnimation():play(BaccaratRes.ANI_CARDTYPE_NAME[point])
-
-    return armature
-end
-
---显示牌型动画
-function GameViewLayer:playCardTypeAni(pos, aniName)
---    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(huanle30s_kaipai) 
-    local armature = ccs.Armature:create("huanle30s_kaipai")
-    armature:setPosition(pos) 
-    self.m_nodeCardAni:addChild(armature)
-    armature:getAnimation():play(aniName)
-end
-
---显示平/同点平动画
-function GameViewLayer:playResultPingAni(pos, aniName)
---    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(huanle30s_kaipai) 
-    local armature = ccs.Armature:create("huanle30s_kaipai")
-    armature:setPosition(pos) 
-    self.m_nodeCardAni:addChild(armature)
-    armature:getAnimation():play(aniName)
-end
-
---显示赢动画
-function GameViewLayer:playResultWinAni(pos)
---    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(jiesuan_ying) 
-    local armature = ccs.Armature:create("jiesuan_ying")
-    armature:setPosition(pos) 
-    self.m_nodeCardAni:addChild(armature)
-    armature:getAnimation():play(BaccaratRes.ANI_YING_NAME.BEGAN)
-    local animationEvent = function (armatureBack, movementType, movementID)
-        if movementType == ccs.MovementEventType.complete then
-            armature:getAnimation():play(BaccaratRes.ANI_YING_NAME.LOOP)
-        end
-    end
-    armature:getAnimation():setMovementEventCallFunc(animationEvent)
-end
-
---替换动画的节点资源
-function GameViewLayer:replaceArmatureSprite(armature, boneName, newName)
-    local bone = armature:getBone(boneName)
-    local manager = bone:getDisplayManager()
-    local vecDisplay = manager:getDecorativeDisplayList()
-    for k, v in pairs(vecDisplay) do
-        if v then
-            local spData = v:getDisplay()
-            if spData then
-                spData:setSpriteFrame(newName)
-            end
-        end
-    end
-end
-
---清理所有扑克牌动画
-function GameViewLayer:cleanCardAni()
-    --self.m_xianPointAni = nil
-    --self.m_zhuangPointAni = nil
-    self.m_sendCard = {}
-    self.m_nodeCardAni:stopAllActions()
-    self.m_nodeCardAni:removeAllChildren()
-end
-
---播放等待下一局动画
-function GameViewLayer:playWaitAni()
-
---    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_WAGER_STOP)
---    ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(huanle30s_dengdaixiaju) 
-    local armature = ccs.Armature:create("huanle30s_dengdaixiaju")  
-    armature:setPosition(667,375)                   
-    self.m_nodeZCAni:addChild(armature)                      
-    armature:getAnimation():playWithIndex(0)
-    armature:runAction(cc.Sequence:create(cc.DelayTime:create(2),cc.CallFunc:create(function()
-		                                            armature:removeFromParent()
-	                                            end)))
-
-end
-
---清理所有转场动画
-function GameViewLayer:cleanZhuanChangAni()
-    self.m_nodeZCAni:stopAllActions()
-    self.m_nodeZCAni:removeAllChildren()
-end
-
---刷新庄家信息显示
-function GameViewLayer:updateBankerInfo()--更新庄家信息
-    --庄家名字
-    local name = BaccaratDataMgr.getInstance():getBankerName()
---    if INVALID_CHAIR == BaccaratDataMgr.getInstance():getBankerId() then
---        name = LuaUtils.getLocalString("STRING_240")
---    end
-    local strName = LuaUtils.getDisplayNickNameInGame(name)
-    self.m_pLbBankerName:setString(strName)
-
-    --庄家分数
-    local llScore = BaccaratDataMgr.getInstance():getBankerScore()
-    local strScore = llScore--LuaUtils.getFormatGoldAndNumber(llScore)
-    self.m_pLbBankerGold:setString(strScore)
     
-    --申请上庄人数
-    local listSize = BaccaratDataMgr.getInstance():getBankerListSize()
-    local strList = string.format(LuaUtils.getLocalString("STRING_241"), listSize)
-    local bInList = BaccaratDataMgr.getInstance():isInBankerList()
-    if bInList ~= -1 and not BaccaratDataMgr.getInstance():isBanker() then
-        strList = string.format(LuaUtils.getLocalString("STRING_242"), bInList - 1)
-    end
-    self.m_pLbApplyNum:setString(strList)
-
-    --上庄按钮
-    local bIsAsk = (BaccaratDataMgr.getInstance():isBanker() or (bInList ~= -1))
-    self.m_pBtnApply:setVisible(not bIsAsk)
-    self.m_pBtnDown:setVisible(bIsAsk)
-end
-
-
---得分动画
-function GameViewLayer:playUserScoreEffect()
-    local selfcurscore = 0 -- 自己最终得分
-    local bankercurscore = 0 -- 庄家最终得分
-    local othercurscore = 0 -- 其他玩家最终得分
-    local isbanker = BaccaratDataMgr.getInstance():isBanker()
-
-    selfcurscore, othercurscore, bankercurscore = self:calcCurScore()
-
-    --用户当前积分
-    local llUserScore = PlayerInfo.getInstance():getUserScore()--self.m_oldScore
-    local str = ""
-    local curpath = ""
-
-    -- 显示庄家分数动画
-    str = bankercurscore--LuaUtils.getFormatGoldAndNumber(bankercurscore)
-    if bankercurscore > 0 then
-        str = "+" .. str
-    end
-    curpath = bankercurscore < 0 and BaccaratRes.FNT_RESULT_LOSE or BaccaratRes.FNT_RESULT_WIN
-    BaccaratDataMgr.getInstance():setBankerScore(BaccaratDataMgr.getInstance():getBankerScore() + bankercurscore)
-    local cb = function()
-        self:updateBankerInfo()
-    end
-
-    self:flyNumOfGoldChange(cc.p(self:getBankerChipBeginPosition()), curpath, str, cb)
-
-    -- 显示其他玩家分数动画
-    str = othercurscore--LuaUtils.getFormatGoldAndNumber(othercurscore)
-    if othercurscore > 0 then
-        str = "+" .. str
-    end
-    local posOther = cc.p(self:getOtherChipBeginPosition())
-    posOther.x = posOther.x - 20
-    posOther.y = posOther.y + 110
-    curpath = othercurscore < 0 and BaccaratRes.FNT_RESULT_LOSE or BaccaratRes.FNT_RESULT_WIN
-    self:flyNumOfGoldChange(posOther, curpath, str)
-
-    -- 显示自己分数动画
-    local selfbet = BaccaratDataMgr.getInstance():getMyAllBetValue()
-    if selfbet > 0 or isbanker then
-        str = selfcurscore--LuaUtils.getFormatGoldAndNumber(selfcurscore)
-        if selfcurscore > 0 then
-            str = "+" .. str
-        end
-
-        local posSelf = cc.p(self:getSelfChipBeginPosition())
-        posSelf.y = posSelf.y + 150
-        curpath = selfcurscore < 0 and BaccaratRes.FNT_RESULT_LOSE or BaccaratRes.FNT_RESULT_WIN
-        self:flyNumOfGoldChange(posSelf, curpath, str)
-    end
-
-    --自己金币变化动画
-    local soundPath = ""
-    if selfcurscore > 0 then
-        local lastSore = llUserScore + selfcurscore + selfbet
---        Effect:getInstance():showScoreChangeEffect(self.m_pLbSelfGold, llUserScore , selfcurscore, lastSore, 1, 10)
-        --播放分级音效
-        if selfcurscore >= 50 then
-            soundPath = BaccaratRes.SOUND_OF_CMD[ math.random(1, 2) ]
-        elseif selfcurscore >= 20 then
-            soundPath = BaccaratRes.SOUND_OF_CMD[ math.random(3, 4) ]
-        elseif selfcurscore >= 5 then
-            soundPath = BaccaratRes.SOUND_OF_CMD[ math.random(5, 6) ]
-        else
-            soundPath = BaccaratRes.SOUND_OF_WIN
-        end
-    else
-        if 0 == BaccaratDataMgr.getInstance():getUserBetSize() then
-            soundPath = BaccaratRes.SOUND_OF_NOBET
-        else
-            if selfcurscore <= -1000 then
-                soundPath = string.format(BaccaratRes.SOUND_OF_CMD[7], math.random(1, 4))
-            elseif selfcurscore <= -500 then
-                soundPath = BaccaratRes.SOUND_OF_CMD[ math.random(8, 9) ]
-            elseif selfcurscore <= -200 then
-                soundPath = BaccaratRes.SOUND_OF_CMD[ math.random(10, 11) ]
-            else
-                soundPath = BaccaratRes.SOUND_OF_LOSE
-            end
-        end
-        self.m_pLbSelfGold:setString(llUserScore)
-    end
-
-    ExternalFun.playGameEffect(soundPath)
-
-end
-
---弹金币动画
-function GameViewLayer:flyNumOfGoldChange(beginPos, filepath, str, cb)
-    local lb = cc.Label:createWithBMFont(filepath, str)
-                :setAnchorPoint(0, 0.5)
-                :setOpacity(255)
-                :setScale(0.6)
-                :setVisible(true)
-                :setPosition(beginPos)
-                :addTo(self.m_nodeFlyChip)
-
-    local pos = cc.p(lb:getPosition())
-    local callBack = cc.CallFunc:create(function ()
-        lb:setVisible(false)
-        lb:setPosition(pos)
-        lb:stopAllActions()
-        if cb then cb() end
-    end)
-
-    local pSeq = cc.Sequence:create(
-        cc.EaseBounceOut:create(cc.MoveBy:create(0.8, cc.p(0,-50))),
-        cc.DelayTime:create(2.0),
-        cc.FadeOut:create(0.4),
-        callBack
-        )
-
-    lb:runAction(pSeq)   
-end
-
-
---克隆一个赔付的筹码对象
-function GameViewLayer:clonePayoutChip(jettonIndex)
-    local pos = self:getBankerChipBeginPosition()
-    local pSpr = self:getSpriteOfJetton(jettonIndex)
-    if not pSpr then return end
-    pSpr:setScale(0.35)
-    pSpr:setPosition(pos)
-    pSpr:setLocalZOrder(10)
-    self.m_nodeFlyChip:addChild(pSpr)
-    return pSpr
-end
-
---以队列方式进行飞筹码
-function GameViewLayer:flychipex()
-    -- 处理现有的筹码对象列表
-    local countXian  = BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Xian)
-    local pointXian  = BaccaratDataMgr.getInstance():getResultPoints(BaccaratDataMgr.ePlace_Xian, countXian)
-    local countZhuang = BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Zhuang)
-    local pointZhuang = BaccaratDataMgr.getInstance():getResultPoints(BaccaratDataMgr.ePlace_Zhuang, countZhuang)
-
-
-    -- 0胜 1负 2平
-    local winArea = {
-        [1] = pointZhuang < pointXian and 0 or 1 , --闲
-        [2] = pointZhuang == pointXian and 0 or 1 , --平
-        [3] = pointZhuang > pointXian and 0 or 1 , --庄
-        [4] = pointXian > 7 and 0 or 1 , --闲天王
-        [5] = pointZhuang > 7 and 0 or 1 , --庄天王
-        [6] = BaccaratDataMgr.getInstance():getResultIsTongDianPing() and 0 or 1 , --同点平
-        [7] = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Xian) and 0 or 1 , --闲对
-        [8] = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Zhuang) and 0 or 1 , --庄对
-    }
-
-    if 0 == winArea[2] or 0 == winArea[6] then
-        winArea[1] = 2
-        winArea[3] = 2
-    end
-
-    local tem = BaccaratDataMgr.getInstance():getLastGameRecord()
-    if not tem then return end
+--    winArea[1] = 1  == self.win_zodic[1] -- 红方赢
+--    winArea[2] = 1  == self.win_zodic[2] -- 黑方赢
+--    winArea[3] = -1 ~= self.win_zodic[3]
 
     local bankerwinvec = {} -- 庄家获取的筹码
     local bankerlostvec = {} -- 庄家赔付筹码
@@ -2117,131 +697,56 @@ function GameViewLayer:flychipex()
         othervec[i] = {winmark = winArea[i], vec = {}}
     end
 
-    for k, v in pairs(self.m_vJettonOfMine) do
-         table.insert(selfvec[v.wChipIndex].vec, v)
-    end
+    for i = 1, CHIP_ITEM_COUNT do
+        for k, v in pairs(self.m_betChipSpSelf[i]) do
+             table.insert(selfvec[v.wChipIndex].vec, v)
+        end
 
-    for k, v in pairs(self.m_vJettonOfOther) do
-        table.insert(othervec[v.wChipIndex].vec, v)
+        for k, v in pairs(self.m_betChipSpOthers[i]) do
+            table.insert(othervec[v.wChipIndex].vec, v)
+        end
     end
 
     -- 遍历获胜的区域 必须用pairs方式 保证所有筹码遍历到
     local selfPos = self:getSelfChipBeginPosition()
-    local bankerPos = self:getBankerChipBeginPosition()
     local otherPos = self:getOtherChipBeginPosition()
     for i = 1, CHIP_ITEM_COUNT do
         for k, v in pairs(selfvec[i].vec) do
             if v then
-                if 1 == selfvec[i].winmark then
-                    table.insert(bankerwinvec[i], {sp = v.pChipSpr, endpos = bankerPos})
-                    bankerwin = true
-                else
-                    table.insert(selfwinvec[i], {sp = v.pChipSpr, endpos = selfPos, winmark = selfvec[i].winmark})
-                    selfwin = true
-                end
+                table.insert(selfwinvec[i], {sp = v.pChipSpr, endpos = selfPos, winmark = selfvec[i].winmark})
+                selfwin = true
             end
         end
 
         for k, v in pairs(othervec[i].vec) do
             if v then
-                if 1 == othervec[i].winmark then
-                    table.insert(bankerwinvec[i], {sp = v.pChipSpr, endpos = bankerPos})
-                    bankerwin = true
+                if v.tab ~= false then
+                    table.insert(otherwinvec[i], {sp = v.pChipSpr, endpos = self.m_tabPos[v.tab], winmark = selfvec[i].winmark})
+                    otherwin = true
                 else
                     table.insert(otherwinvec[i], {sp = v.pChipSpr, endpos = otherPos, winmark = selfvec[i].winmark})
                     otherwin = true
-                end
+                end              
             end
         end
     end
 
-    -- 处理庄家需要赔付的筹码 庄家赔付的筹码是多个区域的 需要分区域处理
-    -- 同时新建的赔付的筹码引用需要加在玩家获胜筹码集合中 赔付筹码大余8个 则取半
-    -- 按倍率赔付筹码数量 大于一定数量的筹码 则不再增加
-    -- 赔付筹码是否需要随机分配结束pos飞行？
-    local countself = 0
-    local countother = 0
-    local rewardCount = 0
-    local rewardCountMax = 30 -- 最多一个区域赔付30个筹码
-    local offset = 7
-    for i = 1, CHIP_ITEM_COUNT do
-        countself = #selfwinvec[i] -- 后面会对vec进行插入 所以保存一个初始的索引
-        rewardCount = 0
-        for m = 1, CHIP_REWARD[i] - 1 do
-            if rewardCount > rewardCountMax then
-                break
-            end
-            for j = 1, countself do
-                rewardCount = rewardCount + 1
-                if rewardCount > rewardCountMax then
-                    break
-                end
-                -- 取出原始的筹码对象复制
-                local oldsp = selfwinvec[i][j].sp
-                if oldsp and 0 == selfwinvec[i][j].winmark then
-                    local newsp = self:clonePayoutChip(oldsp:getTag())
-                    -- 初始点在庄家处
-                    newsp:setPosition(bankerPos)
-                    -- 加入赔付队列 落点坐标直接从预定义的随机落点取 赔付的筹码使用随机区域落点互换
-                    local posIdx = j % #self.m_randmChipOthers[i].vec
-                    posIdx = posIdx > 0 and posIdx or 1
-                    table.insert( bankerlostvec[i], { sp = newsp, endpos = self.m_randmChipOthers[i].vec[posIdx]})
-                    bankerlose = true
-                    -- 加入自己的获胜队列
-                    table.insert( selfwinvec[i], { sp = newsp, endpos = selfPos })
-                end
-            end
-        end
-        countother = #otherwinvec[i]
-        countother = countother > 8 and countother/2 or countother
-        for j = 1, countother do
-            local oldsp = otherwinvec[i][j].sp
-            if oldsp and 0 == otherwinvec[i][j].winmark then
-                local newsp = self:clonePayoutChip(oldsp:getTag())
-                newsp:setPosition(bankerPos)
-                local randx = (math.random(-offset*100, offset*100)) / 100
-                local randy = (math.random(-offset*100, offset*100)) / 100
-                local posIdx = j % #self.m_randmChipSelf[i].vec
-                posIdx = posIdx > 0 and posIdx or 1
-                table.insert( bankerlostvec[i], { sp = newsp, endpos = self.m_randmChipSelf[i].vec[posIdx] })
-                bankerlose = true
-                --table.insert( bankerlostvec[i], { sp = newsp, endpos = cc.p(oldsp:getPosition()) })
-                table.insert( otherwinvec[i], { sp = newsp, endpos = otherPos })
-            end
-        end
-    end
-
-    -- 庄家获取筹码
-    local jobitem1 = {
-        flytime       = CHIP_FLY_TIME,                                -- 飞行时间
-        flytimedelay  = false,                                        -- 飞行时间延长随机时间(0.05~0.15)
-        flysteptime   = CHIP_FLY_STEPDELAY,                           -- 筹码队列飞行间隔
-        nextjobtime   = CHIP_JOBSPACETIME,                            -- 下个任务执行间隔时间
-        chips         = bankerwinvec,                                 -- 筹码队列集合 二维数组[下注区域索引][筹码对象引用]
-        preCB         = function()                                    -- 任务开始时执行的回调，此回调根据preCBExec控制只执行一次
-                            if bankerwin then
-                                ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_GETGOLD)
-                            end
-                        end,
-        preCBExec     = false,
-        --overCB        = function() print("庄家获胜筹码飞行完毕") end, -- 动画任务完成后回调
-        hideAfterOver = true                                          -- 动画完成后隐藏
-    }
-
-    -- 庄家赔付筹码
-    local jobitem2 = {
-        flytime       = CHIP_FLY_TIME,
-        flysteptime   = CHIP_FLY_STEPDELAY,
-        nextjobtime   = CHIP_JOBSPACETIME,
-        chips         = bankerlostvec,
-        preCB         = function()
-                            if bankerlose then
-                                ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_GETGOLD)
-                            end
-                        end,
-        --overCB        = function() print("庄家赔付筹码飞行完毕") end,
-        hideAfterOver = false
-    }
+--    -- 庄家获取筹码
+--    local jobitem1 = {
+--        flytime       = CHIP_FLY_TIME,                                -- 飞行时间
+--        flytimedelay  = false,                                        -- 飞行时间延长随机时间(0.05~0.15)
+--        flysteptime   = CHIP_FLY_STEPDELAY,                           -- 筹码队列飞行间隔
+--        nextjobtime   = CHIP_JOBSPACETIME,                            -- 下个任务执行间隔时间
+--        chips         = bankerwinvec,                                 -- 筹码队列集合 二维数组[下注区域索引][筹码对象引用]
+--        preCB         = function()                                    -- 任务开始时执行的回调，此回调根据preCBExec控制只执行一次
+--                            if bankerwin then
+--                                ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_GETGOLD)
+--                            end
+--                        end,
+--        preCBExec     = false,
+--        --overCB        = function() print("庄家获胜筹码飞行完毕") end, -- 动画任务完成后回调
+--        hideAfterOver = true                                          -- 动画完成后隐藏
+--    }
 
     -- 其他人赢得的筹码
     local jobitem3 = {
@@ -2286,13 +791,11 @@ function GameViewLayer:flychipex()
         self:playUserScoreEffect()
     end
 
-    table.insert(self.m_flyJobVec.jobVec, { jobitem1 }) -- 1 飞行庄家获取筹码
-    table.insert(self.m_flyJobVec.jobVec, { jobitem2 }) -- 2 飞行庄家赔付筹码
+--    table.insert(self.m_flyJobVec.jobVec, { jobitem1 }) -- 1 飞行庄家获取筹码
+--    table.insert(self.m_flyJobVec.jobVec, { jobitem2 }) -- 2 飞行庄家赔付筹码
     table.insert(self.m_flyJobVec.jobVec, { jobitem3, jobitem4 }) -- 3 其他人筹码和自己筹码一起飞行
-
     self:doFlyJob()
 end
-
 --执行单个的飞行任务
 function GameViewLayer:doFlyJob()
     -- 全部任务执行完成之前，被清理重置
@@ -2369,357 +872,348 @@ function GameViewLayer:doFlyJob()
         end
     end
 end
-
---闪烁获胜区域
-function GameViewLayer:playAreaBlink(nIndex)
-    local _node = self.m_pBlink[nIndex]
-    if not _node then return end
-    _node:runAction(cc.Sequence:create(cc.Blink:create(5, 5), cc.Show:create()))
-end
-
---隐藏所有获胜闪烁区域
-function GameViewLayer:hideAllAreaBlink()
-    for i = 1, AreaCount do
-        self.m_pBlink[i]:stopAllActions()
-        self.m_pBlink[i]:setVisible(false)
-    end
-end
-
---endregion
-
---region 其他弹出层
-
-function GameViewLayer:showTrendLayer() --打开路子
-    BaccaratTrendLayer.create():addTo(self.m_rootUI, ZORDER_OF_TREND)
-end
-
-function GameViewLayer:showRuleLayer() --打开规则
---    local CommonRule = require("common.layer.CommonRule")
---    local nKind = PlayerInfo.getInstance():getKindID()
---    local pRule = CommonRule.new(nKind)
---    pRule:addTo(self.m_rootUI, ZORDER_OF_RULE)
-end
-
-function GameViewLayer:showIngameBank() --打开银行
---    IngameBankView.create():addTo(self.m_rootUI, ZORDER_OF_FLOATMESSAGE)
-end
-
-function GameViewLayer:showMessageBox(msg, cb) --打开确认框
-    --MessageBox.create(msg):addTo(self.m_rootUI, ZORDER_OF_MESSAGEBOX)
---    local pMessageBox = MessageBoxNew.create(msg, cb)
---    self.m_rootUI:addChild(pMessageBox, ZORDER_OF_MESSAGEBOX)
-end
-
-function GameViewLayer:showFloatmessage(msg) --打开提示信息
-    FloatMessage.getInstance():pushMessage(msg)
-end
-
-function GameViewLayer:showChargeLayer() --打开充值
-
-end
-
---endregion
-
---显示主界面上端的大路
-function GameViewLayer:initMainViewDalu()
-    local rows = 5
-    local cols = 7
-    local border = 1
-    local bgwidth = 23
-    local cellwidth = border + bgwidth
-    local cellheight = rows * cellwidth
-    local scale = 0.7
-
-    local cellSizeForTable = function (table, idx)
-        return cellwidth, cellheight
+--游戏结果分配胜负筹码动画
+function GameViewLayer:createAutoDelAnim(sper)
+    local func = function()
+        sper:stopAllActions()
+        sper:removeFromParent()
+        sper = nil
     end
 
-    local numberOfCellsInTableView = function (table)
-        return self.m_daluMaxCol > cols and self.m_daluMaxCol or cols
-    end
+    local delay = cc.DelayTime:create(1.8)
+    local seq = cc.Sequence:create(delay, cc.Hide:create(), cc.CallFunc:create(func))
+    return seq
+end
+--得分动画
+function GameViewLayer:playUserScoreEffect()
+    local selfcurscore = 0 -- 自己最终得分
+    selfcurscore = BaccaratDataMgr.getInstance():getMyResult()
+    --用户当前积分
+    local llUserScore = PlayerInfo.getInstance():getUserScore()
+    local str = ""
+    local curpath = ""
 
-    local tableCellAtIndex = function (table, idx)
-        local cell = table:dequeueCell()
-        if not cell then
-            cell = cc.TableViewCell:new()
-        else
-            cell:removeAllChildren()
+    -- 显示自己分数动画
+    if selfcurscore ~= 0 then
+        str = (selfcurscore)
+        if selfcurscore > 0 then
+            str = "+" .. str
         end
+        local posSelf = cc.p(self.m_pmyCoin)
+        posSelf.y = posSelf.y + 150
+        curpath = selfcurscore < 0 and BaccaratRes.FNT_RESULT_LOSE or BaccaratRes.FNT_RESULT_WIN
+        self:flyNumOfGoldChange(posSelf, curpath, str)    
+    end
 
-        for i = 0, rows - 1 do
-            --背景方块
-            local spBg = cc.Sprite:createWithSpriteFrameName(BaccaratRes.IMG_ROADSMALL_BG)
-                :setAnchorPoint(cc.p(0, 0))
-                :setPosition(cc.p(border, cellheight - (i + 1)*cellwidth))
-                :addTo(cell)
+    --自己金币变化动画
+    if selfcurscore > 0 then
+        ExternalFun.playGameEffect("Baccarat/sound/win_bet.mp3")
+        Effect:getInstance():showScoreChangeEffect(self.m_pmyMoney, llUserScore - selfcurscore   , selfcurscore, llUserScore + selfcurscore, 1, 10)
+    else
+        self.m_pmyMoney:setString((llUserScore + selfcurscore))
+    end
+    
+end
+--弹金币动画
+function GameViewLayer:flyNumOfGoldChange(beginPos, filepath, str, cb)
+    local lb = cc.Label:createWithBMFont(filepath, str)
+                :setAnchorPoint(0, 0.5)
+                :setOpacity(255)
+                :setScale(1.2)
+                :setVisible(true)
+                :setPosition(beginPos)
+                :addTo(self.m_pPanelPlayers,1000)
 
-            local record = BaccaratDataMgr.getInstance():getDaLuRecordByPosition(i, idx)
-            if record.bExist then
-                local posx = bgwidth/2
-                local posy = posx
+    local pos = cc.p(lb:getPosition())
+    local callBack = cc.CallFunc:create(function ()
+        lb:setVisible(false)
+        lb:setPosition(pos)
+        lb:stopAllActions()
+        if cb then cb() end
+    end)
 
-                if record.cbWin == 4 then   --起始开平
-                    cc.Sprite:createWithSpriteFrameName(BaccaratRes.IMG_TABLE_PING)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(posx, posy)
-                        :setScale(scale)
-                        :addTo(spBg)
-                elseif record.cbWin >= 2 then--平
-                    local spName1 = ((record.cbWin-2)==1)
-                        and BaccaratRes.IMG_TABLE_ZHUANGWIN
-                        or BaccaratRes.IMG_TABLE_XIANWIN
+    local pSeq = cc.Sequence:create(
+        cc.EaseBounceOut:create(cc.MoveBy:create(0.8, cc.p(0,-50))),
+        cc.DelayTime:create(2.0),
+        cc.FadeOut:create(0.4),
+        callBack
+        )
 
-                    cc.Sprite:createWithSpriteFrameName(spName1)
-                        :setScale(scale)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(posx, posy)
-                        :addTo(spBg)
+    lb:runAction(pSeq)   
+end
+--上桌玩家投注时头像抖动动画
+function GameViewLayer:playTableUserChipAni(idx)
+    --[[
+        桌子玩家位置索引
+        1 4
+        2 5
+        3 6
+        
+    ]]--
+    local offsetX = {  30, 30, 30, -30, -30, -30 }
+    local ts = 0.1
 
-                    local spName2 = ((record.cbWin-2)==1)
-                        and BaccaratRes.IMG_TABLE_ZHUANGPING
-                        or BaccaratRes.IMG_TABLE_XIANPING
+    self.m_userBtnVec[idx]:stopAllActions()
+    self.m_userBtnVec[idx]:setPosition(self.m_userBtnResPosVec[idx])
 
-                    cc.Sprite:createWithSpriteFrameName(spName2)
-                        :setScale(scale)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(posx, posy)
-                        :addTo(spBg)
-                else
-                    local spName = (record.cbWin == 1)
-                        and BaccaratRes.IMG_TABLE_ZHUANGWIN
-                        or BaccaratRes.IMG_TABLE_XIANWIN
+    local moveTo = cc.MoveTo:create(ts, cc.p(self.m_userBtnResPosVec[idx].x + offsetX[idx], self.m_userBtnResPosVec[idx].y))
+    local moveBack = cc.MoveTo:create(ts, self.m_userBtnResPosVec[idx])
+    local seq = cc.Sequence:create(moveTo, moveBack)
 
-                    cc.Sprite:createWithSpriteFrameName(spName)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(posx, posy)
-                        :setScale(scale)
-                        :addTo(spBg)
-                end
+    self.m_userBtnVec[idx]:runAction(seq)
+end
+-- 还原牌面
+function GameViewLayer:resetCard()
+    self.m_ImagedealCards:setVisible(false)
+    for i = 1,3 do
+        self.img_xianCard[i]:setVisible(false)
+        self.img_xianCardBg[i]:setVisible(false)
 
-                if record.bBankerTwoPair then
-                    cc.Sprite:createWithSpriteFrameName(BaccaratRes.IMG_TABLE_ZHUANGDUI)
-                        :setScale(0.3)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(posx - 6, posy + 6)
-                        :addTo(spBg)
-                end
-                if record.bPlayerTwoPair then
-                    cc.Sprite:createWithSpriteFrameName(BaccaratRes.IMG_TABLE_XIANDUI)
-                        :setScale(0.3)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(posx + 6, posy - 6)
-                        :addTo(spBg)
-                end
+        self.img_zhuangCard[i]:setVisible(false)
+        self.img_zhuangCardBg[i]:setVisible(false)
+    end
+    self.m_resultType :setVisible(false)
+
+    self.m_ImagedealCards:getChildByName("image_resultZhuang"):getChildByName("Image_11"):getChildByName("image_resultZhuangDian"):loadTexture( string.format(BaccaratRes.vecResult.ZHUANG,0))
+    self.m_ImagedealCards:getChildByName("image_resultXian"):getChildByName("Image_11"):getChildByName("image_resultXianDian"):loadTexture( string.format(BaccaratRes.vecResult.XIAN,0))
+
+end
+--开牌动画
+function GameViewLayer:OpenCard()
+    self.m_ImagedealCards:setVisible(true)
+   
+    local i = 1;
+    self:OpenCardLoop(i,true)
+end
+--循环开牌逻辑
+function GameViewLayer:OpenCardLoop(i, bPlayEffect)
+    if bPlayEffect == false then
+        if 3 == i then -- 左边开牌完成 显示左侧牌型动画
+--            self:playCardTypeSound(self.m_cards[2][2]) -- 播放黑方牌型声音
+--            self:showHongORHeiPX(false)
+--            self:showWinResult()
+            if #self.win_hands[1] == 3 then
+                self:OpenCardLoop(4,true)
+            elseif  #self.win_hands[2] == 3 then
+                self:OpenCardLoop(4,false)
+            else
+                self:showresultType()
             end
+            return
         end
-
-        return cell
+        if 4 == i then
+--            self.img_zhuangCardBg[3]:setVisible(true)
+            self.img_zhuangCard[3]:loadTexture(BaccaratRes.IMG_CARDS[self.win_hands[2][3]])
+            local orbit = cc.OrbitCamera:create(0.15, 1, 0, 0, 90, 0, 0)
+            local callFun1 = cc.CallFunc:create(function() self.img_zhuangCardBg[3]:setVisible(false)  self.img_zhuangCard[3]:setVisible(true)  end)
+            local callFun2 = cc.CallFunc:create(function() 
+                local ZhuangDian =  self.m_ImagedealCards:getChildByName("image_resultZhuang"):getChildByName("Image_11"):getChildByName("image_resultZhuangDian")
+                local num = (self:getCardNum(self.win_hands[2][3]) + self:getCardNum(self.win_hands[2][2]) + self:getCardNum(self.win_hands[2][1])) % 10
+                ZhuangDian:loadTexture( string.format(BaccaratRes.vecResult.ZHUANG,num) )
+                ExternalFun.playGameEffect( string.format("Baccarat/sound/point_%d.mp3",num))
+            end)
+            local callFun3 = cc.CallFunc:create(function() self:showresultType()   end)
+            self.img_zhuangCardBg[3]:runAction(cc.Sequence:create(cc.DelayTime:create(0.6),cc.CallFunc:create(function() self.img_zhuangCardBg[3]:setVisible(true) ExternalFun.playGameEffect( "Baccarat/sound/show_third_card.mp3") end),orbit,callFun1 ,callFun2,cc.DelayTime:create(0.6),callFun3))
+            return
+        end
+        
+        self.img_zhuangCard[i]:loadTexture(BaccaratRes.IMG_CARDS[self.win_hands[2][i]])
+        local callFun1 = cc.CallFunc:create(function() self.img_zhuangCardBg[i]:setVisible(false)  self.img_zhuangCard[i]:setVisible(true)  end)
+        local callFun3 = cc.CallFunc:create(function() self.img_zhuangCardBg[i]:setVisible(true)  ExternalFun.playGameEffect( "Baccarat/sound/flip_card.mp3")  end)
+        local callFun2 = cc.CallFunc:create(function() 
+                local ZhuangDian =  self.m_ImagedealCards:getChildByName("image_resultZhuang"):getChildByName("Image_11"):getChildByName("image_resultZhuangDian")
+                local num = 0;
+                if     i == 1 then  num = self:getCardNum(self.win_hands[2][1])
+                elseif i == 2 then  num = (self:getCardNum(self.win_hands[2][2]) + self:getCardNum(self.win_hands[2][1])) % 10
+                end
+                ZhuangDian:loadTexture( string.format(BaccaratRes.vecResult.ZHUANG,num) )
+                ExternalFun.playGameEffect( string.format("Baccarat/sound/point_%d.mp3",num))
+                self:OpenCardLoop(i+1,false) 
+            end)
+        local orbit = cc.OrbitCamera:create(0.15, 1, 0, 270, 90, 0, 0)
+        self.img_zhuangCardBg[i]:runAction(cc.Sequence:create(cc.DelayTime:create(0.6),callFun3,orbit,callFun1 ,callFun2))
     end
-
-    self.m_pDaluView = cc.TableView:create(cc.size(cellwidth * cols, cellheight))
---    self.m_pDaluView:setIgnoreAnchorPointForPosition(false)
-    self.m_pDaluView:setAnchorPoint(cc.p(0,0))
-    self.m_pDaluView:setPosition(cc.p(0,0))
-    self.m_pDaluView:setDirection(cc.SCROLLVIEW_DIRECTION_HORIZONTAL)
-    self.m_pDaluView:setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN)
-    self.m_pDaluView:setTouchEnabled(true)
-    self.m_pDaluView:setDelegate()
-    self.m_pNodeTableRoad:addChild(self.m_pDaluView)
-    self.m_daluMaxCol = BaccaratDataMgr.getInstance():getDaLuColCount()
-    self.m_daluMaxCol = self.m_daluMaxCol > cols and self.m_daluMaxCol or cols
-    self.m_pDaluView:registerScriptHandler(cellSizeForTable, cc.TABLECELL_SIZE_FOR_INDEX)
-    self.m_pDaluView:registerScriptHandler(tableCellAtIndex, cc.TABLECELL_SIZE_AT_INDEX)
-    self.m_pDaluView:registerScriptHandler(numberOfCellsInTableView, cc.NUMBER_OF_CELLS_IN_TABLEVIEW)
+   
+    if bPlayEffect == true then
+        if 3 == i then -- 所有牌开牌完成
+--            self:playCardTypeSound(self.m_cards[1][2]) -- 播放红方牌型声音
+--            self:showHongORHeiPX(true)
+            self:OpenCardLoop(1,false)
+            return
+        end
+        if 4 == i then
+--            self.img_xianCardBg[3]:setVisible(true)
+            self.img_xianCard[3]:loadTexture(BaccaratRes.IMG_CARDS[self.win_hands[1][3]])
+            local orbit = cc.OrbitCamera:create(0.15, 1, 0, 0, 90, 0, 0)
+            local callFun1 = cc.CallFunc:create(function() self.img_xianCardBg[3]:setVisible(false)  self.img_xianCard[3]:setVisible(true)  end)
+            local callFun2 = cc.CallFunc:create(function() 
+                    local XianDian   =  self.m_ImagedealCards:getChildByName("image_resultXian"):getChildByName("Image_11"):getChildByName("image_resultXianDian")
+                    local num = (self:getCardNum(self.win_hands[1][3]) + self:getCardNum(self.win_hands[1][2]) + self:getCardNum(self.win_hands[1][1])) % 10
+                    XianDian:loadTexture( string.format(BaccaratRes.vecResult.XIAN,num) )
+                    ExternalFun.playGameEffect( string.format("Baccarat/sound/point_%d.mp3",num))
+            end)
+            local callFun3 = cc.CallFunc:create(function() 
+                    if #self.win_hands[2] == 3 then
+                        self:OpenCardLoop(4,false)
+                    else
+                        self:showresultType()
+                    end
+               end)
+            self.img_xianCardBg[3]:runAction(cc.Sequence:create(cc.DelayTime:create(0.6),cc.CallFunc:create(function() self.img_xianCardBg[3]:setVisible(true) ExternalFun.playGameEffect( "Baccarat/sound/show_third_card.mp3") end),orbit,callFun1 ,callFun2,cc.DelayTime:create(0.6),callFun3))
+            return
+        end
+        
+        self.img_xianCard[i]:loadTexture(BaccaratRes.IMG_CARDS[self.win_hands[1][i]])
+        local callFun1 = cc.CallFunc:create(function() self.img_xianCardBg[i]:setVisible(false)  self.img_xianCard[i]:setVisible(true)  end)
+        local callFun2 = cc.CallFunc:create(function() 
+                local XianDian   =  self.m_ImagedealCards:getChildByName("image_resultXian"):getChildByName("Image_11"):getChildByName("image_resultXianDian")
+                local num = 0;
+                if     i == 1 then  num = self:getCardNum(self.win_hands[1][1])
+                elseif i == 2 then  num = (self:getCardNum(self.win_hands[1][2]) + self:getCardNum(self.win_hands[1][1])) % 10
+                end
+                XianDian:loadTexture( string.format(BaccaratRes.vecResult.XIAN,num) )
+                ExternalFun.playGameEffect( string.format("Baccarat/sound/point_%d.mp3",num))
+                self:OpenCardLoop(i+1,true) 
+            end)
+        local callFun3 = cc.CallFunc:create(function() self.img_xianCardBg[i]:setVisible(true) ExternalFun.playGameEffect( "Baccarat/sound/flip_card.mp3")   end)
+        local orbit = cc.OrbitCamera:create(0.15, 1, 0, 270, 90, 0, 0)
+        self.img_xianCardBg[i]:runAction(cc.Sequence:create(cc.DelayTime:create(0.6),callFun3,orbit,callFun1 ,callFun2))
+    end
 
 end
-
---显示主界面上端的珠路
-function GameViewLayer:initMainViewZhulu()
-    local rows = 5
-    local cols = 7
-    local border = 1
-    local bgwidth = 23
-    local cellwidth = border + bgwidth
-    local cellheight = rows * cellwidth
-    local scale = 0.7
-
-    local cellSizeForTable = function (table, idx)
-        return cellwidth, cellheight
+-- 显示结果类型
+function GameViewLayer:showresultType()
+    self.m_resultType:loadTexture(BaccaratRes.vecResult.TYPE[self.data[#self.data]])
+    self.m_resultType:setVisible(true)
+    if     self.data[#self.data] == 1 then  ExternalFun.playGameEffect( "Baccarat/sound/player_win.mp3")
+    elseif self.data[#self.data] == 2 then  ExternalFun.playGameEffect( "Baccarat/sound/banker_win.mp3")
+    elseif self.data[#self.data] == 3 then  ExternalFun.playGameEffect( "Baccarat/sound/tie.mp3")
     end
+    self:doSomethingLater(function ()
+        local infoLayer = ResoultLayer:create()
+        self.m_pathUI:addChild(infoLayer,1001)
+    end,1)
+    self:doSomethingLater(function ()
+        self:updateTrendChart()
+        self:initBetView(4)
+    end,4)
+end
+-- 更新游戏状态
+function GameViewLayer:initBetView(status)
+    local clockState = self.m_ImageBg:getChildByName("Node_1"):getChildByName("image_clockStateTxt"):setVisible(false) 
+    self.m_pLbCountTime = self.m_ImageBg:getChildByName("Node_1"):getChildByName("atlas_clockNum"):setVisible(false)
 
-    local numberOfCellsInTableView = function (table)
-        return self.m_zhuluMaxCol > cols and self.m_zhuluMaxCol or cols
+    if status == 1  then
+        self.m_pLbCountTime:setVisible(true)
+        clockState:setVisible(true)
+        clockState:loadTexture(BaccaratRes.spriteState[status])
+        self.m_pLbCountTime:setString(self.TimeCount)   
+    elseif  status == 2  then    
+        clockState:loadTexture(BaccaratRes.spriteState[status])
+        clockState:setVisible(true)
+    elseif status == 4 then
+        self:FlyChip()
+        self:updataTableMan()
     end
-
-    local tableCellAtIndex = function (table, idx)
-        local cell = table:dequeueCell()
-        if not cell then
-            cell = cc.TableViewCell:new()
+end
+--更新下注筹码按钮状态
+function GameViewLayer:updateJettonState()
+    -- 设置筹码可用状态
+    for i = #self.chips, 1, -1 do
+        self.m_pControlButtonJetton[i]:setEnabled(BaccaratDataMgr.getInstance():getJettonEnableState(i))
+        if BaccaratDataMgr.getInstance():getJettonEnableState(i) == false then
+            self.m_pControlButtonJetton[i]:setColor(cc.c3b(127,127,127))
         else
-            cell:removeAllChildren()
+            self.m_pControlButtonJetton[i]:setColor(cc.c3b(255,255,255))
         end
 
-        for i = 0, rows - 1 do
-            --背景方块
-            local spBg = cc.Sprite:createWithSpriteFrameName(BaccaratRes.IMG_ROADSMALL_BG)
-                :setAnchorPoint(cc.p(0, 0))
-                :setPosition(cc.p(border, cellheight - (i + 1)*cellwidth))
-                :addTo(cell)
-
-            local rIndex = idx*rows+i
-            if rIndex <  BaccaratDataMgr.getInstance():getGameRecordSize() then
-                local record = BaccaratDataMgr.getInstance():getGameRecordAtIndex(rIndex+1)
-                local strSpName
-                if record.cbPlayerCount < record.cbBankerCount then
-                    --庄赢
-                    strSpName = BaccaratRes.IMG_SMALL_ZHUANG
-                elseif record.cbPlayerCount > record.cbBankerCount then
-                    --闲赢
-                    strSpName = BaccaratRes.IMG_SMALL_XIAN
-                else
-                    --平
-                    strSpName = BaccaratRes.IMG_SMALL_PING
-                end
-                local spIcon = cc.Sprite:createWithSpriteFrameName(strSpName)
-                                :setPosition(cc.p(bgwidth/2, bgwidth/2))
-                                :setScale(scale)
-                                :addTo(spBg)
-
-                if record.bBankerTwoPair then
-                    cc.Sprite:createWithSpriteFrameName(BaccaratRes.IMG_TABLE_ZHUANGDUI)
-                        :setScale(0.3)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(bgwidth/2 - 6, bgwidth/2 + 6)
-                        :addTo(spBg)
-                end
-                if record.bPlayerTwoPair then
-                    cc.Sprite:createWithSpriteFrameName(BaccaratRes.IMG_TABLE_XIANDUI)
-                        :setScale(0.3)
-                        :setAnchorPoint(0.5, 0.5)
-                        :setPosition(bgwidth/2 + 6, bgwidth/2 - 6)
-                        :addTo(spBg)
-                end
-            end
+        if self.nIndexChoose == i then
+            self.Betitem[i]:getChildByName("image_sel"):setVisible(true)
+        else
+            self.Betitem[i]:getChildByName("image_sel"):setVisible(false)
         end
-
-        return cell
     end
+    --计算当前筹码
+    local nIndex = 0
+    if self.nIndexChoose > 0 then
+        if PlayerInfo.getInstance():getUserScore() >= BaccaratDataMgr.getInstance():getScoreByJetton(self.nIndexChoose) then 
+            nIndex = self.nIndexChoose
+        else
+            nIndex = BaccaratDataMgr.getInstance():getJettonSelAdjust()
+        end
+    else
+        -- 初次进入游戏 选择最小
+        if PlayerInfo.getInstance():getUserScore() >= BaccaratDataMgr.getInstance():getScoreByJetton(1) then
+            nIndex = 1
+        else
+            nIndex = 0
+        end
+    end
+    if nIndex <= 0 then 
+        return
+    end
+    self.nIndexChoose = nIndex
 
-    self.m_pZhuluView = cc.TableView:create(cc.size(cellwidth * cols, cellheight))
---    self.m_pZhuluView:setIgnoreAnchorPointForPosition(false)
-    self.m_pZhuluView:setAnchorPoint(cc.p(0,0))
-    self.m_pZhuluView:setPosition(cc.p(0,0))
-    self.m_pZhuluView:setDirection(cc.SCROLLVIEW_DIRECTION_HORIZONTAL)
-    self.m_pZhuluView:setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN)
-    self.m_pZhuluView:setTouchEnabled(true)
-    self.m_pZhuluView:setDelegate()
-    self.m_pNodeTableWin:addChild(self.m_pZhuluView)
-    self.m_zhuluMaxCol = math.floor( BaccaratDataMgr.getInstance():getGameRecordSize() / rows) + 1
-    self.m_zhuluMaxCol = self.m_zhuluMaxCol > cols and self.m_zhuluMaxCol or cols
-    self.m_pZhuluView:registerScriptHandler(cellSizeForTable, cc.TABLECELL_SIZE_FOR_INDEX)
-    self.m_pZhuluView:registerScriptHandler(tableCellAtIndex, cc.TABLECELL_SIZE_AT_INDEX)
-    self.m_pZhuluView:registerScriptHandler(numberOfCellsInTableView, cc.NUMBER_OF_CELLS_IN_TABLEVIEW)
+     --设置当前筹码值
+    local score = BaccaratDataMgr.getInstance():getScoreByJetton(self.nIndexChoose)
+    BaccaratDataMgr.getInstance():setLotteryBaseScore(score)
 
 end
+--region 辅助方法
+--region 事件绑定及实现
+--注册倒计时
+function GameViewLayer:initTimer()
+    ExternalFun.playGameEffect()
 
---刷新主界面路子
-function GameViewLayer:updateMainRoadView()
-    --大路刷新
-    self.m_daluMaxCol = BaccaratDataMgr.getInstance():getDaLuColCount()
-    self.m_pDaluView:reloadData()
-    if self.m_daluMaxCol > 7 then
-        self.m_pDaluView:setContentOffset(
-            cc.p(self.m_pDaluView:getViewSize().width - self.m_pDaluView:getContentSize().width, 0))
-    end
-
-    --珠路刷新
-    self.m_zhuluMaxCol = math.floor( BaccaratDataMgr.getInstance():getGameRecordSize() / 5) + 1
-    self.m_pZhuluView:reloadData()
-    if self.m_zhuluMaxCol > 7 then
-        self.m_pZhuluView:setContentOffset(
-            cc.p(self.m_pZhuluView:getViewSize().width - self.m_pZhuluView:getContentSize().width, 0))
-    end
-
-    --统计数据显示
-    self.m_pLbZhuangNum:setString( string.format("庄:%d", BaccaratDataMgr.getInstance():getGameRecordCountByType(BaccaratDataMgr.ePlace_Zhuang)) )
-    self.m_pLbXianNum:setString( string.format("闲:%d", BaccaratDataMgr.getInstance():getGameRecordCountByType(BaccaratDataMgr.ePlace_Xian)) )
-    self.m_pLbPingNum:setString( string.format("平:%d", BaccaratDataMgr.getInstance():getGameRecordCountByType(BaccaratDataMgr.ePlace_Ping)) )
-    self.m_pLbZhuangDuiNum:setString( string.format("庄对:%d", BaccaratDataMgr.getInstance():getGameRecordCountByType(BaccaratDataMgr.ePlace_ZhuangDui)) )
-    self.m_pLbXianDuiNum:setString( string.format("闲对:%d", BaccaratDataMgr.getInstance():getGameRecordCountByType(BaccaratDataMgr.ePlace_XianDui)) )
+    self.timerHandle = scheduler.scheduleGlobal(handler(self,self.onMsgCountDown), 1)
+    
 end
+-- 退出清理
+function GameViewLayer:cleanEvent() 
+    --注销倒计时
+    if self.timerHandle then
+        scheduler.unscheduleGlobal(self.timerHandle)
+    end
+end
+--倒计时
+function GameViewLayer:onMsgCountDown(value)
+    --每秒刷新其他玩家数量
+--    self:updateOtherNum()
 
---endregion
+    --游戏状态
+    if BaccaratDataMgr.getInstance():getGameState() ~= BaccaratDataMgr.eType_Award then
+        --倒计时
+        local ts = self.TimeCount
+        ts = ts < 1 and 0 or ts - 1
+        self.TimeCount = ts
+        self.m_pLbCountTime:setString(("%d").format(ts))
+        ExternalFun.playGameEffect("Baccarat/sound/countdown.mp3")
+    end
+
+end
+-- 延时进行
+function GameViewLayer:doSomethingLater( call, delay )
+    self.m_rootUI:runAction(cc.Sequence:create(cc.DelayTime:create(delay), cc.CallFunc:create(call)))
+end
 
 --region 辅助方法
 
-function GameViewLayer:getSpriteOfJetton(score)
-    local name = string.format("cm/%d.png", score)
-    local sprite = cc.Sprite:createWithSpriteFrameName(name)
-    return sprite
-end
-
---获取投注筹码动画落点坐标
-function GameViewLayer:getChipEndPosition(areaIndex, isSelf)
-    local idx = 0
-    local pos = cc.p(0, 0)
-    if isSelf then
-        if self.m_randmChipSelf[areaIndex].idx > #self.m_randmChipSelf[areaIndex].vec then
-            idx = math.random(1, #self.m_randmChipSelf[areaIndex].vec)
-        else
-            idx = self.m_randmChipSelf[areaIndex].idx
-            self.m_randmChipSelf[areaIndex].idx = idx + 1
-        end
-        pos = self.m_randmChipSelf[areaIndex].vec[idx]
-    else
-        if self.m_randmChipOthers[areaIndex].idx > #self.m_randmChipOthers[areaIndex].vec then
-            idx = math.random(1, #self.m_randmChipOthers[areaIndex].vec)
-        else
-            idx = self.m_randmChipOthers[areaIndex].idx
-            self.m_randmChipOthers[areaIndex].idx = idx + 1
-        end
-        pos = self.m_randmChipOthers[areaIndex].vec[idx]
-    end
-
-    return idx, pos
-end
-
---获取自己筹码动画起点坐标
-function GameViewLayer:getSelfChipBeginPosition()
-    return self.m_selfChipPos
-end
-
---获取其他玩家筹码动画起点坐标
-function GameViewLayer:getOtherChipBeginPosition()
-    return self.m_otherChipPos
-end
-
---获取庄家筹码动画起点坐标
-function GameViewLayer:getBankerChipBeginPosition()
-    return self.m_bankerChipPos
-end
-
---重置筹码投注区
-function GameViewLayer:resetChipPosArea()
-    local offset = 7
-    local cfg = {
-        {row = 6, col = 9}, --庄
-        {row = 5, col = 12}, --平
-        {row = 6, col = 9}, --闲
-        {row = 4, col = 7}, --闲天王
-        {row = 4, col = 7}, --庄天王
-        {row = 4, col = 4}, --同点平
-        {row = 4, col = 7}, --闲对
-        {row = 4, col = 7}, --庄对
-    }
-    for i = 1, AreaCount do
+-- 重置随机投注点
+function GameViewLayer:resetChipPos()
+    --self.m_lastflynum = 0
+    local offsetVec = {3,3,8,3,8}
+    local rowVal = {4, 4, 6, 4, 6}
+    local colVal = {6, 6, 15, 6,15}
+    for i = 1, 5 do
         self.m_randmChipSelf[i] = {
             idx = 1, -- pos点的索引，原则上按递增方式取点，保证首次最大化铺满区域，然后随机取点
-            vec = self:getRandomChipPosVec(self.m_vChipArea[i], 30, cfg[i].row, cfg[i].col, offset)
+            vec = self:getRandomChipPosVec(self.m_chipAreaRect[i], 40, rowVal[i], colVal[i], offsetVec[i])
         }
         self.m_randmChipOthers[i] = {
             idx = 1,
-            vec = self:getRandomChipPosVec(self.m_vChipArea[i], 30, cfg[i].row, cfg[i].col, offset)
+            vec = self:getRandomChipPosVec(self.m_chipAreaRect[i], 40, rowVal[i], colVal[i], offsetVec[i])
         }
+
     end
 end
 
@@ -2754,221 +1248,631 @@ function GameViewLayer:getRandomChipPosVec(rect, num, rowNum, colNum, offset)
         chipPosVec[i], chipPosVec[tmp] = chipPosVec[tmp], chipPosVec[i]
     end
 
-    -- 获取指定数量的随机放置点
---    local takenum = (#chipPosVec > num) and (#chipPosVec - num) or 0
---    for i = 1, takenum do
---        local delIdx = math.random(1, #chipPosVec)
---        table.remove(chipPosVec, delIdx)
---    end
-
     return chipPosVec
 end
 
---清理显示筹码
-function GameViewLayer:cleanChip()
-    self.m_vJettonOfMine = {}
-    self.m_vJettonOfOther = {}
-    self.m_nodeFlyChip:removeAllChildren()
-    self.m_flyJobVec = {}
-end
-
---通知路子层刷新历史记录
-function GameViewLayer:notifyTrendRefresh()
-    SLFacade:dispatchCustomEvent(BaccaratEvent.MSG_GAME_BACCARAT_UPDATERECORD, "")
-    --刷新主界面的路子显示
-    self:updateMainRoadView()
-end
-
---获取坐标点
-function GameViewLayer:getSubNodePos(parentNode, subNodeName)
-    local _node = parentNode:getChildByName(subNodeName)
-    if _node then 
-        return cc.p(_node:getPosition())
-    else
-        return cc.p(0, 0)
-    end
-end
-
---计算最终显示的积分
-function GameViewLayer:calcCurScore()
-    --[[
-    假设税率为0.05
-    开奖时  玩家，如果中的积分小于等于自己总押注 则返回积分为完全分
-            否则返回值 = (中的积分 - 总押注) * 0.95 + 总押注
-                       = 中的积分*0.95 + 总押注*0.05
-
-            庄家，积分>0时*0.95 小于0时为实际输分
-
-    a:庄家免税积分 b:自己实际获得免税积分 c:其他玩家免税得分
-    c + b = -a
-    c = -a - b
-    ]]--
-
-    local selfcurscore = 0 -- 自己最终得分
-    local bankercurscore = 0 -- 庄家最终得分
-    local othercurscore = 0 -- 其他玩家最终得分
-    local tax = 1 - BaccaratDataMgr.getInstance():getGameTax()
-    local isbanker = BaccaratDataMgr.getInstance():isBanker()
-
-    --庄家本局结算得分
-    bankercurscore = BaccaratDataMgr.getInstance():getBankerResult()
-    bankercurscore = bankercurscore > 0 and bankercurscore/tax or bankercurscore
-
-    --用户本局结算积分(下注阶段压分然后退出再进，服务端结算本局游戏返回的用户积分是0，使用本地计算)
---    selfcurscore = BaccaratDataMgr.getInstance():getMyResult()
-    --selfcurscore = selfcurscore > 0 and selfcurscore/tax or selfcurscore
-    if isbanker then
-        selfcurscore = bankercurscore
-    else
-        selfcurscore = BaccaratDataMgr.getInstance():getMyResult()--self:caleSelfWinScore(tax)
-    end
-
-    --其他玩家计算积分
-    othercurscore = isbanker and -bankercurscore or -bankercurscore - selfcurscore
-
-    selfcurscore = selfcurscore > 0 and selfcurscore * tax or selfcurscore
-    othercurscore = othercurscore > 0 and othercurscore * tax or othercurscore
-    bankercurscore = bankercurscore > 0 and bankercurscore * tax or bankercurscore
-
-    return selfcurscore, othercurscore, bankercurscore
-end
-
---计算玩家的获胜分数
-function GameViewLayer:caleSelfWinScore(tax)
-    local _REWARD        = {2, 9, 2, 3, 3, 33, 12, 12}
-
-    -- 处理现有的筹码对象列表
-    local countXian  = BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Xian)
-    local pointXian  = BaccaratDataMgr.getInstance():getResultPoints(BaccaratDataMgr.ePlace_Xian, countXian)
-    local countZhuang = BaccaratDataMgr.getInstance():getCardCount(BaccaratDataMgr.ePlace_Zhuang)
-    local pointZhuang = BaccaratDataMgr.getInstance():getResultPoints(BaccaratDataMgr.ePlace_Zhuang, countZhuang)
-
-    -- 0胜 1负 2平
-    local winArea = {
-        [1] = pointZhuang < pointXian, --闲
-        [2] = pointZhuang == pointXian, --平
-        [3] = pointZhuang > pointXian, --庄
-        [4] = pointXian > 7, --闲天王
-        [5] = pointZhuang > 7, --庄天王
-        [6] = BaccaratDataMgr.getInstance():getResultIsTongDianPing(), --同点平
-        [7] = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Xian), --闲对
-        [8] = BaccaratDataMgr.getInstance():getResultIsTwoPair(BaccaratDataMgr.ePlace_Zhuang), --庄对
-    }
-
-    if winArea[2] or winArea[6] then
-        _REWARD[1] = 1
-        _REWARD[3] = 1
-        winArea[1] = true
-        winArea[3] = true
-    end
-    
-    local myWinScore = 0
-    local myBetScore = BaccaratDataMgr.getInstance():getMyAllBetValue()
-
-    for i = 1, AreaCount do
-        if winArea[i] then --胜
-            myWinScore = myWinScore + _REWARD[i] * BaccaratDataMgr.getInstance():getMyBetValueAtIndex(i)
+--获取投注筹码动画落点坐标
+function GameViewLayer:getChipEndPosition(areaIndex, isSelf)
+    local idx = 0
+    local pos = cc.p(0, 0)
+    if isSelf then
+        if self.m_randmChipSelf[areaIndex].idx > #self.m_randmChipSelf[areaIndex].vec then
+            idx = math.random(1, #self.m_randmChipSelf[areaIndex].vec)
+        else
+            idx = self.m_randmChipSelf[areaIndex].idx
+            self.m_randmChipSelf[areaIndex].idx = idx + 1
         end
+        pos = self.m_randmChipSelf[areaIndex].vec[idx]
+    else
+        if self.m_randmChipOthers[areaIndex].idx > #self.m_randmChipOthers[areaIndex].vec then
+            idx = math.random(1, #self.m_randmChipOthers[areaIndex].vec)
+        else
+            idx = self.m_randmChipOthers[areaIndex].idx
+            self.m_randmChipOthers[areaIndex].idx = idx + 1
+        end
+        pos = self.m_randmChipOthers[areaIndex].vec[idx]
     end
 
---    local ret = myWinScore - myBetScore 
-
---    return ret > 0 and ret * tax or ret
-
-    return myWinScore - myBetScore 
-
+    return idx, pos
 end
 
-function GameViewLayer:doSomethingLater( call, delay )
-    self.m_rootUI:runAction(cc.Sequence:create(cc.DelayTime:create(delay), cc.CallFunc:create(call)))
+--获取自己筹码动画起点坐标
+function GameViewLayer:getSelfChipBeginPosition()
+    return self.m_pmyCoin
 end
 
---获取玩家下注筹码起始坐标
-function GameViewLayer:getSelfChipBeginPos(score)
-    local idx = BaccaratDataMgr.getInstance():getJettonIndexByValue(score)
-    return cc.p(self.m_flyChipPos[idx])
+--获取其他玩家筹码动画起点坐标
+function GameViewLayer:getOtherChipBeginPosition()
+    return self.m_otherChipPos
 end
-
-        -----------------------------------------------------------------------------------
-
-
---计时器更新
-function GameViewLayer:OnClockUpdata()
-    self.m_pLbTimerNum:setString(tostring(self.daojishi_Num))
-    if self.daojishi_Num == 3 then
---        ccs.ArmatureDataManager:getInstance():addArmatureFileInfo(daojishi_1)  
-        local armature = ccs.Armature:create("daojishi_1")  
-        armature:setPosition(667,375)          
-        self.m_nodeZCAni:addChild(armature)
-        armature:getAnimation():playWithIndex(0)
+--获取筹码图片
+function GameViewLayer:getJettonIconFile(nIndex)
+    local str = "common/game_common/chip/chip_100.png"
+    if not nIndex then 
+        return str
     end
-    self.daojishi_Num = self.daojishi_Num - 1    
-end
-
---清除下注金额显示
-function GameViewLayer:cleanBetNum()
-    self.m_pLbTotalBet:setString("")
-    --每个区域的下注额
-    for i = 1, AreaCount do
-        self.m_pLbAreaTotal[i]:setString("")
-        self.m_pLbSelfTotal[i]:setString("")
+    if nIndex >= 10000 then
+        nIndex = tostring(nIndex/10000).."w"
     end
+    str = string.format(string.format("common/game_common/chip/chip_%s.png",nIndex))
+    return str
 end
-
---得到整数部分
+-- 得到整数部分
 function GameViewLayer:getIntValue(num)
     local tt = 0
     num,tt = math.modf(num/1);
     return num
 end
-
---function GameViewLayer:getMembers()
---    return  otherplayer
---end
-
-function GameViewLayer:clearn()
-    for i=1,8 do
-        self.m_pLbAreaTotal[i]:setVisible(false)
-        self.m_pLbSelfTotal[i]:setVisible(false)
-    end
-    self.m_mybet = {}
-    self.money = 0
-    self.m_llMyBetValue = {0,0,0,0,0,0,0,0}
-    self.m_pLbTotalBet:setString("0"):setVisible(false)
-    BaccaratDataMgr.getInstance():cleanMyBetValue()
-    --停止所有动画
-    self:stopAllActions()
-
-    --清理显示的筹码
-    self:cleanChip()
-
-    --清理转场动画
-    self:cleanZhuanChangAni()
-
-    --清理扑克动画
-    self:cleanCardAni()
-
-    --清理下注金额显示
-    self:cleanBetNum()
-
-    --隐藏所有闪烁获胜动画
-    self:hideAllAreaBlink()
-
-    self.ColorList = {}
-    self.allchipList = {{},{},{},{},{},{},{},{},}
+-- 提示消息
+function GameViewLayer:showFloatmessage(args)
+    FloatMessage.getInstance():pushMessageForString(args)
 end
-
-function GameViewLayer:onExit()
-    cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self._ClockFun) 
-    if self._FaPaiActionFun then
-        cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self._FaPaiActionFun) 
-    end
-    if self._XuyaFun then
-        cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self._XuyaFun)
-    end
+-- 空闲清理
+function GameViewLayer:clear()
+    self.win_zodic = {}
     
-    for i = 1 ,#BaccaratRes.vecReleaseAnim  do
-        ccs.ArmatureDataManager:getInstance():removeArmatureFileInfo(BaccaratRes.vecReleaseAnim[i])
+    for i = 1, 5 do
+        BaccaratDataMgr.getInstance():getPlayScore()[i] = 0
+        self.m_myBetMoney[i] = 0
+        self.m_betChipSpSelf[i] = {}
+        self.m_betChipSpOthers[i] = {}
+        self.m_textPoolnum[i]:setString("0")
+        self.m_textSelfnum[i]:setVisible(false)
     end
 end
+--------------------------------------------------------------------------------按钮点击---------------------------------------------------------------------------------------------------------------------
+--弹出菜单
+function GameViewLayer:onPopClicked()
+    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
+    if self.isOpenMenu == false then
+        self.m_pImgMenu:setRotation(-90)
+        self.m_pPanelMenu:setVisible(true)
+        self.m_psettingPanel:runAction(cc.MoveBy:create(0.2,cc.p(200,0)))
+        self.isOpenMenu = true
+    else
+        self.m_pImgMenu:setRotation(90)
+        self.m_pPanelMenu:setVisible(false)
+        self.m_psettingPanel:runAction(cc.MoveBy:create(0.2,cc.p(-200,0)))
+        self.isOpenMenu = false
+    end
+end
+
+--关闭菜单
+function GameViewLayer:onPushClicked()
+    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
+    if self.isOpenMenu == true then
+        self.m_pImgMenu:setRotation(90)
+        self.m_pPanelMenu:setVisible(false)
+        self.m_psettingPanel:runAction(cc.MoveBy:create(0.2,cc.p(-200,0)))
+        self.isOpenMenu = false
+    end
+
+end
+
+--退出
+function GameViewLayer:onReturnClicked()
+    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
+    -----------------------------
+    -- add by JackyXu.
+    -- 防连点
+    local nCurTime = os.time()
+    if self.m_nLastTouchTime and nCurTime - self.m_nLastTouchTime <= 0 then
+        return
+    end
+    self.m_nLastTouchTime = nCurTime
+    -----------------------------
+    self._scene:onQueryExitGame()
+end
+
+--其他玩家信息
+function GameViewLayer:onOtherInfoClicked()
+    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
+    --玩家列表
+    local infoLayer = BaccaratOtherInfoLayer:create()
+    self.m_pathUI:addChild(infoLayer,1000)
+end
+
+--规则
+function GameViewLayer:onHelpClicked()
+    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
+    local pRule = RuleLayer.create()
+    pRule:addTo(self.m_pathUI, 1000)
+end
+--设置
+function GameViewLayer:onSettingClicked()
+    ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
+    local pSet = SettingLayer.create()
+    pSet:addTo(self.m_pathUI,1000)
+end
+--点击筹码 禁用状态按钮是接受不到点击事件的
+function GameViewLayer:onBetNumClicked(nIndex, bPlaySound)
+    if nIndex < 1 then return end
+
+    if bPlaySound then
+        ExternalFun.playGameEffect(BaccaratRes.SOUND_OF_BUTTON)
+    end
+    self.nIndexChoose = nIndex
+    self:updateJettonState()
+end
+--点击下注区域 进行下注0闲, 1闲对, 2闲天王, 3庄, 4庄对, 5庄天王, 6平, 7同点平
+function GameViewLayer:onAnimalClicked(nIndex)
+    print(nIndex)
+--    if RedVsBlackDataManager.getInstance():isBanker() then
+--        FloatMessage.getInstance():pushMessage("RVB_WARN_2")
+--        return
+--    end
+
+    if BaccaratDataMgr.getInstance():getGameState() ~= GameView.GameStatus_BET then
+        FloatMessage.getInstance():pushMessage("未到下注时间！")
+        return
+    end
+
+    if not nIndex then return end
+
+    if BaccaratDataMgr.getInstance():getLotteryBaseScore() > PlayerInfo.getInstance():getUserScore() then
+        FloatMessage.getInstance():pushMessage("钱不够啦！")
+        return
+    end
+    local num = 0
+    if     nIndex == 1 then num = 1
+    elseif nIndex == 2 then num = 4
+    elseif nIndex == 3 then num = 0
+    elseif nIndex == 4 then num = 6
+    elseif nIndex == 5 then num = 3    
+    end
+    local _data = {num,BaccaratDataMgr.getInstance():getLotteryBaseScore()}
+    self._scene:SendBet(_data)
+
+end
+--------------------------------------------------------------------------------按钮点击--------------end----------------------------------------------------------------------------------------------------
+--endregion
+------------------------------------------------------------------------------------------------------路子------------------------------------------------------------------------------------
+-- 获取牌的数据
+function GameViewLayer:getCardNum(args)
+    local card = args
+    local num =  0;
+    if                     card <= 8  then num = card + 1
+    elseif  card >= 9  and card <= 12 then num = 0
+    elseif  card >= 13 and card <= 21 then num = card - 12
+    elseif  card >= 22 and card <= 25 then num = 0
+    elseif  card >= 26 and card <= 34 then num = card - 25
+    elseif  card >= 35 and card <= 38 then num = 0
+    elseif  card >= 39 and card <= 47 then num = card - 38
+    elseif  card >= 48 and card <= 51 then num = 0
+    else    print("错误！！！")
+    end
+    return num
+end
+-- 初始化ui
+function GameViewLayer:initTrendChart()
+    self.zhuPanLu = self.m_ImagebgTrendChart:getChildByName("panel_zhuPanLu")
+    self.daLu = self.m_ImagebgTrendChart:getChildByName("panel_daLu")
+    self.daYanZaiLu = self.m_ImagebgTrendChart:getChildByName("panel_daYanZaiLu")
+    self.xiaoLu = self.m_ImagebgTrendChart:getChildByName("panel_xiaoLu")
+    self.yueYouLu = self.m_ImagebgTrendChart:getChildByName("panel_yueYouLu")
+    self.imgZWL = {}
+    self.imgXWL = {}
+    for i = 1, 3 do
+        self.imgZWL[i] = self.m_ImagebgTrendChart:getChildByName("node_nodeZWL"):getChildByName("image_imgZWL_"..i)
+        self.imgXWL[i] = self.m_ImagebgTrendChart:getChildByName("node_nodeXWL"):getChildByName("image_imgXWL_"..i)
+    end
+    self.zhuangNum = self.m_ImagebgTrendChart:getChildByName("Image_26"):getChildByName("Node_4"):getChildByName("atlas_zhuangNum")    -- 庄
+    self.xianNum = self.m_ImagebgTrendChart:getChildByName("Image_26"):getChildByName("Node_4"):getChildByName("atlas_xianNum")     -- 闲
+    self.heNum = self.m_ImagebgTrendChart:getChildByName("Image_26"):getChildByName("Node_4"):getChildByName("atlas_heNum")    -- 和
+    self.zhuangDuiNum = self.m_ImagebgTrendChart:getChildByName("Image_26"):getChildByName("Node_4"):getChildByName("atlas_zhuangDuiNum")   -- 庄对子
+    self.xianDuiNum = self.m_ImagebgTrendChart:getChildByName("Image_26"):getChildByName("Node_4"):getChildByName("atlas_xianDuiNum")    -- 闲对子
+    self.dianNum = self.m_ImagebgTrendChart:getChildByName("Image_26"):getChildByName("Node_4"):getChildByName("atlas_dianNum")     -- 8、9点数目
+    self.roundNum = self.m_ImagebgTrendChart:getChildByName("Image_26"):getChildByName("Node_4"):getChildByName("atlas_roundNum")     -- 局数
+
+    self.num = 0
+end
+-- 初始化数据
+function GameViewLayer:initpathzodics()
+    self.num = 0
+    self.data = {}
+    self.zhuangduizi = 0
+    self.xianduizi = 0
+    for k = 1 , #self.m_pathZodics do
+        local a,b,c = self:getResult(self.m_pathZodics[k])
+        if     b == true then self.zhuangduizi = self.zhuangduizi + 1
+        elseif c == true then self.xianduizi = self.xianduizi + 1
+        end
+        table.insert(self.data , a)
+    end
+    self.dataNum = {}
+    local a = 1;
+    local b = 0;
+    local c = 1;
+    self.dataNum[a] = {}
+    for l = 1, #self.data do
+        if l == #self.data then
+            self.dataNum[a][c] = self.data[l]
+            break
+        end
+
+        if self.data[l] == self.data[l + 1]  then
+            self.dataNum[a][c] = self.data[l]
+            b = a
+        else
+            self.dataNum[a][c] = self.data[l] 
+            a = a + 1
+            self.dataNum[a] = {}
+        end
+
+        if a == b then
+            c = c + 1
+        else
+            c = 1
+        end
+    end
+
+end
+
+function GameViewLayer:updateTrendChart()
+    
+    self:updateZhuPanLu()
+    self:updateDaLu()
+    self:updateDaYanZaiLu()
+    self:updateXiaoLu()
+    self:updateYueYouLu()
+    self:updateTotal()
+--    self:updateWenLu()
+end
+-- 输赢数据
+function GameViewLayer:updateTotal()
+    local data = {
+            bankercnt = 0,
+            playercnt = 0,
+            unknowncnt = 0,
+    }
+    for k,v in ipairs(self.data) do
+        if v == 1 then
+            data.playercnt = data.playercnt +1
+        end
+        if v == 2 then
+            data.bankercnt = data.bankercnt +1
+        end
+        if v == 3 then
+            data.unknowncnt = data.unknowncnt +1
+        end
+    end
+    self.zhuangNum:setString(data.bankercnt)
+    self.xianNum:setString(data.playercnt)
+    self.heNum:setString(data.unknowncnt)
+    self.zhuangDuiNum:setString(self.zhuangduizi)
+    self.xianDuiNum:setString(self.xianduizi)
+    self.dianNum:setString(self.num )
+    self.roundNum:setString(#self.m_pathZodics)
+end
+local function overflowIndex(total, max, m)
+    local startIdx = 1
+	if max < total then
+		local mod = total % m
+		local left = (0 == mod) and 0 or (m - mod)
+        startIdx = total - max + 1 + left
+    end
+    return startIdx
+end
+-- 输赢结果
+function GameViewLayer:getResult(item)
+    local win_result  = 0
+    local zhuangduizi = false
+    local xianduizi   = false
+    local num = {
+            [1] = 0,
+            [2] = 0,
+    };
+    for i = 1 , 2 do
+        for j = 1 , #item[i] do
+            num[i] = num[i] + self:getCardNum(item[i][j])
+            if math.abs(item[i][1] - item[i][2]) % 13 == 0  then
+                if i == 1 then
+                    xianduizi = true
+                else 
+                    zhuangduizi = true
+                end
+            end
+        end 
+    end
+    num[1] = num[1] % 10
+    num[2] = num[2] % 10
+    if num[1] > 8 or num[2] > 8 then
+        self.num = self.num + 1
+    end
+    win_result = num[1] > num[2] and 1 or num[1] == num[2] and 3 or 2 
+    return win_result,zhuangduizi,xianduizi
+end
+-- 主路item
+function GameViewLayer:getBaccaratResultItem(item)
+    local ani = cc.CSLoader:createNode("Baccarat/BaccaratResultItem.csb")
+    local a = ani:getChildByName("image_imgType")
+    local b = a:getChildByName("image_imgZhuangDuizi")
+    local c = a:getChildByName("image_imgXianDuizi")
+
+    local win_result,zhuangduizi,xianduizi = self:getResult(item)
+
+    if     win_result == 1 then
+        a:loadTexture('Baccarat/image/trend_chart/quan_xian.png')
+    elseif win_result == 3 then
+        a:loadTexture('Baccarat/image/trend_chart/quan_he.png')
+    elseif win_result == 2 then
+        a:loadTexture('Baccarat/image/trend_chart/quan_zhuang.png')
+    end
+
+    if   zhuangduizi == true then
+        b:setVisible(true)
+    elseif xianduizi == true then
+        c:setVisible(true)
+    else
+        c:setVisible(false)
+        b:setVisible(false)
+    end
+    return ani
+end
+-- 主路
+function GameViewLayer:updateZhuPanLu()
+    self.zhuPanLu:removeAllChildren()
+    local panelHeight = 230
+    local itemWH = 37.6
+    local results = self.m_pathZodics
+    local total = #results
+    local startIdx = overflowIndex(total, 48, 6)
+    local lastNode
+    for i = startIdx, total do
+        local idx = i - startIdx
+        local view = self:getBaccaratResultItem(results[i])
+        local row = idx % 6
+        local column = math.modf(idx / 6)
+        view:setPosition((column + 0.5) * itemWH + 5, panelHeight - (row + 0.5) * itemWH)
+        self.zhuPanLu:addChild(view)
+        lastNode = view
+    end
+    if lastNode then
+        lastNode:runAction(cc.Blink:create(3, 5))
+    end
+end
+
+function GameViewLayer:updateDaLu()
+    self.daLu:removeAllChildren()
+    local panelHeight = 112
+    local itemWH = 18.1
+
+    local daLu = self.dataNum
+    local total = #daLu
+    local startIdx = 1
+    if 24 < total then
+        startIdx = startIdx + total - 24
+    end
+    local lastNode
+    for i = startIdx, total do
+        local v = daLu[i]
+        local len = table.maxn(v)
+        for i2 = 1, len do
+            local daLuDataItem = v[i2]
+            if daLuDataItem then
+                local circleFile = 'Baccarat/image/trend_chart/blue_quan.png'
+                if 1 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/blue_quan.png'
+                elseif 2 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/red_quan.png'
+                end
+                local img = cc.Sprite:create(circleFile)
+                img:setPosition((i - startIdx + 0.5) * itemWH + 5, panelHeight - (i2 - 1 + 0.5) * itemWH - 5)
+                self.daLu:addChild(img)
+                lastNode = img
+
+                if 3 == daLuDataItem then
+                    local text = cc.Label:create()
+                    text:setString("和")
+                    text:setSystemFontSize(10)
+                    text:setTextColor(cc.c4b(28, 181, 6, 255))
+                    text:setPosition(9, 9)
+                    img:addChild(text)
+                end
+            end
+        end
+    end
+    if lastNode then
+        lastNode:runAction(cc.Blink:create(3, 5))
+    end
+end
+
+function GameViewLayer:updateDaYanZaiLu()
+    self.daYanZaiLu:removeAllChildren()
+    local panelHeight = 56
+    local itemWH = 9
+
+    local datas = self.dataNum
+    local total = #datas
+    local startIdx = 1
+    if 24 < total then
+        startIdx = startIdx + total - 24
+    end
+    local lastNode
+    for i = startIdx, total do
+        local v = datas[i]
+        local len = table.maxn(v)
+        for i2 = 1, len do
+            local daLuDataItem = v[i2]
+            if daLuDataItem ~= 3 then
+                local circleFile = 'Baccarat/image/trend_chart/quan_s_blue.png'
+                if 1 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/quan_s_blue.png'
+                elseif 2 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/red_quan_s.png'
+                end
+                local img = cc.Sprite:create(circleFile)
+                img:setScale(0.5)
+                img:setPosition((i - startIdx + 0.5) * itemWH, panelHeight - (i2 - 1 + 0.5) * itemWH)
+                self.daYanZaiLu:addChild(img)
+                lastNode = img
+            else
+                local text = cc.Label:create()
+                text:setString("和")
+                text:setSystemFontSize(9)
+                text:setTextColor(cc.c4b(28, 181, 6, 255))
+                text:setPosition((i - startIdx + 0.5) * itemWH, panelHeight - (i2 - 1 + 0.5) * itemWH)
+                self.daYanZaiLu:addChild(text)
+            end
+        end
+    end
+    if lastNode then
+        lastNode:runAction(cc.Blink:create(3, 5))
+    end
+end
+
+function GameViewLayer:updateXiaoLu()
+    self.xiaoLu:removeAllChildren()
+    local panelHeight = 56
+    local itemWH = 9
+
+    local datas = self.dataNum
+    local total = #datas
+    local startIdx = 1
+    if 24 < total then
+        startIdx = startIdx + total - 24
+    end
+    local lastNode
+    for i = startIdx, total do
+        local v = datas[i]
+        local len = table.maxn(v)
+        for i2 = 1, len do
+            local daLuDataItem = v[i2]
+            if daLuDataItem ~= 3 then
+                local circleFile = 'Baccarat/image/trend_chart/blue_dian_s.png'
+                if 1 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/blue_dian_s.png'
+                elseif 2 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/red_dian_s.png'
+                end
+                local img = cc.Sprite:create(circleFile)
+                img:setScale(0.5)
+                img:setPosition((i - startIdx + 0.5) * itemWH, panelHeight - (i2 - 1 + 0.5) * itemWH)
+                self.xiaoLu:addChild(img)
+                lastNode = img
+            else
+                local text = cc.Label:create()
+                text:setString("和")
+                text:setSystemFontSize(9)
+                text:setTextColor(cc.c4b(28, 181, 6, 255))
+                text:setPosition((i - startIdx + 0.5) * itemWH, panelHeight - (i2 - 1 + 0.5) * itemWH)
+                self.xiaoLu:addChild(text)
+            end
+        end
+    end
+    if lastNode then
+        lastNode:runAction(cc.Blink:create(3, 5))
+    end
+end
+-- 
+function GameViewLayer:updateYueYouLu()
+    self.yueYouLu:removeAllChildren()
+    local panelHeight = 56
+    local itemWH = 9
+
+    local datas = self.dataNum
+    local total = #datas
+    local startIdx = 1
+    if 24 < total then
+        startIdx = startIdx + total - 24
+    end
+    local lastNode
+    for i = startIdx, total do
+        local v = datas[i]
+        local len = table.maxn(v)
+        for i2 = 1, len do
+            local daLuDataItem = v[i2]
+            if daLuDataItem ~= 3 then
+                local circleFile = 'Baccarat/image/trend_chart/blue_gang_s.png'
+                if 1 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/blue_gang_s.png'
+                elseif 2 == daLuDataItem then
+                    circleFile = 'Baccarat/image/trend_chart/red_gang_s.png'
+                end
+                local img = cc.Sprite:create(circleFile)
+                img:setScale(0.5)
+                img:setPosition((i - startIdx + 0.5) * itemWH, panelHeight - (i2 - 1 + 0.5) * itemWH)
+                self.yueYouLu:addChild(img)
+                lastNode = img
+            else
+                local text = cc.Label:create()
+                text:setString("和")
+                text:setSystemFontSize(9)
+                text:setTextColor(cc.c4b(28, 181, 6, 255))
+                text:setPosition((i - startIdx + 0.5) * itemWH, panelHeight - (i2 - 1 + 0.5) * itemWH)
+                self.yueYouLu:addChild(text)
+            end
+        end
+    end
+    if lastNode then
+        lastNode:runAction(cc.Blink:create(3, 5))
+    end
+end
+-- 问路
+function GameViewLayer:updateWenLu()
+    local BaccaratModel = cc.loaded_packages.BaccaratTigerLogic:getModel()
+    local picPath = 'Baccarat/image/trend_chart/'
+    local picName
+    local zhuangWenLu, xianWenLu = BaccaratModel:getWenLu()
+    for i = 1, 3 do
+        local img = self.imgZWL[i]
+        local wlData = zhuangWenLu[i]
+        if wlData then
+            picName = nil
+            if Role.Player == wlData.role then
+                if 1 == i then
+                    picName = 'quan_s_blue.png'
+                elseif 2 == i then
+                    picName = 'blue_dian_s.png'
+                else
+                    picName = 'blue_gang_s.png'
+                end
+            elseif Role.Banker == wlData.role then
+                if 1 == i then
+                    picName = 'red_quan_s.png'
+                elseif 2 == i then
+                    picName = 'red_dian_s.png'
+                else
+                    picName = 'red_gang_s.png'
+                end
+            end
+            if picName then
+                img:setVisible(true)
+                img:loadTexture(picPath .. picName)
+            end
+        else
+            img:setVisible(false)
+        end
+
+        img = self['imgXWL_' .. i]
+        wlData = xianWenLu[i]
+        if wlData then
+            picName = nil
+            if Role.Player == wlData.role then
+                if 1 == i then
+                    picName = 'quan_s_blue.png'
+                elseif 2 == i then
+                    picName = 'blue_dian_s.png'
+                else
+                    picName = 'blue_gang_s.png'
+                end
+            elseif Role.Banker == wlData.role then
+                if 1 == i then
+                    picName = 'red_quan_s.png'
+                elseif 2 == i then
+                    picName = 'red_dian_s.png'
+                else
+                    picName = 'red_gang_s.png'
+                end
+            end
+            if picName then
+                img:setVisible(true)
+                img:loadTexture(picPath .. picName)
+            end
+        else
+            img:setVisible(false)
+        end
+    end
+end
+
 return GameViewLayer

@@ -771,7 +771,7 @@ end
 
 FishDataMgr.Fish_Of_Need_die = {
     [FishKind.FISH_JINCHAN]      = false, --18-李逵
-    [FishKind.FISH_HAIDAN]       = false, --21-海胆
+    --[FishKind.FISH_HAIDAN]       = false, --21-海胆
     [FishKind.FISH_SHUANGTOUQIE] = false, --24-双头企鹅
     [FishKind.FISH_FOSHOU]       = false, --26-佛手
     [FishKind.FISH_BGLU]         = false, --27-炼丹炉
@@ -1258,15 +1258,14 @@ FishDataMgr.FISH_OF_Armature = {                    -- 注释是对前边的键�
     [FishKind.FISH_KONGQUEYU]     = "yu12_buyu",    -- 23 孔雀鱼
     [FishKind.FISH_JIANYU]        = "yu13_buyu",    -- 26 剑鱼
     [FishKind.FISH_BIANFUYU]      = "yu14_buyu",    -- 27 蝙蝠鱼
-    [FishKind.FISH_HAIDAN]        = "yu15_buyu",    -- 31 海胆
-    [FishKind.FISH_YINSHA]        = "yu16_buyu",    -- 28 银鲨
-    [FishKind.FISH_JINSHA]        = "yu17_buyu",    -- 29 金鲨
-    [FishKind.FISH_BAWANGJING]    = "yu18_buyu",    -- 30 霸王鲸
+    [FishKind.FISH_YINSHA]        = "yu15_buyu",    -- 28 银鲨
+    [FishKind.FISH_JINSHA]        = "yu16_buyu",    -- 29 金鲨
+    [FishKind.FISH_BAWANGJING]    = "yu17_buyu",    -- 30 霸王鲸
+    [FishKind.FISH_HAIDAN]        = "yu18_buyu",    -- 31 海胆
     [FishKind.FISH_SHUANGTOUQIE]  = "yu19_buyu",    -- 32 企鹅
-    [FishKind.FISH_XIAOYINLONG]   = "yu22_buyu",    -- 25 小银龙
-    [FishKind.FISH_XIAOJINLONG]   = "yu23_buyu",    -- 33 小金龙
-    --[FishKind.FISH_JINCHAN]       = "likui",        -- 18 李逵
-    [FishKind.FISH_JINCHAN]       = "yu24_buyu",    -- 34 李逵
+    [FishKind.FISH_XIAOYINLONG]   = "yu20_buyu",    -- 25 小银龙
+    [FishKind.FISH_XIAOJINLONG]   = "yu21_buyu",    -- 33 小金龙
+    [FishKind.FISH_JINCHAN]       = "yu22_buyu",    -- 34 李逵
     [FishKind.FISH_FOSHOU]        = "allscreenbomb",-- 36 七星剑
     [FishKind.FISH_DNTG]          = "yuwang",       -- 44 大闹天宫
     [FishKind.FISH_PIECE]         = "yuwang",       -- 113 金玉满堂
@@ -1316,8 +1315,9 @@ function FishDataMgr:getLockFish(chair_id)
 
         ret = self._current_lock_fish[chair_id+1]
     end
-    return ret
 
+    --print('获取锁鱼-椅子id:'..chair_id..', 鱼ID:'..ret)
+    return ret
 end 
 
 function FishDataMgr:setLockFish(chair_id, fish_id)

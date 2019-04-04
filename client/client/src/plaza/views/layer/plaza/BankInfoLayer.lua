@@ -433,7 +433,7 @@ function BankInfoLayer:onEnterTransitionFinish()
             :setColor(cc.c3b(0,0,0))
     self.m_enableLayer:addChild(editbox)         
     self.m_editSetPasswd = editbox
-    editbox:registerScriptEditBoxHandler(editHanlder)
+    --editbox:registerScriptEditBoxHandler(editHanlder)
 
     -- 存取
     tmp = self.m_saveLayer:getChildByName("Image_92"):getChildByName("Image_3")
@@ -658,9 +658,14 @@ function BankInfoLayer:onEditEvent(event, editbox)
         self.m_nEditCount = 0
         if targetPlatform ~= cc.PLATFORM_OS_ANDROID then
             self.m_bEditInput = true
+            editbox:setText(src)
         end
     elseif event == "changed" then
         self.m_nEditCount = self.m_nEditCount + 1
+
+        if targetPlatform ~= cc.PLATFORM_OS_ANDROID then
+            editbox:setText(src)
+        end
 
         if TAG_ENUM.EDIT_TRANSFER_ID == tag then
                 self.m_textuser:setVisible(false)
