@@ -17,7 +17,7 @@
             <SingleColor A="255" R="0" G="0" B="0" />
             <FirstColor A="255" R="150" G="200" B="255" />
             <EndColor A="255" R="255" G="255" B="255" />
-            <ColorVector ScaleX="1.0000" ScaleY="0.0000" />
+            <ColorVector ScaleX="1.0000" />
           </AbstractNodeData>
           <AbstractNodeData Name="center" ActionTag="1393036427" Tag="115" IconVisible="True" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="667.0000" RightMargin="667.0000" TopMargin="375.0000" BottomMargin="375.0000" ctype="SingleNodeObjectData">
             <Size X="0.0000" Y="0.0000" />
@@ -113,7 +113,7 @@
                         <FileData Type="Normal" Path="dt/image/zcm_bxx/bxx7.png" Plist="" />
                         <BlendFunc Src="1" Dst="771" />
                       </AbstractNodeData>
-                      <AbstractNodeData Name="Image_92" ActionTag="-1140738598" Tag="283" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="0.0000" RightMargin="-70.0000" TopMargin="93.4977" BottomMargin="66.5023" Scale9Enable="True" LeftEage="3" RightEage="3" TopEage="3" BottomEage="3" Scale9OriginX="3" Scale9OriginY="3" Scale9Width="4" Scale9Height="4" ctype="ImageViewObjectData">
+                      <AbstractNodeData Name="Image_92" ActionTag="-1140738598" Tag="283" IconVisible="False" PositionPercentXEnabled="True" RightMargin="-70.0000" TopMargin="93.4977" BottomMargin="66.5023" Scale9Enable="True" LeftEage="3" RightEage="3" TopEage="3" BottomEage="3" Scale9OriginX="3" Scale9OriginY="3" Scale9Width="4" Scale9Height="4" ctype="ImageViewObjectData">
                         <Size X="720.0000" Y="378.0000" />
                         <Children>
                           <AbstractNodeData Name="sprite_goldSpr" ActionTag="-1044274292" Tag="412" IconVisible="False" LeftMargin="26.5957" RightMargin="581.4043" TopMargin="53.2888" BottomMargin="295.7112" ctype="SpriteObjectData">
@@ -493,7 +493,7 @@
                     <SingleColor A="255" R="150" G="200" B="255" />
                     <FirstColor A="255" R="150" G="200" B="255" />
                     <EndColor A="255" R="255" G="255" B="255" />
-                    <ColorVector ScaleX="1.0000" ScaleY="0.0000" />
+                    <ColorVector ScaleX="1.0000" />
                   </AbstractNodeData>
                   <AbstractNodeData Name="panel_banksave" Visible="False" ActionTag="819744189" Tag="2298" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="322.5000" RightMargin="102.5000" TopMargin="113.0000" BottomMargin="49.0000" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="0.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
                     <Size X="650.0000" Y="538.0000" />
@@ -920,7 +920,7 @@
                     <SingleColor A="255" R="150" G="200" B="255" />
                     <FirstColor A="255" R="150" G="200" B="255" />
                     <EndColor A="255" R="255" G="255" B="255" />
-                    <ColorVector ScaleX="1.0000" ScaleY="0.0000" />
+                    <ColorVector ScaleX="1.0000" />
                   </AbstractNodeData>
                   <AbstractNodeData Name="panel_banktransfer" ActionTag="-1251681995" Tag="2140" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="331.2405" RightMargin="93.7595" TopMargin="146.7189" BottomMargin="15.2811" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="0.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
                     <Size X="650.0000" Y="538.0000" />
@@ -1023,7 +1023,7 @@
                                     <CColor A="255" R="255" G="255" B="255" />
                                     <PrePosition X="0.5280" Y="0.5400" />
                                     <PreSize X="0.6075" Y="0.5200" />
-                                    <FileData Type="PlistSubImage" Path="gui-bank-transfer1.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                                    <FileData Type="Default" Path="Default/Sprite.png" Plist="" />
                                     <BlendFunc Src="1" Dst="771" />
                                   </AbstractNodeData>
                                 </Children>
@@ -1341,7 +1341,7 @@
                     <SingleColor A="255" R="150" G="200" B="255" />
                     <FirstColor A="255" R="150" G="200" B="255" />
                     <EndColor A="255" R="255" G="255" B="255" />
-                    <ColorVector ScaleX="1.0000" ScaleY="0.0000" />
+                    <ColorVector ScaleX="1.0000" />
                   </AbstractNodeData>
                   <AbstractNodeData Name="panel_bankrecord" Visible="False" ActionTag="-1978159790" Tag="2184" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="321.3133" RightMargin="103.6867" TopMargin="121.1366" BottomMargin="40.8634" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="0.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
                     <Size X="650.0000" Y="538.0000" />
@@ -1357,7 +1357,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.1097" Y="0.4751" />
                             <PreSize X="0.1046" Y="0.6970" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-icon4.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/Sprite.png" Plist="" />
                             <BlendFunc Src="1" Dst="771" />
                           </AbstractNodeData>
                           <AbstractNodeData Name="Sprite_228_0" ActionTag="-483494303" Tag="2262" IconVisible="False" LeftMargin="198.1821" RightMargin="383.8179" TopMargin="6.3599" BottomMargin="4.6401" ctype="SpriteObjectData">
@@ -1368,7 +1368,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.3572" Y="0.4739" />
                             <PreSize X="0.1046" Y="0.6667" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-icon3.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/Sprite.png" Plist="" />
                             <BlendFunc Src="1" Dst="771" />
                           </AbstractNodeData>
                           <AbstractNodeData Name="Sprite_228_1" ActionTag="-1386694435" Tag="2263" IconVisible="False" LeftMargin="371.3564" RightMargin="209.6436" TopMargin="3.9737" BottomMargin="5.0263" ctype="SpriteObjectData">
@@ -1379,7 +1379,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.6244" Y="0.5159" />
                             <PreSize X="0.1062" Y="0.7273" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-icon2.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/Sprite.png" Plist="" />
                             <BlendFunc Src="1" Dst="771" />
                           </AbstractNodeData>
                           <AbstractNodeData Name="Sprite_228_2" ActionTag="-917102035" Tag="2264" IconVisible="False" LeftMargin="536.0700" RightMargin="46.9300" TopMargin="4.5101" BottomMargin="5.4899" ctype="SpriteObjectData">
@@ -1390,7 +1390,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.8763" Y="0.5148" />
                             <PreSize X="0.1031" Y="0.6970" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-icon5.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/Sprite.png" Plist="" />
                             <BlendFunc Src="1" Dst="771" />
                           </AbstractNodeData>
                         </Children>
@@ -1400,7 +1400,7 @@
                         <CColor A="255" R="255" G="255" B="255" />
                         <PrePosition X="0.4998" Y="0.9421" />
                         <PreSize X="1.0000" Y="0.0613" />
-                        <FileData Type="PlistSubImage" Path="gui-bank-bg5.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                        <FileData Type="Default" Path="Default/ImageFile.png" Plist="" />
                       </AbstractNodeData>
                       <AbstractNodeData Name="ScrollView_1" ActionTag="-1271899817" Tag="2265" IconVisible="False" RightMargin="-50.0000" TopMargin="68.0000" BottomMargin="20.0000" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" ScrollDirectionType="Vertical" ctype="ScrollViewObjectData">
                         <Size X="700.0000" Y="450.0000" />
@@ -1426,7 +1426,7 @@
                     <SingleColor A="255" R="150" G="200" B="255" />
                     <FirstColor A="255" R="150" G="200" B="255" />
                     <EndColor A="255" R="255" G="255" B="255" />
-                    <ColorVector ScaleX="1.0000" ScaleY="0.0000" />
+                    <ColorVector ScaleX="1.0000" />
                   </AbstractNodeData>
                   <AbstractNodeData Name="Image_1" ActionTag="256256840" Tag="272" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="41.8200" RightMargin="795.1800" TopMargin="132.4700" BottomMargin="39.5300" Scale9Enable="True" LeftEage="16" RightEage="16" TopEage="16" BottomEage="16" Scale9OriginX="16" Scale9OriginY="16" Scale9Width="206" Scale9Height="496" ctype="ImageViewObjectData">
                     <Size X="238.0000" Y="528.0000" />
@@ -1442,7 +1442,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.5000" Y="0.5366" />
                             <PreSize X="0.2500" Y="0.5493" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-out1.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/ImageFile.png" Plist="" />
                           </AbstractNodeData>
                         </Children>
                         <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
@@ -1468,7 +1468,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.5000" Y="0.5000" />
                             <PreSize X="0.2500" Y="0.5493" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-deposit1.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/ImageFile.png" Plist="" />
                           </AbstractNodeData>
                         </Children>
                         <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
@@ -1494,7 +1494,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.5000" Y="0.5000" />
                             <PreSize X="0.2500" Y="0.5493" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-transfer1.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/ImageFile.png" Plist="" />
                           </AbstractNodeData>
                         </Children>
                         <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
@@ -1520,7 +1520,7 @@
                             <CColor A="255" R="255" G="255" B="255" />
                             <PrePosition X="0.5000" Y="0.5000" />
                             <PreSize X="0.2385" Y="0.5493" />
-                            <FileData Type="PlistSubImage" Path="gui-bank-detail1.png" Plist="dt/image/zcm_bxx/gui-bank.plist" />
+                            <FileData Type="Default" Path="Default/ImageFile.png" Plist="" />
                           </AbstractNodeData>
                         </Children>
                         <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />

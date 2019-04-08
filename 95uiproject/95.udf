@@ -41,8 +41,51 @@
           <FilePathData Path="common/gameCheckLoadingView.csd" />
           <FilePathData Path="common/CommonResultView.csd" />
           <FilePathData Path="common/CommonBigWinnerView.csd" />
+          <FilePathData Path="DragonTiger/DragonTrend.csd" />
+          <FilePathData Path="DragonTiger/DragonTigerScene.csd" />
+          <FilePathData Path="DragonTiger/DragonTendency.csd" />
+          <FilePathData Path="DragonTiger/DragonSetting.csd" />
+          <FilePathData Path="DragonTiger/DragonRoundResult.csd" />
+          <FilePathData Path="DragonTiger/DragonRecharge.csd" />
+          <FilePathData Path="DragonTiger/DragonRank.csd" />
+          <FilePathData Path="DragonTiger/DragonDealerQueue.csd" />
+          <FilePathData Path="DragonTiger/DragonBetTip.csd" />
+          <FilePathData Path="Niuniu/NiuBetTip.csd" />
+          <FilePathData Path="Niuniu/NiuDealerQueue.csd" />
+          <FilePathData Path="Niuniu/NiuniuRoomScene.csd" />
+          <FilePathData Path="Niuniu/NiuRoundResult.csd" />
+          <FilePathData Path="Niuniu/NiuSetting.csd" />
+          <FilePathData Path="Niuniu/NiuTongResutl1.csd" />
+          <FilePathData Path="Niuniu/NiuTongResutl2.csd" />
+          <FilePathData Path="Fishing/SpecialFish1.csd" />
+          <FilePathData Path="Fishing/SpecialFish2.csd" />
+          <FilePathData Path="Fishing/SpecialFish3.csd" />
+          <FilePathData Path="Fishing/SpecialFish4.csd" />
+          <FilePathData Path="Fishing/SpecialFish5.csd" />
+          <FilePathData Path="Fishing/SpecialFishExplode.csd" />
+          <FilePathData Path="Fishing/SpecialFishwin.csd" />
+          <FilePathData Path="Fishing/xsly.csd" />
+          <FilePathData Path="Fishing/LevelUpreWard.csd" />
+          <FilePathData Path="Fishing/BonusFish.csd" />
+          <FilePathData Path="Fishing/FishingDialog.csd" />
+          <FilePathData Path="Fishing/FishingRoomScene.csd" />
+          <FilePathData Path="Fishing/fishresPlv.csd" />
+          <FilePathData Path="Fishing/FishTypeIntro.csd" />
+          <FilePathData Path="Fishing/hbyc.csd" />
+          <FilePathData Path="Fishing/hdbz.csd" />
+          <FilePathData Path="Fishing/hjha.csd" />
+          <FilePathData Path="Fishing/Location.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_zjhBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_tbnnBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_superFruitBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_slotsBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_shzBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_magicTrangleBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_lhdBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_lhdbBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_lhdb2Btn.csd" />
         </OpenedDocuments>
-        <ActiveDocument Path="common/CommonBigWinnerView.csd" />
+        <ActiveDocument Path="dt/image/zcmdwc_zjm/button_lhdb2Btn.csd" />
       </Value>
     </Item>
   </Properties>

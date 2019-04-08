@@ -1068,6 +1068,15 @@
               <Project Name="zcmdwc_zhuce.csd" Type="Node" />
             </Folder>
             <Folder Name="zcmdwc_zjm">
+              <Folder Name="effct_ddz">
+                <Image Name="ddz0.png" />
+                <Image Name="ddz1.png" />
+                <Image Name="ddz2.png" />
+                <Image Name="ddz3.png" />
+                <Image Name="ddz4.png" />
+                <Image Name="ddz5.png" />
+                <Image Name="ddz6.png" />
+              </Folder>
               <Folder Name="effct_mian">
                 <Project Name="effct_mian1.csd" Type="Node" />
                 <Project Name="effect_main.csd" Type="Node" />
@@ -1259,6 +1268,7 @@
               <Project Name="button_bmwbenzBtn.csd" Type="Node" />
               <Project Name="button_brnnBtn.csd" Type="Node" />
               <Project Name="button_candyBtn.csd" Type="Node" />
+              <Project Name="button_ddzBtn.csd" Type="Node" />
               <Project Name="button_fishBtn.csd" Type="Node" />
               <Project Name="button_fruitSlotsBtn.csd" Type="Node" />
               <Project Name="button_guagualeBtn.csd" Type="Node" />

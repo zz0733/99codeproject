@@ -36,8 +36,27 @@
           <FilePathData Path="login/CustomView.csd" />
           <FilePathData Path="login/ReSetPasswordView.csd" />
           <FilePathData Path="login/UpdateScene.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_fruitSlotsBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_brnnBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_bmwbenzBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_21dianBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_baijialeBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_candyBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_fishBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_guagualeBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_hhdzBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_lhdb2Btn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_lhdBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_magicTrangleBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_shzBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_slotsBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_superFruitBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_tbnnBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_zjhBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_lhdbBtn.csd" />
+          <FilePathData Path="dt/image/zcmdwc_zjm/button_ddzBtn.csd" />
         </OpenedDocuments>
-        <ActiveDocument Path="login/loginlight.csd" />
+        <ActiveDocument Path="dt/image/zcmdwc_zjm/button_ddzBtn.csd" />
       </Value>
     </Item>
   </Properties>
